@@ -12,5 +12,3 @@ export const fromRendererEvents = {
     secondInstance: 'second-instance',
   },
 };
-
-// module.exports.fromRendererEvents = fromRendererEvents;

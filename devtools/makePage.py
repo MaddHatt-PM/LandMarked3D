@@ -25,7 +25,7 @@ page_dir.mkdir(parents=True, exist_ok=True)
 
 
 '''Create Page file'''
-comp_js = page_dir / (page_name + '.js')
+comp_js = page_dir / (page_name + '.tsx')
 with comp_js.open('w') as file:
     o = 'import React from "react";\n'
     o += 'import { Container } from "./' + page_name + '.styles";\n'
@@ -46,7 +46,7 @@ with comp_js.open('w') as file:
 
 
 '''Create styles file'''
-comp_styles = page_dir / (page_name + '.styles.js')
+comp_styles = page_dir / (page_name + '.styles.tsx')
 with comp_styles.open('w') as file:
     o = 'import styled from "styled-components";\n'
     o += '\n'

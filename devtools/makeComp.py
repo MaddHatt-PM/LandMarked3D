@@ -25,7 +25,7 @@ comp_dir.mkdir(parents=True, exist_ok=True)
 
 
 """Create Component file"""
-comp_js = comp_dir / (comp_name + ".js")
+comp_js = comp_dir / (comp_name + ".tsx")
 with comp_js.open("w") as file:
     o = 'import React from "react";\n'
     o += 'import { Container } from "./' + comp_name + '.styles";\n'
@@ -44,7 +44,7 @@ with comp_js.open("w") as file:
 
 
 """Create Styles file"""
-comp_styles = comp_dir / (comp_name + ".styles.js")
+comp_styles = comp_dir / (comp_name + ".styles.tsx")
 with comp_styles.open("w") as file:
     o = 'import styled from "styled-components";\n'
     o += "\n"
@@ -54,21 +54,21 @@ with comp_styles.open("w") as file:
     file.write(o)
 
 
-"""Create Tests file"""
-comp_tests = comp_dir / (comp_name + ".tests.js")
-with comp_tests.open("w") as file:
-    o = 'import React from "react";\n'
-    o += 'import { render } from "@testing-library/react"\n'
-    o += "import" + comp_name + 'from "./' + comp_name + '";\n'
-    o += "\n"
-    o += 'it("' + comp_name + ': renders correctly", () => {\n'
-    o += (
-        "  const { queryByTestId, queryByPlaceholderName } = render(<"
-        + comp_name
-        + "/>);"
-    )
-    o += "});"
-    file.write(o)
+# """Create Tests file"""
+# comp_tests = comp_dir / (comp_name + ".tests.tsx")
+# with comp_tests.open("w") as file:
+#     o = 'import React from "react";\n'
+#     o += 'import { render } from "@testing-library/react"\n'
+#     o += "import " + comp_name + ' from "./' + comp_name + '";\n'
+#     o += "\n"
+#     o += 'it("' + comp_name + ': renders correctly", () => {\n'
+#     o += (
+#         "  const { queryByTestId, queryByPlaceholderName } = render(<"
+#         + comp_name
+#         + "/>);\n"
+#     )
+#     o += "});"
+#     file.write(o)
 
 os.system("code -r -g " + str(comp_js))
 os.system("code -r -g " + str(comp_styles))
