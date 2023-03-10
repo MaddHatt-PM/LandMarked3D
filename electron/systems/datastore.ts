@@ -2,7 +2,7 @@ const electron = require('electron')
 const path = require('path');
 const fs = require('fs')
 
-interface DataStoreParameters {
+interface DataStoreProps {
   filename: string;
   defaultState: Record<string, unknown>;
 }
@@ -11,7 +11,7 @@ export class DataStore {
   storePath: string;
   data: Record<string, unknown>;
 
-  constructor({ filename, defaultState} : DataStoreParameters) {
+  constructor({ filename, defaultState} : DataStoreProps) {
     const remoteMain = require("@electron/remote/main");
 
     const userDataPath = (electron.app || remoteMain.app).getPath('userData');

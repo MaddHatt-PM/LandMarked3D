@@ -37,13 +37,13 @@ const WindowsBar = () => {
     <Container>
       <span id="left-aligned">
         <Logo src={LogoImg} isOnline={isOnline} />
-        <AppName>{isOnline ? "2 Minute Tabletop" : "2 Minute Tabletop - Offline"}</AppName>
+        <AppName>{isOnline ? "Terrain Viewer" : "Terrain Viewer - Offline"}</AppName>
       </span>
 
       <span id="right-aligned">
-        <WinPin tabIndex={-1} onClick={TogglePinned} isPinned={isPinned}>
+        {/* <WinPin tabIndex={-1} onClick={TogglePinned} isPinned={isPinned}>
           <img src={isPinned ? PinOn : PinOff} alt="PinOff" />
-        </WinPin>
+        </WinPin> */}
 
         <WinButton tabIndex={-1} onClick={() => { window.api.request(toMainEvents.systems.minimizeWindow) }}>
           <img src={Minimize} alt="Minimize" />

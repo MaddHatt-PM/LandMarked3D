@@ -6,6 +6,8 @@ export const Container = styled.div`
   z-index: 1000;
 
   background-color: var(--title-background);
+  border-bottom: 1px solid black;
+  
   -webkit-app-region: drag;
   position: sticky;
   display: inline-flex;

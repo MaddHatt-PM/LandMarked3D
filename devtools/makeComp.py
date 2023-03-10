@@ -30,6 +30,10 @@ with comp_js.open("w") as file:
     o = 'import React from "react";\n'
     o += 'import { Container } from "./' + comp_name + '.styles";\n'
     o += "\n"
+    o += "interface " + comp_name + "Props {"
+    o += "  "
+    o += "}"
+    o += "\n"
     o += "const " + comp_name + " = () => {\n"
     o += "\n"
     o += "  return (\n"
