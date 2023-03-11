@@ -6,14 +6,13 @@ export const Container = styled.div`
   z-index: 1000;
 
   background-color: var(--title-background);
-  border-bottom: 1px solid black;
-  
   -webkit-app-region: drag;
   position: sticky;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   font-size: 14px;
+  border-bottom: 1px solid black;
 `;
 
 interface WinPinProps {
@@ -79,4 +78,5 @@ export const AppName = styled.span`
   color: var(--title-text-color);
   display: flex;
   padding-left: 8px;
+  padding-top: 2px;
 `;

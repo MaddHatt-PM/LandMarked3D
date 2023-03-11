@@ -3,14 +3,20 @@ import styled from "styled-components";
 export const Container = styled.div`
   /* position: relative; */
   background-color: var(--title-background);
-  width: 64px;
+  width: 38px;
   height: 100%;
-  padding: 0 8px;
+  padding: 0 6px;
   border-left: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 export const Group = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px;
+  padding: 6px
 `;
