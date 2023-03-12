@@ -8,8 +8,9 @@ interface ContainerProps {
 export const Container = styled.div<ContainerProps>`
   width: ${(props) => props.width ?? "250px"};
   height: 100%;
-  background-color: var(--title-background);
+  background-color: #282b30;
   border-left: 1px solid black;
+  overflow-y: auto;
   `;
 
 export const Wrapper = styled.div`

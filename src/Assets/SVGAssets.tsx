@@ -8,6 +8,8 @@ import { ReactComponent as layersSVG } from "../Assets/toolbar-layers.svg"
 import { ReactComponent as cloudDownloadSVG } from "../Assets/toolbar-cloud-download.svg"
 import { ReactComponent as treeSVG } from "../Assets/toolbar-tree.svg"
 
+import { ReactComponent as questionMarkSVG } from "../Assets/icon-question.svg"
+
 interface svgDetails {
   height?: number;
   color?: string;
@@ -34,5 +36,9 @@ export const TreeSVG = styled(treeSVG) <svgDetails>`
 `;
 
 export const CloudDownloadSVG = styled(cloudDownloadSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+  `;
+
+export const QuestionMarkSVG = styled(questionMarkSVG)<svgDetails>`
   ${(props) => svgProps(props)}
 `;

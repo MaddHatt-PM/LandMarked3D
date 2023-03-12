@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Container, DropdownButton, DropdownList, DropdownListItem } from "./Dropdown.styles";
+import { ChevronIcon, Container, DropdownButton, DropdownList, DropdownListItem } from "./Dropdown.styles";
 
 interface DropdownProps {
   options: string[];
@@ -19,8 +19,9 @@ const Dropdown = (props:DropdownProps) => {
 
   return (
     <Container>
-      <DropdownButton onClick={()=> {setIsOpen(!isOpen)}}>
+      <DropdownButton className={isOpen ? "is-open" : ""} onClick={()=> {setIsOpen(!isOpen)}}>
         {selected}
+        <ChevronIcon className={isOpen ? "is-open" : ""} />
       </DropdownButton>
       {isOpen && (
         <DropdownList>

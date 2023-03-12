@@ -7,6 +7,7 @@ import StatusBar from "../../Components/StatusBar/StatusBar";
 import Toolbar from "../../Components/Toolbar/Toolbar";
 import { HStack, VStack } from "./LocationViewerPage.styles";
 import { AreaSVG, CloudDownloadSVG, ExportSVG, GearSVG, LayersSVG, TreeSVG } from "../../Assets/SVGAssets";
+import ControlsView from "../../Components/ControlsView/ControlsView";
 
 
 enum ToolbarModes {
@@ -24,7 +25,7 @@ function LocationViewerPage() {
           <Toolbar
             upperElements={[
               { text: "Area Editor", icon: (<AreaSVG color="white" width={"20"} />), callback: () => { } },
-              { text: "Tree Editor", icon:(<TreeSVG color="white" width={"20"} />), callback: () => { } },
+              { text: "Tree Editor", icon: (<TreeSVG color="white" width={"20"} />), callback: () => { } },
             ].map((o, id) => <HoverButton key={id} width={"44px"} text={o.text} icon={o.icon} />)}
 
             lowerElements={[
@@ -37,8 +38,10 @@ function LocationViewerPage() {
           <LayerEditor />
 
           <Panel />
-
           <LocationView />
+          <ControlsView enabledContent={
+            <p>testing controls</p>
+          } />
         </HStack>
         <StatusBar />
       </VStack>
