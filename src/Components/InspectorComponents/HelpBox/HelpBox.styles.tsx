@@ -26,6 +26,7 @@ export const TitleWrapper = styled.div`
 
 export const Title = styled.span`
   color: #ffffffdf;
+  margin-bottom: 4px;
 `;
 
 export const Text = styled.p`

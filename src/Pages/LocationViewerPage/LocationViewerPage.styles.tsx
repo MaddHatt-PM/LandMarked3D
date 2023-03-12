@@ -14,21 +14,32 @@ export const VStack = styled.div<ContainerProps>`
   height: 100%;
 
   & > :first-child {
+    /* flex: 1; */
+    /* flex-shrink: 0; */
+  }
+
+  & > :last-child {
+    position: absolute;
+    bottom: 0;
     flex: 1;
   }
 `;
 
-interface ViewportProps {
-  children: React.ReactNode;
-}
+export const Wrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 24px);
+  bottom: 24px;
+`;
 
-export const HStack = styled.div<ViewportProps>`
+
+export const HStack = styled.div`
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   justify-content: flex-start;
 
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
 

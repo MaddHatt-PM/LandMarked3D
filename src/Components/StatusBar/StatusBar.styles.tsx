@@ -6,7 +6,7 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
-  
+  flex-shrink: 0;
   height: 24px;
   width: 100%;
   
@@ -20,8 +20,7 @@ export const HStack = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 8px;
 `;
 
 export const Text = styled.span`

@@ -6,10 +6,11 @@ interface ContainerProps {
 }
 
 export const Container = styled.button <ContainerProps>`
-position: relative;
+  position: relative;
   width: ${(props) => (props.width ? props.width : "auto")};
   height: ${(props) => (props.height ? props.height : "auto")};
   aspect-ratio: 1.0;
+  z-index: 100;
   
   border: 0px solid white;
   border-radius: 8px;
@@ -17,7 +18,6 @@ position: relative;
   cursor: pointer;
 
   align-items: center;
-  /* overflow: hidden; */
   text-overflow: clip;
   white-space: nowrap;
   
@@ -57,7 +57,7 @@ export const Text = styled.span`
 `;
 
 export const Tooltip = styled.div`
-  z-index: 10;
+  z-index: 100;
   position: absolute;
   top: 25%;
   right: 110%;
@@ -76,6 +76,7 @@ export const Tooltip = styled.div`
 
   user-select: none;
   pointer-events: none;
+
 
   &::before,
   &::after {

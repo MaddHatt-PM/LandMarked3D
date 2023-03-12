@@ -11,7 +11,7 @@ export const Container = styled.div<ContainerProps>`
   background-color: #282b30;
   border-left: 1px solid black;
   overflow-y: auto;
-  `;
+`;
 
 export const Wrapper = styled.div`
   padding: 8px;
