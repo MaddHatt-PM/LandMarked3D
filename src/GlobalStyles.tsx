@@ -29,4 +29,19 @@ export const GlobalStyle = createGlobalStyle`
     --title-text-color: rgb(176, 176, 176);
     --text-normal-color: white;
   }
+
+    ::-webkit-scrollbar {
+    width: 12px;
+    height: 8px;
+    border-left: 1px solid black;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #787676;
+    border-left: 1px solid black;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 `;

@@ -10,7 +10,7 @@ export const Container = styled.div`
   height: 24px;
   width: 100%;
   
-  background-color: #7600cc;
+  background-color: #860cdd;
   color: white;
 `;
 

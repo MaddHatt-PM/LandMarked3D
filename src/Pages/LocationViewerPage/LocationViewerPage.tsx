@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import LayerEditor from "../../Components/LayerEditor/LayerEditor";
-import LocationView from "../../Components/LocationView/LocationView";
+import LocationViewport from "../../Components/LocationView/LocationViewport";
 import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
 import Panel from "../../Components/Panel/Panel";
 import StatusBar from "../../Components/StatusBar/StatusBar";
@@ -70,7 +70,7 @@ function LocationViewerPage() {
               />)}
 
               lowerElements={[
-                { text: "DEV: UI Test", icon: (<QuestionMarkSVG color="white" width={"16"} />), mode: ToolbarModes.UITest },
+                { text: "DEV: UI Test", icon: (<QuestionMarkSVG color="white" width={"12"} />), mode: ToolbarModes.UITest },
 
                 { text: "Layers", icon: (<LayersSVG color="white" width={"20"} />), mode: ToolbarModes.LayerEditor },
                 { text: "Download Data", icon: (<CloudDownloadSVG color="white" width={"20"} />), mode: ToolbarModes.Download },
@@ -85,8 +85,6 @@ function LocationViewerPage() {
               />)}
             />
 
-            {/* {showInspector && inspectors[inspector]} */}
-
             {
               Object.values(inspectors).map((view, index) => (
                 <div
@@ -97,7 +95,7 @@ function LocationViewerPage() {
               ))
             }
 
-            <LocationView />
+            <LocationViewport />
             <ControlsView enabledContent={
               <p>testing controls</p>
             } />

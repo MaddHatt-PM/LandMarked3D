@@ -20,20 +20,22 @@ interface SliderInputProps {
   percentage: number
 }
 
+const height="6px"
+
 export const SliderInput = styled.input<SliderInputProps>`
   position: relative;
   -webkit-appearance: none;
-  height: 4px;
-  background-color: #ddd;
-  border-radius: 2px;
+  height: ${height};
+  background-color: #959198;
+  border-radius: ${height};
   flex-grow: 1;
   min-width: 0;
 
   &::-webkit-slider-thumb {
     position: relative;
     appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     background-color: #e1e1e1;
     border-radius: 50%;
     cursor: pointer;
@@ -44,17 +46,17 @@ export const SliderInput = styled.input<SliderInputProps>`
     }
 
     &:active {
-    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.6);
     }
   }
 
   &::before {
     content: '';
     position: absolute;
-    height: 4px;
-    border-radius: 2px;
+    height: ${height};
+    border-radius: ${height};
     width: ${(props) => (props.percentage ? props.percentage + '%' : '0%')};
-    background-color: #bf00ff;
+    background-color: #860cdd;
     max-width: 100%;
   }
 `;

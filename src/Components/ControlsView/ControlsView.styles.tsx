@@ -14,7 +14,7 @@ export const Container = styled.button`
 
   border: 1px solid #00000044;
   border-radius: 4px;
-  background-color: #2925251f;
+  background-color: #292525;
   
   transition: border 0.3s ease;
   cursor: pointer;
@@ -22,7 +22,7 @@ export const Container = styled.button`
   &:hover {
     border: 1px solid #0f0d11df;
     &:not(.enabled) {
-      background-color: #25222266;
+      background-color: #252222;
     }
   }
 `;

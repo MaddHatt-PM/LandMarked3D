@@ -7,6 +7,7 @@ import NumberField from "../InspectorComponents/NumberField/NumberField";
 import Detail from "../InspectorComponents/Detail/Detail";
 import TextField from "../TextField/TextField";
 import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
+import Toggle from "../InspectorComponents/Toggle/Toggle";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -54,6 +55,12 @@ const UITestPanel = () => {
           label="TextField"
           initialText="Example"
           onChange={(o) => { }}
+        />
+
+        <Toggle
+          label="Toggle"
+          initialState={true}
+          callback={(o) => { console.log(`Toggle: ${o}`) }}
         />
 
         <HelpBox

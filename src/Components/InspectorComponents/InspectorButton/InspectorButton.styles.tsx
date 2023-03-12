@@ -22,7 +22,7 @@ export const Button = styled.button`
   max-width: 50%;
   border: 1px solid black;
   border-radius: 4px;
-  padding: 4px;
+  padding: 2px;
   cursor: pointer;
 
   &.full-width {
