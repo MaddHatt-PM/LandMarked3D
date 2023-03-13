@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { SamplePointData } from "../../Types/SamplePointData";
+import SamplePointView from "../SamplePointView/SamplePointView";
 import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./LocationViewport.styles";
 
 const LocationViewport = () => {
@@ -40,8 +42,22 @@ const LocationViewport = () => {
     setZoom(newZoom);
   };
 
+  const testSamplePointData: SamplePointData[] = [
+    { id: 0, x: 5, y: 35, elevation: 10 },
+    { id: 1, x: 15, y: 25, elevation: 20 },
+    { id: 2, x: 25, y: 15, elevation: 30 },
+    { id: 3, x: 35, y: 5, elevation: 40 },
+  ]
+
   return (
     <Container>
+      <EventCatcher
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        onWheel={handleWheel}
+      />
       <GridLines
         spacing={32}
         zoom={zoom}
@@ -59,16 +75,14 @@ const LocationViewport = () => {
         <Image src="https://4.bp.blogspot.com/-xstBGhuD2gk/UA-73uP0isI/AAAAAAAAKGE/oq3-yqXs9rs/s1600/jotunheimen_contours.png" />
 
         {/* SVG Items go */}
+        <SamplePointView 
+        data={testSamplePointData} 
+        zoom={zoom}
+        />
 
       </TransformableDiv>
 
-      <EventCatcher
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-        onWheel={handleWheel}
-      />
+
     </Container>
   );
 };

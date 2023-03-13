@@ -24,10 +24,6 @@ enum ToolbarModes {
   UITest,
 }
 
-const toolbarModesArray = Object.keys(ToolbarModes)
-  .filter(key => isNaN(Number(key))) // filters out numeric keys
-  .map((key: any) => ToolbarModes[key]);
-
 const inspectors: Record<ToolbarModes, ReactNode> = {
   [ToolbarModes.AreaEditor]: (<NotImplementedPanel name={"AreaEditor"} />),
   [ToolbarModes.TreeEditor]: (<NotImplementedPanel name={"TreeEditor"} />),
@@ -55,7 +51,7 @@ function LocationViewerPage() {
   return (
     <>
       <VStack>
-        <Wrapper >
+        <Wrapper>
           <HStack>
             <Toolbar
               upperElements={[
@@ -94,8 +90,8 @@ function LocationViewerPage() {
                 </div>
               ))
             }
-
             <LocationViewport />
+
             <ControlsView enabledContent={
               <p>testing controls</p>
             } />

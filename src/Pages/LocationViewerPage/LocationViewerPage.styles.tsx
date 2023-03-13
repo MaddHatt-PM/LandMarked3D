@@ -43,7 +43,7 @@ export const HStack = styled.div`
   width: 100%;
   height: 100%;
 
-  & > :last-child {
+  &:last-child {
     flex: 1;
   }
 `;

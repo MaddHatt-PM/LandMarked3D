@@ -5,6 +5,7 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   color: white;
+  overflow: hidden;
 `;
 
 interface GridLinesProps {
@@ -37,11 +38,6 @@ export const EventCatcher = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  /* cursor: move; */
-
-  &:active {
-    cursor: grabbing;
-  }
 `;
 
 interface TransformableDivProps {
@@ -50,26 +46,24 @@ interface TransformableDivProps {
   translateY: number;
 }
 
-
 export const TransformableDiv = styled.div.attrs<TransformableDivProps>(({ translateX, translateY, zoom }) => ({
   style: {
     transform: `translate(${translateX || '0'}px, ${translateY || '0'}px) scale(${zoom || '1'})`,
   },
 })) <TransformableDivProps>`
-  cursor: move;
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: -1;
   user-select: none;
+  pointer-events: none;
   background-color: transparent;
 `;
 
 export const Image = styled.img`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 100%;
-  max-height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  flex-shrink: 0;
+  flex-grow: 0;
 `

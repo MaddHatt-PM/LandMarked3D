@@ -14,17 +14,20 @@ export const Container = styled.button`
 
   border: 1px solid #00000044;
   border-radius: 4px;
-  background-color: #292525;
+  backdrop-filter: blur(4px) brightness(30%);
+  background-color: #292525cd;
   
   transition: border 0.3s ease;
   cursor: pointer;
 
   &:hover {
     border: 1px solid #0f0d11df;
-    &:not(.enabled) {
       background-color: #252222;
     }
-  }
+
+    &:not(.enabled) {
+      background-color: #29252584;
+    }
 `;
 
 export const Icon = styled.div`
