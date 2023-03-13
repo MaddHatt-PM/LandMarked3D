@@ -25,7 +25,7 @@ const ControlsView = (props: ControlsViewProps) => {
         ? <EnabledContentWrapper className={enabled ? "enabled" : ""}>
           {props.enabledContent}
         </EnabledContentWrapper>
-        : <QuestionMarkSVG color="#ffffff44" height={16} />
+        : <QuestionMarkSVG color="#ffffff80" height={14} />
       }
       
 
