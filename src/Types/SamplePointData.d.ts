@@ -1,6 +1,6 @@
 export interface SamplePointData {
-  id: number,
-  x: number,
-  y: number,
-  elevation: number,
+  id: number;
+  x: number;
+  y: number;
+  elevation: number;
 }
