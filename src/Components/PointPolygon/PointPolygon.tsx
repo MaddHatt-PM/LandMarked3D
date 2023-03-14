@@ -53,6 +53,7 @@ const PointPolygon = (props: PointPolygonProps) => {
   const handleMouseDown = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
     if (activePointID === null) {
       setActivePoint(index);
+      console.log(index)
     }
   }
 
@@ -107,10 +108,9 @@ const PointPolygon = (props: PointPolygonProps) => {
             cx={p.x}
             cy={p.y}
             r={radius / props.zoom * (activePointID === index ? 40 : 1.0)}
-            // fill={d3.color(props.data.color)?.darker(0.8).formatHex() ?? "black"}
             fill={"transparent"}
             cursor={"pointer"}
-            style={{ pointerEvents: props.isAlreadyDragging && activePointID !== index ? "none" : "all", animation: "all 0.3s linear" }}
+            style={{ pointerEvents: props.isAlreadyDragging && activePointID !== index ? "none" : "all"}}
             onMouseMove={(event) => handleMouseMove(index, event)}
             onMouseDown={(event) => handleMouseDown(index, event)}
             onMouseUp={(event) => handleMouseUp(index, event)}
@@ -131,7 +131,7 @@ const PointPolygon = (props: PointPolygonProps) => {
             style={{ pointerEvents: "none" }}
           />
         ))}
-        {activePointID &&
+        {activePointID !== null &&
           <circle
             ref={placementRef}
             cx={points[activePointID].x}
@@ -141,7 +141,6 @@ const PointPolygon = (props: PointPolygonProps) => {
             style={{
               transform: `translate(${deltaChange.x} ${deltaChange.y})`
             }}
-          // style={}
           />
         }
       </svg>
