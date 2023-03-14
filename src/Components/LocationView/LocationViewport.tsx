@@ -23,9 +23,10 @@ const LocationViewport = () => {
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isDragging) {
       event.preventDefault();
+      const aspectRatio = window.innerWidth / window.innerHeight / 2;
       const {clientX, clientY} = event;
-      const dX = (clientX - prevPosition.x);
-      const dY = (clientY - prevPosition.y);
+      const dX = (clientX - prevPosition.x) / aspectRatio;
+      const dY = (clientY - prevPosition.y) / aspectRatio;
       setPrevPosition({ x: event.clientX, y: event.clientY });
       setTranslateX(prevX => prevX + dX);
       setTranslateY(prevY => prevY + dY);
@@ -35,10 +36,6 @@ const LocationViewport = () => {
   const handleMouseUp = () => {
     setIsDragging(false);
   };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  }
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     const newZoom = Math.max(0.1, Math.min(5, zoom + (event.deltaY > 0 ? -0.1 : 0.1)));
@@ -70,7 +67,7 @@ const LocationViewport = () => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+        onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
       />
       <GridLines
