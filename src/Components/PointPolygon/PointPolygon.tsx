@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import { Container } from "./PointPolygon.styles";
 import * as d3 from 'd3';
-import { zoom } from "d3";
+import { active, zoom } from "d3";
 import { SamplePointData } from "../../Types/SamplePointData";
 
 interface PointPolygonProps {
@@ -15,7 +15,9 @@ interface PointPolygonProps {
 const PointPolygon = (props: PointPolygonProps) => {
   const [points, setPoints] = useState(props.data.points);
   const [activePointID, setActivePoint] = useState<number | null>(null);
+  const [deltaChange, setDeltaChange] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const placementRef = useRef<SVGCircleElement | null>(null);
 
 
   useEffect(() => {
@@ -40,7 +42,13 @@ const PointPolygon = (props: PointPolygonProps) => {
     };
   }, [points, props.data.color, props.zoom]);
 
-
+  const handleOnClick = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
+    if (activePointID === null) {
+      handleMouseDown(index, event);
+    } else {
+      handleMouseUp(index, event);
+    }
+  }
 
   const handleMouseDown = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
     if (activePointID === null) {
@@ -48,7 +56,7 @@ const PointPolygon = (props: PointPolygonProps) => {
     }
   }
 
-  
+
   const handleMouseMove = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
     if (activePointID === index) {
       const rect = event.currentTarget.getBoundingClientRect();
@@ -58,23 +66,32 @@ const PointPolygon = (props: PointPolygonProps) => {
       const svgCenterX = rect.width / 2;
       const svgCenterY = rect.height / 2;
 
-      const deltaX = mouseX - svgCenterX;
-      const deltaY = mouseY - svgCenterY;
+      const dX = mouseX - svgCenterX;
+      const dY = mouseY - svgCenterY;
 
-      const newPoints = [...points];
-      newPoints[index].x = newPoints[activePointID].x + deltaX / props.zoom;
-      newPoints[index].y = newPoints[activePointID].y + deltaY / props.zoom;
-
-      setPoints(newPoints);
+      const newDelta = deltaChange;
+      newDelta.x += dX / props.zoom;
+      newDelta.y += dY / props.zoom;
+      // console.log(event.currentTarget)
+      event.currentTarget.setAttribute("transform", `translate(${newDelta.x} ${newDelta.y})`);
+      placementRef.current?.setAttribute("transform", `translate(${newDelta.x} ${newDelta.y})`);
+      setDeltaChange(newDelta);
     }
   }
 
   const handleMouseUp = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
-    console.log("??????")
-    setActivePoint(null);
+    if (activePointID === index) {
+      const newPoints = [...points];
+      newPoints[index].x += deltaChange.x;
+      newPoints[index].y += deltaChange.y;
+      setPoints(newPoints);
+      setActivePoint(null);
+      setDeltaChange({ x: 0, y: 0 })
+      event.currentTarget.setAttribute("transform", `translate(${0} ${0})`);
+    }
   }
 
-  const radius = 8;
+  const radius = 6;
 
   return (
     <>
@@ -89,11 +106,13 @@ const PointPolygon = (props: PointPolygonProps) => {
             key={index}
             cx={p.x}
             cy={p.y}
-            r={radius / props.zoom * (activePointID === index ? 10 : 1.0)}
-            fill="#cb1d1d23"
-            style={{ pointerEvents: props.isAlreadyDragging && activePointID !== index ? "none" : "all" }}
-            onMouseDown={(event) => handleMouseDown(index, event)}
+            r={radius / props.zoom * (activePointID === index ? 40 : 1.0)}
+            // fill={d3.color(props.data.color)?.darker(0.8).formatHex() ?? "black"}
+            fill={"transparent"}
+            cursor={"pointer"}
+            style={{ pointerEvents: props.isAlreadyDragging && activePointID !== index ? "none" : "all", animation: "all 0.3s linear" }}
             onMouseMove={(event) => handleMouseMove(index, event)}
+            onMouseDown={(event) => handleMouseDown(index, event)}
             onMouseUp={(event) => handleMouseUp(index, event)}
             onMouseLeave={(event) => handleMouseUp(index, event)}
           />
@@ -103,13 +122,28 @@ const PointPolygon = (props: PointPolygonProps) => {
             key={index + " visual"}
             cx={p.x}
             cy={p.y}
-            r={radius / props.zoom * (activePointID === index ? 1.125 : 1.0)}
-            fill="#FFFFFF"
-            stroke="#000000"
-            strokeWidth={1}
+            r={radius / props.zoom * (activePointID === index ? 1.0 : 1.0)}
+            stroke={props.data.color}
+            fill={activePointID === index
+              ? props.data.color
+              : d3.color(props.data.color)?.darker(1.0).formatHex() ?? "black"}
+            strokeWidth={4 / props.zoom}
             style={{ pointerEvents: "none" }}
           />
         ))}
+        {activePointID &&
+          <circle
+            ref={placementRef}
+            cx={points[activePointID].x}
+            cy={points[activePointID].y}
+            r={radius}
+            fill={d3.color(props.data.color)?.darker(0.8).formatHex() ?? "black"}
+            style={{
+              transform: `translate(${deltaChange.x} ${deltaChange.y})`
+            }}
+          // style={}
+          />
+        }
       </svg>
     </>
   );
