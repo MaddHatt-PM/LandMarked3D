@@ -15,6 +15,12 @@ export const Container = styled.div`
   border-bottom: 1px solid black;
 `;
 
+export const WindowsName = styled.span`
+  color: var(--title-text-color);
+  position: relative;
+  font-size: small;
+`;
+
 interface WinPinProps {
   isPinned?: boolean;
 }

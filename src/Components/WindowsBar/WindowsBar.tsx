@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AppName, Container, Logo, WinButton, WinPin, WinClose } from "./WindowsBar.styles";
+import { AppName, Container, Logo, WinButton, WinPin, WinClose, WindowsName } from "./WindowsBar.styles";
 
 // -- Assets --
 import LogoImg from "./window-logo.png"
@@ -19,6 +19,7 @@ import toMainEvents from "../../Events/ipc-to-main-events";
  * @returns A JSX component.
  */
 const WindowsBar = () => {
+  const [windowName, setWindowName] = useState("");
   const [isPinned, setPinned] = useState(false);
   const [isOnline, setOnline] = useState(true);
 
@@ -29,6 +30,7 @@ const WindowsBar = () => {
 
   useEffect(() => {
     setOnline(navigator.onLine);
+    setWindowName("Testing Area"); // TODO: Add event to get the project name
     window.addEventListener("online", (event) => { setOnline(true) });
     window.addEventListener("offline", (event) => { setOnline(false) });
   }, [])
@@ -38,6 +40,12 @@ const WindowsBar = () => {
       <span id="left-aligned">
         <Logo src={LogoImg} isOnline={isOnline} />
         <AppName>{isOnline ? "Terrain Viewer" : "Terrain Viewer - Offline"}</AppName>
+      </span>
+
+      <span id="middle-aligned" >
+        <WindowsName>
+          {windowName}
+        </WindowsName>
       </span>
 
       <span id="right-aligned">
