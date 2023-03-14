@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { SamplePointData } from "../../Types/SamplePointData";
+import PointPolygon from "../PointPolygon/PointPolygon";
 import SamplePointView from "../SamplePointView/SamplePointView";
 import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./LocationViewport.styles";
+import { PointPolygonData } from "../../Types/PointPolygonData"
 
 const LocationViewport = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [prevPosition, setPrevPosition] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
@@ -14,16 +16,17 @@ const LocationViewport = () => {
     if (event.button === 0 || (event.ctrlKey && event.button === 0)) {
       event.preventDefault();
       setIsDragging(true);
-      setPosition({ x: event.clientX, y: event.clientY });
+      setPrevPosition({ x: event.clientX, y: event.clientY });
     }
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isDragging) {
       event.preventDefault();
-      const dX = (event.clientX - position.x);
-      const dY = (event.clientY - position.y);
-      setPosition({ x: event.clientX, y: event.clientY });
+      const {clientX, clientY} = event;
+      const dX = (clientX - prevPosition.x);
+      const dY = (clientY - prevPosition.y);
+      setPrevPosition({ x: event.clientX, y: event.clientY });
       setTranslateX(prevX => prevX + dX);
       setTranslateY(prevY => prevY + dY);
     }
@@ -43,11 +46,23 @@ const LocationViewport = () => {
   };
 
   const testSamplePointData: SamplePointData[] = [
-    { id: 0, x: 5, y: 35, elevation: 10 },
-    { id: 1, x: 15, y: 25, elevation: 20 },
-    { id: 2, x: 25, y: 15, elevation: 30 },
-    { id: 3, x: 35, y: 5, elevation: 40 },
+    { id: 0, x: 0, y: 0, elevation: 10 },
+    { id: 1, x: 5, y: 35, elevation: 10 },
+    { id: 2, x: 15, y: 25, elevation: 20 },
+    { id: 3, x: 25, y: 15, elevation: 30 },
+    { id: 4, x: 35, y: 5, elevation: 40 },
   ]
+
+  const testPolygonData: PointPolygonData = {
+    color: "#39dfe2",
+    points: [
+      { id: 0, x: 100, y: 100, elevation: 0 },
+      { id: 0, x: 300, y: 100, elevation: 0 },
+      { id: 0, x: 300, y: 300, elevation: 0 },
+      { id: 0, x: 100, y: 300, elevation: 0 },
+    ]
+  }
+
 
   return (
     <Container>
@@ -75,10 +90,18 @@ const LocationViewport = () => {
         <Image src="https://4.bp.blogspot.com/-xstBGhuD2gk/UA-73uP0isI/AAAAAAAAKGE/oq3-yqXs9rs/s1600/jotunheimen_contours.png" />
 
         {/* SVG Items go */}
-        <SamplePointView 
-        data={testSamplePointData} 
-        zoom={zoom}
+        <SamplePointView
+          data={testSamplePointData}
+          zoom={zoom}
         />
+
+        <PointPolygon
+          data={testPolygonData}
+          position={{x: translateX, y:translateY}}
+          zoom={zoom}
+          isAlreadyDragging={isDragging}
+        />
+
 
       </TransformableDiv>
 
