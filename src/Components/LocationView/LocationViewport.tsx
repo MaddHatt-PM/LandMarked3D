@@ -12,6 +12,35 @@ const LocationViewport = () => {
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
 
+  const [pointPolygons, setAllPointPolygons] = useState<PointPolygonData[] | null>([
+    {
+      color: "#39dfe2",
+      points: [
+        { id: 0, x: 100, y: 100, elevation: 0 },
+        { id: 0, x: 300, y: 100, elevation: 0 },
+        { id: 0, x: 300, y: 300, elevation: 0 },
+        { id: 0, x: 100, y: 300, elevation: 0 },
+      ]
+    },
+    {
+      color: "#e029cb",
+      points: [
+        { id: 0, x: 500, y: 500, elevation: 0 },
+        { id: 0, x: 850, y: 500, elevation: 0 },
+        { id: 0, x: 850, y: 850, elevation: 0 },
+        { id: 0, x: 500, y: 850, elevation: 0 },
+      ]
+    },
+  ])
+
+  const setPointPolygon = (id: number, pointPolygon: PointPolygonData) => {
+    if (pointPolygons !== null) {
+      const newPointPolygonData = [...pointPolygons];
+      newPointPolygonData[id] = pointPolygon;
+      setAllPointPolygons(newPointPolygonData);
+    }
+  }
+
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.button === 0 || (event.ctrlKey && event.button === 0)) {
       event.preventDefault();
@@ -24,7 +53,7 @@ const LocationViewport = () => {
     if (isDragging) {
       event.preventDefault();
       const aspectRatio = window.innerWidth / window.innerHeight / 2;
-      const {clientX, clientY} = event;
+      const { clientX, clientY } = event;
       const dX = (clientX - prevPosition.x) / aspectRatio;
       const dY = (clientY - prevPosition.y) / aspectRatio;
       setPrevPosition({ x: event.clientX, y: event.clientY });
@@ -49,17 +78,6 @@ const LocationViewport = () => {
     { id: 3, x: 25, y: 15, elevation: 30 },
     { id: 4, x: 35, y: 5, elevation: 40 },
   ]
-
-  const testPolygonData: PointPolygonData = {
-    color: "#39dfe2",
-    points: [
-      { id: 0, x: 100, y: 100, elevation: 0 },
-      { id: 0, x: 300, y: 100, elevation: 0 },
-      { id: 0, x: 300, y: 300, elevation: 0 },
-      { id: 0, x: 100, y: 300, elevation: 0 },
-    ]
-  }
-
 
   return (
     <Container>
@@ -92,14 +110,21 @@ const LocationViewport = () => {
           zoom={zoom}
         />
 
-        <PointPolygon
-          data={testPolygonData}
-          position={{x: translateX, y:translateY}}
-          zoom={zoom}
-          isAlreadyDragging={isDragging}
-        />
-
-
+        {
+          pointPolygons?.map((polygon, id) => {
+            return (
+              <PointPolygon
+                key={id}
+                data={polygon}
+                position={{ x: translateX, y: translateY }}
+                zoom={zoom}
+                isAlreadyDragging={isDragging}
+                id={id}
+                setPointPolygon={setPointPolygon}
+              />
+            )
+          })
+        }
       </TransformableDiv>
 
 

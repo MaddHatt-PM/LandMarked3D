@@ -8,36 +8,24 @@ interface PointPolygonProps {
   position: { x: number, y: number };
   zoom: number;
   isAlreadyDragging: boolean;
+
+
+  id: number;
+  setPointPolygon: (id: number, pointPolygon: PointPolygonData) => void;
 }
 
 const PointPolygon = (props: PointPolygonProps) => {
-  const [radius, setRadius] = useState(6);
-  const [points, setPoints] = useState(props.data.points);
+  // const [props.data.points, setPoints] = useState(props.data.points);
+
   const [activePointID, setActivePoint] = useState<number | null>(null);
   const [deltaChange, setDeltaChange] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
   const [deltaPoints, setDeltaPoints] = useState<SamplePointData[] | null>(null)
 
-  const svgRef = useRef<SVGSVGElement | null>(null);
+  const [vertexRadius, setVertexRadius] = useState(6);
+  const [strokeWidth, setStrokeWidth] = useState(4);
+  const [lastLineAsSolid, setLastLineAsSolid] = useState(false);
+
   const placementPointRef = useRef<SVGCircleElement | null>(null);
-  const deltaPolygonRef = useRef<SVGPolygonElement | null>(null);
-
-
-  useEffect(() => {
-    const svg = d3.select(svgRef.current);
-    const polygon = svg
-      .insert('polygon', ":nth-child(2)")
-      .attr('stroke', d3.color(props.data.color)?.brighter(0.5).formatHex() ?? "white")
-      .attr('stroke-width', 4 / props.zoom)
-      .attr('stroke-linejoin', 'round')
-      .attr('stroke-linecap', 'round')
-      .attr('fill', props.data.color)
-      .attr('fill-opacity', 0.25)
-      .attr('points', points.map((p) => `${p.x},${p.y}`).join(' '));
-
-    return () => {
-      polygon.remove();
-    };
-  }, [points, props.data.color, props.zoom]);
 
   const handleMouseDown = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
     if (activePointID === null) {
@@ -66,25 +54,30 @@ const PointPolygon = (props: PointPolygonProps) => {
       setDeltaChange(newDelta);
 
 
-      const lastIndex = points.length - 1;
+      const lastIndex = props.data.points.length - 1;
       const prevIndex = (activePointID === 0) ? lastIndex : activePointID - 1;
       const nextIndex = (activePointID === lastIndex) ? 0 : activePointID + 1;
 
-      const activePoint = { ...points[activePointID] };
+      const activePoint = { ...props.data.points[activePointID] };
       activePoint.x += newDelta.x;
       activePoint.y += newDelta.y;
 
-      setDeltaPoints([points[prevIndex], activePoint, points[nextIndex]]);
+      setDeltaPoints([props.data.points[prevIndex], activePoint, props.data.points[nextIndex]]);
     }
   }
 
   const handleMouseUp = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
     if (activePointID === index) {
-      const newPoints = [...points];
+      const newPoints = [...props.data.points];
       newPoints[index].x += deltaChange.x;
       newPoints[index].y += deltaChange.y;
 
-      setPoints(newPoints);
+      const updatedPolygon = {
+        ...props.data,
+        points: newPoints,
+      }
+      
+      props.setPointPolygon(props.id, updatedPolygon)
       setActivePoint(null);
       setDeltaChange({ x: 0, y: 0 })
       event.currentTarget.setAttribute("transform", `translate(${0} ${0})`);
@@ -96,28 +89,59 @@ const PointPolygon = (props: PointPolygonProps) => {
       <svg
         width="100%"
         height="100%"
-        ref={svgRef}
         style={{ position: "absolute", overflow: "visible", top: "0", left: "0", pointerEvents: "none" }}
       >
+        {/* Polygon lines for dragged lines */}
         <polyline
-          ref={deltaPolygonRef}
           stroke={d3.color(props.data.color)?.darker(0.5).formatHex() ?? "white"}
-          strokeWidth={4 / props.zoom}
+          strokeWidth={strokeWidth / props.zoom}
           strokeLinejoin="round"
           strokeLinecap="round"
           fillOpacity={0.0}
           points={deltaPoints?.map((p) => `${p.x},${p.y}`).join(' ') ?? "0,0 0,0 0,0"}
-          strokeDasharray="10,10"
+          strokeDasharray={`${strokeWidth},${strokeWidth * 2}`}
           strokeDashoffset={100}
+          strokeOpacity={activePointID ? 1 : 0}
           style={{ pointerEvents: "none", animation: "dash 2000s linear forwards" }}
         />
 
-        {points.map((p, index) => (
+        {/* Polygon fill */}
+        <polygon
+          fill={props.data.color}
+          fillOpacity={0.25}
+          points={props.data.points.map((p) => `${p.x},${p.y}`).join(' ')}
+        />
+
+        {/* Polygon stroke */}
+        <polyline
+          stroke={d3.color(props.data.color)?.brighter(0.5).formatHex() ?? "white"}
+          strokeWidth={strokeWidth / props.zoom}
+          strokeLinejoin='round'
+          strokeLinecap='round'
+          fill="transparent"
+          points={props.data.points.map((p) => `${p.x},${p.y}`).join(' ')}
+        />
+
+        {/* Polygon stroke to last and first vertex */}
+        {props.data.points.length > 2 &&
+          <polyline
+            stroke={d3.color(props.data.color)?.brighter(0.5).formatHex() ?? "white"}
+            strokeWidth={strokeWidth / props.zoom}
+            strokeLinejoin='round'
+            strokeLinecap='round'
+            fill="transparent"
+            strokeDasharray={lastLineAsSolid ? '' : `${strokeWidth},${strokeWidth * 2}`}
+            points={`${props.data.points[props.data.points.length - 1].x},${props.data.points[props.data.points.length - 1].y} ${props.data.points[0].x},${props.data.points[0].y}`}
+          />
+        }
+
+        {/* Event catcher for point interaction */}
+        {props.data.points.map((p, index) => (
           <circle
             key={index}
             cx={p.x}
             cy={p.y}
-            r={radius / props.zoom * (activePointID === index ? 40 : 1.0)}
+            r={vertexRadius / props.zoom * (activePointID === index ? 40 : 1.0)}
             fill={"transparent"}
             cursor={"pointer"}
             style={{ pointerEvents: props.isAlreadyDragging && activePointID !== index ? "none" : "all" }}
@@ -128,12 +152,13 @@ const PointPolygon = (props: PointPolygonProps) => {
           />
         ))}
 
-        {points.map((p, index) => (
+        {/* Point Vertices */}
+        {props.data.points.map((p, index) => (
           <circle
             key={index + " visual"}
             cx={p.x}
             cy={p.y}
-            r={radius / props.zoom * (activePointID === index ? 1.0 : 1.0)}
+            r={vertexRadius / props.zoom * (activePointID === index ? 1.0 : 1.0)}
             stroke={props.data.color}
             fill={activePointID === index
               ? props.data.color
@@ -142,12 +167,14 @@ const PointPolygon = (props: PointPolygonProps) => {
             style={{ pointerEvents: "none" }}
           />
         ))}
+
+        {/* Visual for dragging the active Point Vertex */}
         {activePointID !== null &&
           <circle
             ref={placementPointRef}
-            cx={points[activePointID].x}
-            cy={points[activePointID].y}
-            r={radius}
+          cx={props.data.points[activePointID].x}
+          cy={props.data.points[activePointID].y}
+          r={vertexRadius}
             fill={d3.color(props.data.color)?.darker(0.8).formatHex() ?? "black"}
             style={{
               transform: `translate(${deltaChange.x} ${deltaChange.y})`
