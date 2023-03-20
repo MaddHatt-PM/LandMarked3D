@@ -15,10 +15,10 @@ const UITestPanel = () => {
   return (
     <Panel children={(
       <>
-        <Dropdown
+        {/* <Dropdown
           options={["Example01", "Example02", "Example03"]}
           defaultOption={"Example01"}
-          onSelect={(o) => { console.log(o) }} />
+          onSelect={(o) => { console.log(o) }} /> */}
 
         <H1>H1 Title</H1>
         <H2>H2 Subtitle</H2>

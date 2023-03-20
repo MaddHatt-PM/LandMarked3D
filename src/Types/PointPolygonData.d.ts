@@ -1,6 +1,7 @@
 import { SamplePointData } from "./SamplePointData";
 
-export interface PointPolygonData {
+declare interface PointPolygonData {
+  name: string;
   points: SamplePointData[];
   color: string;
 }

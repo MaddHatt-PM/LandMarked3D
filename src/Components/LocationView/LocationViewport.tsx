@@ -5,41 +5,21 @@ import SamplePointView from "../SamplePointView/SamplePointView";
 import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./LocationViewport.styles";
 import { PointPolygonData } from "../../Types/PointPolygonData"
 
-const LocationViewport = () => {
+interface LocationViewportProps {
+  renderData: ViewportRenderData;
+  activePointPolygonID: number
+  pointPolygons: PointPolygonData[]
+  setPointPolygon: (id: number, data: PointPolygonData) => void;
+  // setRenderData: (data: ViewportRenderData) => void;
+}
+
+
+const LocationViewport = (props: LocationViewportProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [prevPosition, setPrevPosition] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
-
-  const [pointPolygons, setAllPointPolygons] = useState<PointPolygonData[] | null>([
-    {
-      color: "#39dfe2",
-      points: [
-        { id: 0, x: 100, y: 100, elevation: 0 },
-        { id: 0, x: 300, y: 100, elevation: 0 },
-        { id: 0, x: 300, y: 300, elevation: 0 },
-        { id: 0, x: 100, y: 300, elevation: 0 },
-      ]
-    },
-    {
-      color: "#e029cb",
-      points: [
-        { id: 0, x: 500, y: 500, elevation: 0 },
-        { id: 0, x: 850, y: 500, elevation: 0 },
-        { id: 0, x: 850, y: 850, elevation: 0 },
-        { id: 0, x: 500, y: 850, elevation: 0 },
-      ]
-    },
-  ])
-
-  const setPointPolygon = (id: number, pointPolygon: PointPolygonData) => {
-    if (pointPolygons !== null) {
-      const newPointPolygonData = [...pointPolygons];
-      newPointPolygonData[id] = pointPolygon;
-      setAllPointPolygons(newPointPolygonData);
-    }
-  }
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.button === 0 || (event.ctrlKey && event.button === 0)) {
@@ -100,18 +80,18 @@ const LocationViewport = () => {
         translateY={translateY}
       >
 
-        {/* Items go here */}
+        {/* Images go here */}
         <Image src={"https://www.maptiler.com/img/maps/satellite/slider-2/slider-5.webp"} />
         <Image src="https://4.bp.blogspot.com/-xstBGhuD2gk/UA-73uP0isI/AAAAAAAAKGE/oq3-yqXs9rs/s1600/jotunheimen_contours.png" />
 
-        {/* SVG Items go */}
+        {/* SVG Elements */}
         <SamplePointView
           data={testSamplePointData}
           zoom={zoom}
         />
 
         {
-          pointPolygons?.map((polygon, id) => {
+          props.pointPolygons?.map((polygon, id) => {
             return (
               <PointPolygon
                 key={id}
@@ -119,8 +99,10 @@ const LocationViewport = () => {
                 position={{ x: translateX, y: translateY }}
                 zoom={zoom}
                 isAlreadyDragging={isDragging}
+                renderData={props.renderData}
                 id={id}
-                setPointPolygon={setPointPolygon}
+                isActive={id === props.activePointPolygonID}
+                setPointPolygon={props.setPointPolygon}
               />
             )
           })

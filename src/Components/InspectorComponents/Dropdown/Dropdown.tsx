@@ -1,33 +1,65 @@
-import React, {useState} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronIcon, Container, DropdownButton, DropdownList, DropdownListItem } from "./Dropdown.styles";
 
-interface DropdownProps {
-  options: string[];
-  defaultOption?: string;
-  onSelect:(selectedOption: string) => void;
+interface SideButtonProps {
+  icon: React.ReactNode;
+  text: React.ReactNode;
+  callback: () => void;
 }
 
-const Dropdown = (props:DropdownProps) => {
-  const [selected, setSelected] = useState(props.defaultOption);
-  const [isOpen, setIsOpen] = useState(false);
+interface DropdownProps {
+  options: any[];
+  selectedID: number | null;
+  optionToName: (item: any) => any;
+  onSelect: (id: number) => void;
+  leadingButtons?: SideButtonProps[];
+  trailingButtons?: SideButtonProps[];
+}
 
-  const handleOptionClick = (option: string) => {
-    setSelected(option);
+const Dropdown = (props: DropdownProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selfRef = useRef<HTMLDivElement>(null);
+
+  const handleOptionClick = (id: number) => {
     setIsOpen(false);
-    props.onSelect(option);
+    props.onSelect(id);
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selfRef.current && !selfRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selfRef]);
+
+  const getSelectedName = () => {
+    const id = props.selectedID;
+    if (id !== null && 0 <= id && id < props.options.length) {
+      const selected = props.options[id];
+      return props.optionToName(selected);
+    }
+
+    return "Select a polygon to edit"
   }
 
   return (
-    <Container>
-      <DropdownButton className={isOpen ? "is-open" : ""} onClick={()=> {setIsOpen(!isOpen)}}>
-        {selected}
+    <Container ref={selfRef}>
+      <DropdownButton
+        className={isOpen ? "is-open" : ""} onClick={() => { setIsOpen(!isOpen) }}>
+        {getSelectedName()}
         <ChevronIcon className={isOpen ? "is-open" : ""} />
       </DropdownButton>
       {isOpen && (
         <DropdownList>
-          {props.options.map((option) => (
-            <DropdownListItem key={option} onClick={() => handleOptionClick(option)}>
-              {option}
+          {props.options.map((option, id) => (
+            <DropdownListItem key={id} onClick={() => handleOptionClick(id)}>
+              {props.optionToName ? props.optionToName(option) : option}
             </DropdownListItem>
           ))}
         </DropdownList>

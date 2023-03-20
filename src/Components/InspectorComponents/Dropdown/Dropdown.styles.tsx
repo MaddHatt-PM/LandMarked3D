@@ -6,9 +6,16 @@ export const Container = styled.div`
   margin: 6px 0;
 `;
 
+interface ButtonTextProps {
+  isPlaceholderEnabled: boolean;
+}
+
+export const DropdownButtonText = styled.span<ButtonTextProps>`
+  opacity: ${(props) => (props.isPlaceholderEnabled ? 0.5 : 1.0)};
+`;
+
 export const DropdownButton = styled.button`
   border: 1px solid black;
-  /* border; */
   min-width: 100%;
   color: white;
   text-align: left;
@@ -27,9 +34,9 @@ export const DropdownButton = styled.button`
     border-bottom: none;
     background-color: #302b2b;
     
-    &:hover {
-      background-color: #3f3939;
-  }
+      &:hover {
+        background-color: #3f3939;
+    }
   }
 `;
 
