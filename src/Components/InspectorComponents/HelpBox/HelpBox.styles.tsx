@@ -16,21 +16,54 @@ export const Wrapper = styled.div`
 export const TitleWrapper = styled.div`
   justify-content: space-between;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   flex-direction: row;
   gap: 8px;
   font-size: small;
-  margin: 0;
+  margin: 2px 0 -4px 0;
 `;
 
 
 export const Title = styled.span`
   color: #ffffffdf;
-  margin-bottom: 4px;
+  margin-top: 0px;
+  margin-bottom: 8px;
 `;
 
 export const Text = styled.p`
   font-size: small;
-  color: #ffffff64;
+  color: #ffffff6b;
   margin: 0;
+`;
+
+export const CopyButton = styled.button`
+  height: 24px;
+  width: 24px;
+  margin: -4px -2px;
+  padding: 2px;
+  background-color: transparent;
+  pointer-events: all;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  opacity: 0.4;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: #0000006b;
+    border: 1px solid black;
+    opacity: 1.0;
+  }
+  /* position: absolute; */
+`;
+
+export const Divider = styled.div`
+  width: calc(100% + 16px);
+  height: 1px;
+  border: none;
+  border-bottom: 1px solid #000000;
+  margin: 4px -8px;
 `;

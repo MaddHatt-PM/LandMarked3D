@@ -27,6 +27,10 @@ export const DropdownButton = styled.button`
   &:hover {
     background-color: #302b2b;
   }
+  
+  &:active {
+    background-color: #3f3939;
+  }
 
   border-radius: 4px;
   &.is-open {

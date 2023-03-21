@@ -9,6 +9,8 @@ import { ReactComponent as cloudDownloadSVG } from "../Assets/toolbar-cloud-down
 import { ReactComponent as treeSVG } from "../Assets/toolbar-tree.svg"
 
 import { ReactComponent as questionMarkSVG } from "../Assets/icon-question.svg"
+import { ReactComponent as copySVG } from "../Assets/icon-copy.svg"
+import { ReactComponent as checkmarkCircleSVG } from "../Assets/icon-checkmark-circle.svg"
 
 interface svgDetails {
   height?: number;
@@ -40,5 +42,13 @@ export const CloudDownloadSVG = styled(cloudDownloadSVG) <svgDetails>`
   `;
 
 export const QuestionMarkSVG = styled(questionMarkSVG)<svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const CopySVG = styled(copySVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const CheckmarkCircleSVG = styled(checkmarkCircleSVG) <svgDetails>`
   ${(props) => svgProps(props)}
 `;
