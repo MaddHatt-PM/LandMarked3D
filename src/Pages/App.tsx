@@ -5,8 +5,19 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import StartupPage from "./StartupPage/StartupPage";
 import LocationViewerPage from "./LocationViewerPage/LocationViewerPage";
 import LocationSearchPage from "./LocationSearchPage/LocationSearchPage";
+import React, {ReactNode, useState} from "react";
 
 function App() {
+  const [screenOverlay, setScreenOverlay] = useState<ReactNode | null>(null);
+
+  const onDisplayScreenOverlay = () => {
+
+  }
+
+  const onDismissScreenOverlay = () => {
+    
+  }
+
   return (
     <>
       <GlobalStyle />

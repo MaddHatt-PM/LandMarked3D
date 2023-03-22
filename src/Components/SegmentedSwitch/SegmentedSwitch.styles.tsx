@@ -31,6 +31,6 @@ export const ButtonToggle = styled.button<{ selected: boolean }>`
   }
 
   &:active {
-    background-color: #3f3939;
+    background-color: ${(props) => (props.selected ? '#9706ff' : '#3f3939')} ;
   }
 `;
