@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import * as d3 from 'd3';
 import { SamplePointData } from "../../Types/SamplePointData";
@@ -79,12 +79,12 @@ const PointPolygon = (props: PointPolygonProps) => {
     }
 
     if (event.button === MouseButtons.Right) {
-    removePoint({
-      activePointPolygon:props.data,
-      activePointPolygonID: props.id,
-      indexToRemove: index,
-      setPointPolygon: props.setPointPolygon
-    })
+      removePoint({
+        activePointPolygon: props.data,
+        activePointPolygonID: props.id,
+        indexToRemove: index,
+        setPointPolygon: props.setPointPolygon
+      })
     }
   }
 

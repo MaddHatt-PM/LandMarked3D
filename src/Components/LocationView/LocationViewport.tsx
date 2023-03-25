@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SamplePointData } from "../../Types/SamplePointData";
 import PointPolygon from "../PointPolygon/PointPolygon";
 import SamplePointView from "../SamplePointView/SamplePointView";

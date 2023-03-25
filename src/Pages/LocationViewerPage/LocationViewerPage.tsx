@@ -1,8 +1,6 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import LayerEditor from "../../Components/LayerEditor/LayerEditor";
+import { ReactNode, useState } from "react";
 import LocationViewport from "../../Components/LocationView/LocationViewport";
 import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
-import Panel from "../../Components/Panel/Panel";
 import StatusBar from "../../Components/StatusBar/StatusBar";
 import Toolbar from "../../Components/Toolbar/Toolbar";
 import { HStack, VStack, Wrapper } from "./LocationViewerPage.styles";
@@ -12,7 +10,7 @@ import UITestPanel from "../../Components/UITestPanel/UITestPanel";
 import NotImplementedPanel from "../../Components/NotImplementedPanel/NotImplementedPanel";
 import AreaEditorPanel from "../../Components/PointPolygonInspector/PointPolygonInspector";
 import { PointPolygonData } from "../../Types/PointPolygonData";
-import { ToolModeDetails, ToolModes } from "./ToolModes";
+import { ToolModes } from "./ToolModes";
 
 
 enum InspectorModes {
@@ -28,8 +26,6 @@ enum InspectorModes {
 }
 
 function LocationViewerPage() {
-const locationViewportRef = useRef<ReactNode | null>(null);
-
   const [inspector, setInspector] = useState(InspectorModes.AreaEditor);
   const [showInspector, setShowInspector] = useState(true);
 

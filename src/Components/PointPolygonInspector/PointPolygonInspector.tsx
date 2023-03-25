@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
 import { ToolModeDetails, ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import { getPointPolygonInfo } from "../../Types/PointPolygonData/get-point-polygon-info";
 import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
-import { H1, H3, HDivider } from "../InspectorComponents/Headers/Headers.styles";
+import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
 import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
-import { HStack } from "../InspectorComponents/HStack/HStack";
 import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
 import clearAllPoints from "../../Types/PointPolygonData/ToolInteractions/clear-all-points";
 import Panel from "../Panel/Panel";
-import PointPolygon from "../PointPolygon/PointPolygon";
 import SegmentedSwitch from "../SegmentedSwitch/SegmentedSwitch";
-import { Container, Group, Wrapper } from "./PointPolygonInspector.styles";
+import { Group, Wrapper } from "./PointPolygonInspector.styles";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
 
 interface PointPolygonInspectorProps {
