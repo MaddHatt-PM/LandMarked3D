@@ -20,7 +20,7 @@ export const GridLines = styled.div.attrs<GridLinesProps>(({ translateX, transla
     backgroundPosition: `${translateX}px ${translateY}px`,
     backgroundSize: `${spacing * zoom}px ${spacing * zoom}px`
   }
-}))<GridLinesProps>`
+})) <GridLinesProps>`
   position: absolute;
   background: linear-gradient(to right, #000000 1px, transparent 1px),
               linear-gradient(to bottom, #000000 1px, transparent 1px);
@@ -57,6 +57,7 @@ export const TransformableDiv = styled.div.attrs<TransformableDivProps>(({ trans
   user-select: none;
   pointer-events: none;
   background-color: transparent;
+  transform-origin: top left;
 `;
 
 export const Image = styled.img`
@@ -66,4 +67,7 @@ export const Image = styled.img`
   pointer-events: none;
   flex-shrink: 0;
   flex-grow: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+  
 `

@@ -6,5 +6,6 @@ export const getPointPolygonInfo = (pointPolygon: PointPolygonData) => {
       Perimeter: ${"-"}m
       Area: ${"-"}m²
       Bounding box area: ${"-"}m2
+      Coverage: ${"-"}%
     `
 }

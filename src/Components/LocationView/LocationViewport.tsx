@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SamplePointData } from "../../Types/SamplePointData";
 import PointPolygon from "../PointPolygon/PointPolygon";
 import SamplePointView from "../SamplePointView/SamplePointView";
 import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./LocationViewport.styles";
 import { PointPolygonData } from "../../Types/PointPolygonData"
+import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
+import { clamp } from "../../Utilities/math";
+import appendPoint from "../../Types/PointPolygonData/ToolInteractions/append-point";
+import { MouseButtons } from "../../Utilities/mouse-buttons";
+import removePoint from "../../Types/PointPolygonData/ToolInteractions/remove-last-point";
 
 interface LocationViewportProps {
+  activeToolMode: ToolModes;
+  activePointPolygonID: number;
+
   renderData: ViewportRenderData;
-  activePointPolygonID: number
+
   pointPolygons: PointPolygonData[]
   setPointPolygon: (id: number, data: PointPolygonData) => void;
   // setRenderData: (data: ViewportRenderData) => void;
@@ -22,20 +30,50 @@ const LocationViewport = (props: LocationViewportProps) => {
   const [translateY, setTranslateY] = useState(0);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.button === 0 || (event.ctrlKey && event.button === 0)) {
+    if (event.button === MouseButtons.Middle || (event.ctrlKey && event.button === MouseButtons.Left)) {
       event.preventDefault();
       setIsDragging(true);
       setPrevPosition({ x: event.clientX, y: event.clientY });
+      return;
+    }
+
+    const uiTransformEvent: UITransformEvent = {
+      translateX: translateX,
+      translateY: translateY,
+      zoom: zoom,
+      event: event,
+    }
+
+    if (props.activeToolMode === ToolModes.PointPolygonAppend) {
+      const activePointPolygon = props.pointPolygons[props.activePointPolygonID];
+
+      if (event.button === MouseButtons.Left && props.renderData.displayPointPolygons) {
+        appendPoint({
+          activePointPolygonID: props.activePointPolygonID,
+          activePointPolygon: activePointPolygon,
+          uiTransformEvent: uiTransformEvent,
+          setPointPolygon: props.setPointPolygon
+        })
+      }
+
+      if (event.button === MouseButtons.Right) {
+        console.log("adsa")
+        removePoint({
+          activePointPolygonID: props.activePointPolygonID,
+          activePointPolygon: activePointPolygon,
+          indexToRemove: activePointPolygon.points.length - 1,
+          setPointPolygon: props.setPointPolygon
+        })
+      }
     }
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isDragging) {
       event.preventDefault();
-      const aspectRatio = window.innerWidth / window.innerHeight / 2;
       const { clientX, clientY } = event;
-      const dX = (clientX - prevPosition.x) / aspectRatio;
-      const dY = (clientY - prevPosition.y) / aspectRatio;
+      const dX = clientX - prevPosition.x;
+      const dY = clientY - prevPosition.y;
       setPrevPosition({ x: event.clientX, y: event.clientY });
       setTranslateX(prevX => prevX + dX);
       setTranslateY(prevY => prevY + dY);
@@ -47,8 +85,11 @@ const LocationViewport = (props: LocationViewportProps) => {
   };
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    const newZoom = Math.max(0.1, Math.min(5, zoom + (event.deltaY > 0 ? -0.1 : 0.1)));
+    // const newZoom = Math.max(0.1, Math.min(5, zoom + (event.deltaY > 0 ? -0.1 : 0.1)));
+    const newZoom = clamp(0.1, 5, zoom + (event.deltaY > 0 ? -0.1 : 0.1));
     setZoom(newZoom);
+
+    // TODO: zoom to mouse cursor
   };
 
   const testSamplePointData: SamplePointData[] = [
@@ -78,6 +119,7 @@ const LocationViewport = (props: LocationViewportProps) => {
         zoom={zoom}
         translateX={translateX}
         translateY={translateY}
+        draggable={false}
       >
 
         {/* Images go here */}
@@ -90,7 +132,7 @@ const LocationViewport = (props: LocationViewportProps) => {
           zoom={zoom}
         />
 
-        {
+        { props.renderData.displayPointPolygons &&
           props.pointPolygons?.map((polygon, id) => {
             return (
               <PointPolygon
@@ -108,7 +150,6 @@ const LocationViewport = (props: LocationViewportProps) => {
           })
         }
       </TransformableDiv>
-
 
     </Container>
   );

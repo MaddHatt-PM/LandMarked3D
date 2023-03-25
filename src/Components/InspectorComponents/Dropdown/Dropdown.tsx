@@ -49,9 +49,10 @@ const Dropdown = (props: DropdownProps) => {
   }
 
   return (
-    <Container ref={selfRef}>
+    <Container ref={selfRef} className={isOpen ? "is-open" : ""}>
       <DropdownButton
-        className={isOpen ? "is-open" : ""} onClick={() => { setIsOpen(!isOpen) }}>
+        className={isOpen ? "is-open" : ""}
+        onClick={() => { setIsOpen(!isOpen) }}>
         {getSelectedName()}
         <ChevronIcon className={isOpen ? "is-open" : ""} />
       </DropdownButton>

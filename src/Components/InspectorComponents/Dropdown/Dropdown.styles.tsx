@@ -3,7 +3,11 @@ import styled from "styled-components";
 export const Container = styled.div`
   position: relative;
   min-width: 100%;
-  margin: 6px 0;
+  margin: 0;
+
+  &.is-open {
+    margin-bottom: 1px;
+  }
 `;
 
 interface ButtonTextProps {
@@ -23,6 +27,7 @@ export const DropdownButton = styled.button`
   cursor: pointer;
   font-size: smaller;
   background-color: #282323;
+  margin-bottom: 0px;
 
   &:hover {
     background-color: #302b2b;

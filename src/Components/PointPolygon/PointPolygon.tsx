@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import * as d3 from 'd3';
 import { SamplePointData } from "../../Types/SamplePointData";
+import { MouseButtons } from "../../Utilities/mouse-buttons";
+import removePoint from "../../Types/PointPolygonData/ToolInteractions/remove-last-point";
 
 interface PointPolygonProps {
   data: PointPolygonData;
@@ -22,13 +24,13 @@ const PointPolygon = (props: PointPolygonProps) => {
   const placementPointRef = useRef<SVGCircleElement | null>(null);
 
   const handleMouseDown = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
-    if (activePointID === null) {
+    if (event.button === MouseButtons.Left && activePointID === null) {
       setActivePoint(index);
     }
   }
 
   const handleMouseMove = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
-    if (activePointID === index) {
+    if (event.button === MouseButtons.Left && activePointID === index) {
       const rect = event.currentTarget.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -60,7 +62,7 @@ const PointPolygon = (props: PointPolygonProps) => {
   }
 
   const handleMouseUp = (index: number, event: React.MouseEvent<SVGCircleElement>) => {
-    if (activePointID === index) {
+    if (event.button === MouseButtons.Left && activePointID === index) {
       const newPoints = [...props.data.points];
       newPoints[index].x += deltaChange.x;
       newPoints[index].y += deltaChange.y;
@@ -75,10 +77,15 @@ const PointPolygon = (props: PointPolygonProps) => {
       setDeltaChange({ x: 0, y: 0 })
       event.currentTarget.setAttribute("transform", `translate(${0} ${0})`);
     }
-  }
 
-  const canAcceptPointerEvents = () => {
-    // if (props.is)
+    if (event.button === MouseButtons.Right) {
+    removePoint({
+      activePointPolygon:props.data,
+      activePointPolygonID: props.id,
+      indexToRemove: index,
+      setPointPolygon: props.setPointPolygon
+    })
+    }
   }
 
   return (

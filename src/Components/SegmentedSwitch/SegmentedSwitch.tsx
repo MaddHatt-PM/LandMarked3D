@@ -1,10 +1,11 @@
-import React from "react";
+import React, { ReactNode, useEffect } from "react";
 import { ButtonToggle, Container } from "./SegmentedSwitch.styles";
 
 interface SegmentedSwitchProps {
-  options: string[];
-  selectedOption: string;
-  onSelect: (option: string) => void;
+  options: any[];
+  selectedOption: any;
+  optionToDisplay: (option: any) => ReactNode
+  onSelect: (option: any) => void;
 }
 const SegmentedSwitch = (props: SegmentedSwitchProps) => {
 
@@ -16,7 +17,7 @@ const SegmentedSwitch = (props: SegmentedSwitchProps) => {
           selected={props.selectedOption === option}
           onClick={() => props.onSelect(option)}
         >
-          {option}
+          {props.optionToDisplay(option)}
         </ButtonToggle>
       ))}
     </Container>

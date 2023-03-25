@@ -1,16 +1,15 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  /* position: relative; */
-  background-color: #33363a;
-  width: 38px;
+
   height: 100%;
-  padding: 0 6px;
-  border-left: 1px solid black;
+`;
+
+export const Wrapper = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 10;
 `;
 
 export const Group = styled.div`
@@ -19,5 +18,5 @@ export const Group = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 2px;
-  padding: 6px;
+  padding: 6px 0%;
 `;

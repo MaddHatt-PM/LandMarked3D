@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import LayerEditor from "../../Components/LayerEditor/LayerEditor";
 import LocationViewport from "../../Components/LocationView/LocationViewport";
 import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
@@ -10,11 +10,12 @@ import { AreaSVG, CloudDownloadSVG, ExportSVG, GearSVG, LayersSVG, QuestionMarkS
 import ControlsView from "../../Components/ControlsView/ControlsView";
 import UITestPanel from "../../Components/UITestPanel/UITestPanel";
 import NotImplementedPanel from "../../Components/NotImplementedPanel/NotImplementedPanel";
-import AreaEditorPanel from "../../Components/AreaEditor/AreaEditor";
+import AreaEditorPanel from "../../Components/PointPolygonInspector/PointPolygonInspector";
 import { PointPolygonData } from "../../Types/PointPolygonData";
+import { ToolModeDetails, ToolModes } from "./ToolModes";
 
 
-enum ToolbarModes {
+enum InspectorModes {
   AreaEditor,
   TreeEditor,
   LayerEditor,
@@ -26,11 +27,13 @@ enum ToolbarModes {
   UITest,
 }
 
-
 function LocationViewerPage() {
+const locationViewportRef = useRef<ReactNode | null>(null);
 
-  const [inspector, setInspector] = useState(ToolbarModes.AreaEditor);
+  const [inspector, setInspector] = useState(InspectorModes.AreaEditor);
   const [showInspector, setShowInspector] = useState(true);
+
+  const [activeToolMode, setActiveToolMode] = useState(ToolModes.PointPolygonAppend);
 
   const [activePolygonID, setActiveAreaID] = useState<number | null>(0);
   const [allPointPolygons, setAllPointPolygons] = useState<PointPolygonData[]>([
@@ -71,8 +74,8 @@ function LocationViewerPage() {
 
   const removePointPolygonData = (id: number) => {
     const newActivePolygonID = activePolygonID !== null && activePolygonID - 1 >= 0
-    ? activePolygonID - 1
-    : null;
+      ? activePolygonID - 1
+      : null;
     setActiveAreaID(newActivePolygonID);
     setAllPointPolygons(allPointPolygons.splice(id, 1))
   }
@@ -80,15 +83,19 @@ function LocationViewerPage() {
   const [renderData, setRenderData] = useState<ViewportRenderData>({
     vertexRadius: 6,
     strokeWidth: 4,
-    lastLineAsSolid: false,
+    lastLineAsSolid: true,
+    displayPointPolygons: true,
   })
 
-  const inspectors: Record<ToolbarModes, ReactNode> = {
-    [ToolbarModes.AreaEditor]: (<AreaEditorPanel
+  const inspectors: Record<InspectorModes, ReactNode> = {
+    [InspectorModes.AreaEditor]: (<AreaEditorPanel
       pointPolygons={allPointPolygons}
       addPointPolygonData={addPointPolygonData}
       setPointPolygonData={setPointPolygonData}
       removePointPolygonData={removePointPolygonData}
+
+      activeToolMode={activeToolMode}
+      setActiveToolMode={setActiveToolMode}
 
       renderData={renderData}
       setRenderData={setRenderData}
@@ -96,15 +103,15 @@ function LocationViewerPage() {
       activePointPolygonID={activePolygonID}
       setActivePointPolygonID={setActiveAreaID}
     />),
-    [ToolbarModes.TreeEditor]: (<NotImplementedPanel name={"TreeEditor"} />),
-    [ToolbarModes.LayerEditor]: (<NotImplementedPanel name={"LayerEditor"} />),
-    [ToolbarModes.Download]: (<NotImplementedPanel name={"Download"} />),
-    [ToolbarModes.Export]: (<NotImplementedPanel name={"Export"} />),
-    [ToolbarModes.Settings]: (<NotImplementedPanel name={"Settings"} />),
-    [ToolbarModes.UITest]: (<UITestPanel />)
+    [InspectorModes.TreeEditor]: (<NotImplementedPanel name={"TreeEditor"} />),
+    [InspectorModes.LayerEditor]: (<NotImplementedPanel name={"LayerEditor"} />),
+    [InspectorModes.Download]: (<NotImplementedPanel name={"Download"} />),
+    [InspectorModes.Export]: (<NotImplementedPanel name={"Export"} />),
+    [InspectorModes.Settings]: (<NotImplementedPanel name={"Settings"} />),
+    [InspectorModes.UITest]: (<UITestPanel />)
   }
 
-  const handleToolbarCallback = (newInspector: ToolbarModes) => {
+  const handleToolbarCallback = (newInspector: InspectorModes) => {
     if (inspector === newInspector) {
       setShowInspector(!showInspector);
       return;
@@ -121,8 +128,8 @@ function LocationViewerPage() {
           <HStack>
             <Toolbar
               upperElements={[
-                { text: "Area Editor", icon: (<AreaSVG color="white" width={"20"} />), mode: ToolbarModes.AreaEditor },
-                { text: "Tree Editor", icon: (<TreeSVG color="white" width={"20"} />), mode: ToolbarModes.TreeEditor },
+                { text: "Area Editor", icon: (<AreaSVG color="white" width={"20"} />), mode: InspectorModes.AreaEditor },
+                { text: "Tree Editor", icon: (<TreeSVG color="white" width={"20"} />), mode: InspectorModes.TreeEditor },
               ].map((o, id) => <HoverButton
                 key={id}
                 width={"44px"}
@@ -132,11 +139,11 @@ function LocationViewerPage() {
               />)}
 
               lowerElements={[
-                { text: "DEV: UI Test", icon: (<QuestionMarkSVG color="white" width={"12"} />), mode: ToolbarModes.UITest },
-                { text: "Layers", icon: (<LayersSVG color="white" width={"20"} />), mode: ToolbarModes.LayerEditor },
-                { text: "Download Data", icon: (<CloudDownloadSVG color="white" width={"20"} />), mode: ToolbarModes.Download },
-                { text: "Export", icon: (<ExportSVG color="white" width={"18"} />), mode: ToolbarModes.Export },
-                { text: "Settings", icon: (<GearSVG color="white" width={"20"} />), mode: ToolbarModes.Settings },
+                { text: "DEV: UI Test", icon: (<QuestionMarkSVG color="white" width={"12"} />), mode: InspectorModes.UITest },
+                { text: "Layers", icon: (<LayersSVG color="white" width={"20"} />), mode: InspectorModes.LayerEditor },
+                { text: "Download Data", icon: (<CloudDownloadSVG color="white" width={"20"} />), mode: InspectorModes.Download },
+                { text: "Export", icon: (<ExportSVG color="white" width={"18"} />), mode: InspectorModes.Export },
+                { text: "Settings", icon: (<GearSVG color="white" width={"20"} />), mode: InspectorModes.Settings },
               ].map((o, id) => <HoverButton
                 key={id}
                 width={"40px"}
@@ -156,8 +163,12 @@ function LocationViewerPage() {
               ))
             }
             <LocationViewport
-              renderData={renderData}
+            
+              activeToolMode={activeToolMode}
               activePointPolygonID={activePolygonID ?? -1}
+
+              renderData={renderData}
+
               pointPolygons={allPointPolygons}
               setPointPolygon={setPointPolygonData}
             />
