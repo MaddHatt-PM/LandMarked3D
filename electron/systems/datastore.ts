@@ -10,13 +10,23 @@ interface DataStoreProps {
 export class DataStore {
   storePath: string;
   data: Record<string, unknown>;
+  wasReInitialized: boolean;
 
   constructor({ filename, defaultState} : DataStoreProps) {
     const remoteMain = require("@electron/remote/main");
-
+    
     const userDataPath = (electron.app || remoteMain.app).getPath('userData');
     this.storePath = path.join(userDataPath, filename + '.json');
-    this.data = parseDataFile(this.storePath, defaultState);
+
+    try {
+      this.data = JSON.parse(fs.readFileSync(this.storePath));
+      this.wasReInitialized = false; 
+
+    } catch (error) {
+      this.data = defaultState;
+      this.wasReInitialized = true;
+    }
+    
   }
 
   get(key:string) {
@@ -27,12 +37,8 @@ export class DataStore {
     this.data[key] = val;
     fs.writeFileSync(this.storePath, JSON.stringify(this.data))
   }
-}
 
-function parseDataFile(filePath: string, defaults: Record<string, unknown>) {
-  try {
-    return JSON.parse(fs.readFileSync(filePath));
-  } catch (error) {
-    return defaults;
+  reset() {
+    fs.writeFileSync(this.storePath, JSON.stringify({}))
   }
 }
