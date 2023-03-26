@@ -8,7 +8,7 @@ import PinOn from "./window-pin-on.png"
 import Minimize from "./window-min.png"
 import Maximize from "./window-max.png"
 import Close from "./window-close.png"
-import toMainEvents from "../../Events/ipc-to-main-events";
+import toMainEvents from "../../IPCEvents/ipc-to-main-events";
 
 // TODO: Account for mac os UI
 

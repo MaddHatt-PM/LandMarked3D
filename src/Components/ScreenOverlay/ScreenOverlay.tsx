@@ -1,12 +1,16 @@
 import React from "react";
-import { Container } from "./ScreenOverlay.styles";
+import { Container, Wrapper } from "./ScreenOverlay.styles";
 
-interface ScreenOverlayProps {  }
-const ScreenOverlay = () => {
+interface ScreenOverlayProps {
+  children: React.ReactNode;
+}
+const ScreenOverlay = (props: ScreenOverlayProps) => {
 
   return (
     <Container>
-      
+      <Wrapper>
+      {props.children}
+      </Wrapper>
     </Container>
   );
 };

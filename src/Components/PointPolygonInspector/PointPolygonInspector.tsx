@@ -10,6 +10,8 @@ import Panel from "../Panel/Panel";
 import SegmentedSwitch from "../SegmentedSwitch/SegmentedSwitch";
 import { Group, Wrapper } from "./PointPolygonInspector.styles";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
+import windowEvents from "../../WindowEvents/window-events";
+import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
@@ -40,9 +42,9 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
     props.setRenderData({ ...props.renderData, lastLineAsSolid: lastLineAsSolid });
     props.setActiveToolMode(newTool);
   }
-  
+
   const handleRenderPointPolygonsToggle = (isChecked: boolean) => {
-    props.setRenderData({...props.renderData, displayPointPolygons: isChecked});
+    props.setRenderData({ ...props.renderData, displayPointPolygons: isChecked });
   }
 
 
@@ -61,7 +63,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
 
       <HDivider />
       <div style={props.renderData.displayPointPolygons
-        ? { pointerEvents: "all", opacity: 1.0}
+        ? { pointerEvents: "all", opacity: 1.0 }
         : { pointerEvents: "none", opacity: 0.5 }
       }>
 
@@ -119,6 +121,24 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                     activePointPolygon: props.pointPolygons[props.activePointPolygonID!],
                     setPointPolygon: props.setPointPolygonData
                   })
+                }}
+              />
+
+              <InspectorButton
+                buttonText="Test screen overlay"
+                callback={() => {
+                  const overlay = (
+                    <>
+                      <button onClick={() => {
+                        window.dispatchEvent(new CustomEvent(windowEvents.DismissScreenOverlay.valueOf()))
+                      }}
+                      >
+                        Dismiss overlay
+                      </button>
+                    </>
+                  )
+
+                  setScreenOverlayEvent({ overlay })
                 }}
               />
             </Group>

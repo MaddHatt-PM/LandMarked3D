@@ -5,18 +5,35 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import StartupPage from "./StartupPage/StartupPage";
 import LocationViewerPage from "./LocationViewerPage/LocationViewerPage";
 import LocationSearchPage from "./LocationSearchPage/LocationSearchPage";
-import React, {ReactNode, useState} from "react";
+import React, { ReactNode, useEffect, useState } from "react";
+import windowEvents from "../WindowEvents/window-events";
+import ScreenOverlay from "../Components/ScreenOverlay/ScreenOverlay";
+import { SetScreenOverlayEventDetail } from "../WindowEvents/set-screen-overlay";
 
 function App() {
-  const [screenOverlay, setScreenOverlay] = useState<ReactNode | null>(null);
+  const [screenOverlayNode, setScreenOverlayNode] = useState<ReactNode | null>(null);
 
-  const onDisplayScreenOverlay = () => {
+  useEffect(() => {
+    const handleSetEvent = (event: CustomEvent<SetScreenOverlayEventDetail>) => {
+      console.log(event.detail.overlay);
+      setScreenOverlayNode(event.detail.overlay);
+    };
 
-  }
+    window.addEventListener(windowEvents.SetScreenOverlay.valueOf(), handleSetEvent as EventListener);
 
-  const onDismissScreenOverlay = () => {
+
+    const handleDismissEvent = () => { setScreenOverlayNode(null); }
+    window.addEventListener(windowEvents.DismissScreenOverlay.valueOf(), handleDismissEvent);
     
-  }
+
+    const cleanup = () => {
+      window.removeEventListener(windowEvents.SetScreenOverlay.valueOf(), handleSetEvent as EventListener);
+      window.removeEventListener(windowEvents.DismissScreenOverlay.valueOf(), handleDismissEvent);
+    }
+
+    return cleanup;
+  }, []);
+
 
   return (
     <>
@@ -35,6 +52,11 @@ function App() {
           </HashRouter>
         </Viewport>
       </Container>
+          {screenOverlayNode &&
+            <ScreenOverlay>
+              {screenOverlayNode}
+            </ScreenOverlay>
+          }
     </>
   );
 }
