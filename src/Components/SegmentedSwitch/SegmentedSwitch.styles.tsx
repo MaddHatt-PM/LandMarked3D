@@ -10,6 +10,7 @@ export const Container = styled.div`
   border: 1px solid #000000;
   border-radius: 4px;
   overflow: hidden;
+  width: 100%;
 `;
 
 export const ButtonToggle = styled.button<{ selected: boolean }>`

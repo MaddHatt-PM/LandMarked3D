@@ -1,16 +1,18 @@
 import styled from "styled-components";
 import { svgProps } from "../Utilities/svg-props";
 
-import { ReactComponent as areaSVG } from "../Assets/toolbar-polygon.svg"
-import { ReactComponent as gearSVG } from "../Assets/toolbar-gear.svg"
-import { ReactComponent as exportSVG } from "../Assets/toolbar-export.svg"
-import { ReactComponent as layersSVG } from "../Assets/toolbar-layers.svg"
-import { ReactComponent as cloudDownloadSVG } from "../Assets/toolbar-cloud-download.svg"
-import { ReactComponent as treeSVG } from "../Assets/toolbar-tree.svg"
+import { ReactComponent as areaSVG } from "./toolbar-polygon.svg"
+import { ReactComponent as gearSVG } from "./toolbar-gear.svg"
+import { ReactComponent as exportSVG } from "./toolbar-export.svg"
+import { ReactComponent as layersSVG } from "./toolbar-layers.svg"
+import { ReactComponent as cloudDownloadSVG } from "./toolbar-cloud-download.svg"
+import { ReactComponent as treeSVG } from "./toolbar-tree.svg"
+import { ReactComponent as pathSVG } from "./toolbar-path.svg"
+import { ReactComponent as groupSVG } from "./toolbar-group.svg"
 
-import { ReactComponent as questionMarkSVG } from "../Assets/icon-question.svg"
-import { ReactComponent as copySVG } from "../Assets/icon-copy.svg"
-import { ReactComponent as checkmarkCircleSVG } from "../Assets/icon-checkmark-circle.svg"
+import { ReactComponent as questionMarkSVG } from "./icon-question.svg"
+import { ReactComponent as copySVG } from "./icon-copy.svg"
+import { ReactComponent as checkmarkCircleSVG } from "./icon-checkmark-circle.svg"
 
 interface svgDetails {
   height?: number;
@@ -36,12 +38,19 @@ export const LayersSVG = styled(layersSVG) <svgDetails>`
 export const TreeSVG = styled(treeSVG) <svgDetails>`
   ${(props) => svgProps(props)}
 `;
+export const PathSVG = styled(pathSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const GroupSVG = styled(groupSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
 
 export const CloudDownloadSVG = styled(cloudDownloadSVG) <svgDetails>`
   ${(props) => svgProps(props)}
   `;
 
-export const QuestionMarkSVG = styled(questionMarkSVG)<svgDetails>`
+export const QuestionMarkSVG = styled(questionMarkSVG) <svgDetails>`
   ${(props) => svgProps(props)}
 `;
 

@@ -28,7 +28,6 @@ interface PointPolygonInspectorProps {
 }
 
 const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
-
   const availableTools: ToolModes[] = [
     ToolModes.PointPolygonAppend,
     ToolModes.PointPolygonInsert,
