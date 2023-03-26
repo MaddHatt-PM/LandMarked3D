@@ -28,6 +28,8 @@ export const GlobalStyle = createGlobalStyle`
     --title-button-click-close: #ff2b2b;
     --title-text-color: rgb(176, 176, 176);
     --text-normal-color: white;
+
+    user-select: none;
   }
 
     ::-webkit-scrollbar {

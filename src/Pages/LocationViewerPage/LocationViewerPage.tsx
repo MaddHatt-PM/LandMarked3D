@@ -64,11 +64,26 @@ function LocationViewerPage() {
     setActiveAreaID(allPointPolygons.length + 1);
   }
 
-  const setPointPolygonData = (id: number, modified: PointPolygonData) => {
+  const setPointPolygonData = (id: number, modified: PointPolygonData | undefined) => {
+    if (modified === undefined) {
+      const newActiveAreaID = allPointPolygons.length - 2;
+      setActiveAreaID(newActiveAreaID < 0 ? null : newActiveAreaID);
+      setAllPointPolygons(allPointPolygons.filter((_, index) => index !== id))
+      // TODO: Set a parameter somewhere that lets backend know to delete those files
+      return;
+    }
+
+    if (id === -1) {
+      setActiveAreaID(allPointPolygons.length);
+      setAllPointPolygons([...allPointPolygons, modified]);
+      return;
+    }
+
     if (0 <= id && id < allPointPolygons.length) {
       const newPointPolygonData = [...allPointPolygons];
       newPointPolygonData[id] = modified;
       setAllPointPolygons(newPointPolygonData);
+      return;
     }
   }
 
@@ -166,7 +181,7 @@ function LocationViewerPage() {
               ))
             }
             <LocationViewport
-            
+
               activeToolMode={activeToolMode}
               activePointPolygonID={activePolygonID ?? -1}
 

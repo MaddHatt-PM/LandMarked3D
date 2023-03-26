@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronIcon, Container, DropdownButton, DropdownList, DropdownListItem } from "./Dropdown.styles";
+import { ChevronIcon, Container, DropdownButton, DropdownList, DropdownListItem, SideButton } from "./Dropdown.styles";
 
 interface SideButtonProps {
   icon: React.ReactNode;
@@ -50,21 +50,40 @@ const Dropdown = (props: DropdownProps) => {
 
   return (
     <Container ref={selfRef} className={isOpen ? "is-open" : ""}>
-      <DropdownButton
-        className={isOpen ? "is-open" : ""}
-        onClick={() => { setIsOpen(!isOpen) }}>
-        {getSelectedName()}
-        <ChevronIcon className={isOpen ? "is-open" : ""} />
-      </DropdownButton>
-      {isOpen && (
-        <DropdownList>
-          {props.options.map((option, id) => (
-            <DropdownListItem key={id} onClick={() => handleOptionClick(id)}>
-              {props.optionToName ? props.optionToName(option) : option}
-            </DropdownListItem>
-          ))}
-        </DropdownList>
-      )}
+      {props.leadingButtons?.map((data, index) => (
+        <SideButton key={index} onClick={data.callback}>
+          {data.icon}
+        </SideButton>
+      ))}
+
+      <div style={{ width: "100%" }}>
+        <DropdownButton
+          className={isOpen ? "is-open" : ""}
+          onClick={() => { setIsOpen(!isOpen) }}>
+          {getSelectedName()}
+          <ChevronIcon className={isOpen ? "is-open" : ""} />
+        </DropdownButton>
+        
+        {isOpen && (
+          <DropdownList 
+            leadingButtonCount={props.leadingButtons?.length ?? 0}
+            trailingButtonCount={props.trailingButtons?.length ?? 0}
+          >
+            {props.options.map((option, id) => (
+              <DropdownListItem key={id} onClick={() => handleOptionClick(id)}>
+                {props.optionToName ? props.optionToName(option) : option}
+              </DropdownListItem>
+            ))}
+          </DropdownList>
+        )}
+      </div>
+
+      {props.trailingButtons?.map((data, index) => (
+        <SideButton key={index} onClick={data.callback}>
+          {data.icon}
+        </SideButton>
+      ))}
+
     </Container>
   );
 };

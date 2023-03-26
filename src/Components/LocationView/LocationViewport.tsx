@@ -44,7 +44,7 @@ const LocationViewport = (props: LocationViewportProps) => {
       event: event,
     }
 
-    if (props.activeToolMode === ToolModes.PointPolygonAppend) {
+    if (props.activeToolMode === ToolModes.PointPolygonAppend && props.activePointPolygonID != null) {
       const activePointPolygon = props.pointPolygons[props.activePointPolygonID];
 
       if (event.button === MouseButtons.Left && props.renderData.displayPointPolygons) {
@@ -57,7 +57,6 @@ const LocationViewport = (props: LocationViewportProps) => {
       }
 
       if (event.button === MouseButtons.Right) {
-        console.log("adsa")
         removePoint({
           activePointPolygonID: props.activePointPolygonID,
           activePointPolygon: activePointPolygon,
@@ -132,7 +131,7 @@ const LocationViewport = (props: LocationViewportProps) => {
           zoom={zoom}
         />
 
-        { props.renderData.displayPointPolygons &&
+        {props.renderData.displayPointPolygons &&
           props.pointPolygons?.map((polygon, id) => {
             return (
               <PointPolygon

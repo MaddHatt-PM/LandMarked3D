@@ -1,9 +1,15 @@
+import { style } from "d3";
 import styled from "styled-components";
 
 export const Container = styled.div`
   position: relative;
   min-width: 100%;
   margin: 0;
+  gap: 4px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 
   &.is-open {
     margin-bottom: 1px;
@@ -29,6 +35,8 @@ export const DropdownButton = styled.button`
   background-color: #282323;
   margin-bottom: 0px;
 
+  position: relative;
+
   &:hover {
     background-color: #302b2b;
   }
@@ -52,7 +60,7 @@ export const DropdownButton = styled.button`
 export const ChevronIcon = styled.span`
   position: absolute;
   top: 50%;
-  right: 10px;
+  right: 8px;
   transform: translateY(-50%) rotate(135deg);
   width: 0.3em;
   height: 0.3em;
@@ -61,11 +69,48 @@ export const ChevronIcon = styled.span`
   opacity: 0.5;
 `;
 
-export const DropdownList = styled.ul`
+export const SideButton = styled.button`
+  color: white;
+  background-color: #282323;
+  flex: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  
+  width: 28px;
+  min-width: 28px;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 3px;
+  cursor: pointer;
+
+  &.full-width {
+    max-width: 100%;
+  }
+
+  &:hover {
+    background-color: #302b2b;
+  }
+
+  &:active {
+    background-color: #3f3939;
+    border: 1px solid #777777;
+  }
+`;
+
+interface DropdownListProps {
+  leadingButtonCount: number,
+  trailingButtonCount: number,
+}
+
+export const DropdownList = styled.ul.attrs<DropdownListProps>((props: DropdownListProps) => ({
+  style: {
+    left: `calc(0% + ${props.leadingButtonCount * 28 + 4 * (props.leadingButtonCount)}px)`,
+    width: `calc(100% - ${(props.leadingButtonCount + props.trailingButtonCount) * 28 + 4 * (props.leadingButtonCount + props.trailingButtonCount)+2}px)`,
+
+  }
+}))<DropdownListProps>`
   position: absolute;
   top: 100%;
-  left: 0;
-  width: 99%;
   background-color: #242020;
   border: 1px solid black;
   z-index: 1;
@@ -91,3 +136,4 @@ export const DropdownListItem = styled.li`
     border: none;
   }
 `;
+

@@ -10,14 +10,18 @@ import Panel from "../Panel/Panel";
 import SegmentedSwitch from "../SegmentedSwitch/SegmentedSwitch";
 import { Group, Wrapper } from "./PointPolygonInspector.styles";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
-import windowEvents from "../../WindowEvents/window-events";
-import { dismissScreenOverlayEvent, setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import BaseOverlay from "../BaseOverlay/BaseOverlay";
+import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
+import BaseOverlay, { AcceptPrompts, DismissPrompts } from "../BaseOverlay/BaseOverlay";
+import ConfirmationOverlay from "../ConfirmationOverlay/ConfirmationOverlay";
+import showResetPointPolygonOverlay from "../../Types/PointPolygonData/show-reset-point-polygon-overlay";
+import showDeletePointPolygonOverlay from "../../Types/PointPolygonData/show-delete-point-polygon-overlay";
+import showCreatePointPolygonOverlay from "../../Types/PointPolygonData/show-create-point-polygon-overlay";
+import { MinusSVG, PlusSVG, SelectSVG } from "../../Assets/SVGAssets";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
   addPointPolygonData: (toAdd: PointPolygonData) => void;
-  setPointPolygonData: (id: number, modified: PointPolygonData) => void;
+  setPointPolygonData: (id: number, modified: PointPolygonData | undefined) => void;
   removePointPolygonData: (id: number) => void;
 
   activeToolMode: ToolModes;
@@ -48,9 +52,36 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
     props.setRenderData({ ...props.renderData, displayPointPolygons: isChecked });
   }
 
+  const generateHelpbox = () => {
+    if (props.activePointPolygonID === undefined) {
+      return (<></>)
+    }
+
+    if (props.pointPolygons[props.activePointPolygonID!] === undefined) {
+      return (<></>)
+    }
+
+    if (props.pointPolygons[props.activePointPolygonID!].points.length === 0) {
+      return (
+        <HelpBox
+          title={`${props.pointPolygons[props.activePointPolygonID!].name} has no data points`}
+          text={`Click in the viewport to add a point.`}
+        />
+      )
+    } else {
+      return (
+        <HelpBox
+          title={`${props.pointPolygons[props.activePointPolygonID!].name} Info`}
+          text={getPointPolygonInfo(props.pointPolygons[props.activePointPolygonID!])}
+          includeCopySymbol={true}
+        />
+      )
+    }
+  }
+
 
   return (
-    <Panel>
+    <Panel width="300px">
       <div
         style={{ height: "14px", margin: "-10px 0 2px" }}
       >
@@ -67,7 +98,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
         ? { pointerEvents: "all", opacity: 1.0 }
         : { pointerEvents: "none", opacity: 0.5 }
       }>
-
         {props.activePointPolygonID !== null &&
           <Wrapper>
             <Group>
@@ -89,6 +119,32 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                     </span>)
                 }}
                 onSelect={(newAreaID) => { props.setActivePointPolygonID(newAreaID) }}
+                leadingButtons={[
+                  // {
+                  //   icon: (<SelectSVG width={12} height={12} />), text: "Select area from viewport", callback: () => {
+                  //     console.log("TODO")
+                  //   }
+                  // }
+                ]}
+                trailingButtons={[
+                  {
+                    icon: (<MinusSVG width={10} height={10} />), text: "Create new area", callback: () => {
+                      showDeletePointPolygonOverlay({
+                        activePointPolygon: props.pointPolygons[props.activePointPolygonID!],
+                        activePointPolygonID: props.activePointPolygonID!,
+                        setPointPolygon: props.setPointPolygonData
+                      })
+                    }
+                  },
+
+                  {
+                    icon: (<PlusSVG width={10} height={10} />), text: "Create new area", callback: () => {
+                      showCreatePointPolygonOverlay({
+                        setPointPolygon: props.setPointPolygonData,
+                      })
+                    }
+                  },
+                ]}
               />
 
               <HDivider />
@@ -101,23 +157,17 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
 
               <HDivider />
 
-              <HelpBox
-                title={`${props.pointPolygons[props.activePointPolygonID].name} Info`}
-                text={getPointPolygonInfo(props.pointPolygons[props.activePointPolygonID])}
-                includeCopySymbol={true}
-              />
+              {generateHelpbox()}
+
             </Group>
 
-            <Group />
-
             <Group>
-
               <HDivider />
 
               <InspectorButton
                 buttonText="Reset Points"
                 callback={() => {
-                  clearAllPoints({
+                  showResetPointPolygonOverlay({
                     activePointPolygonID: props.activePointPolygonID!,
                     activePointPolygon: props.pointPolygons[props.activePointPolygonID!],
                     setPointPolygon: props.setPointPolygonData
@@ -130,12 +180,9 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                 callback={() => {
                   const overlay = (
                     <BaseOverlay
-                    modalName={"Test screen overlay"}
+                      modalName={"Test screen overlay"}
                     >
-                      <button onClick={dismissScreenOverlayEvent}
-                      >
-                        Dismiss overlay
-                      </button>
+
                     </BaseOverlay>
                   )
 
@@ -148,11 +195,19 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
 
         {props.activePointPolygonID === null &&
           <>
+            <InspectorButton
+              buttonText={"Create new Point Polygon"}
+              callback={() => {
+                showCreatePointPolygonOverlay({ setPointPolygon: props.setPointPolygonData })
+              }}
+            />
             <HelpBox
               text={"Create a new area to get started"}
             />
           </>
         }
+
+        <p>{"activeID: " + props.activePointPolygonID}</p>
       </div>
 
     </Panel>

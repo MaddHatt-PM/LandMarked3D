@@ -13,6 +13,9 @@ import { ReactComponent as groupSVG } from "./toolbar-group.svg"
 import { ReactComponent as questionMarkSVG } from "./icon-question.svg"
 import { ReactComponent as copySVG } from "./icon-copy.svg"
 import { ReactComponent as checkmarkCircleSVG } from "./icon-checkmark-circle.svg"
+import { ReactComponent as selectSVG } from "./icon-select.svg"
+import { ReactComponent as plusSVG } from "./icon-plus.svg"
+import { ReactComponent as minusSVG } from "./icon-minus.svg"
 
 interface svgDetails {
   height?: number;
@@ -59,5 +62,17 @@ export const CopySVG = styled(copySVG) <svgDetails>`
 `;
 
 export const CheckmarkCircleSVG = styled(checkmarkCircleSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const PlusSVG = styled(plusSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const MinusSVG = styled(minusSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const SelectSVG = styled(selectSVG) <svgDetails>`
   ${(props) => svgProps(props)}
 `;

@@ -9,7 +9,7 @@ interface PanelProps {
 const Panel = (props:PanelProps) => {
 
   return (
-    <Container>
+    <Container width={props.width} >
       <Wrapper>
         {props.children}
       </Wrapper>

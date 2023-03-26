@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   width: 500px;
-  height: 250px;
+  height: 200px;
+  max-height: 500px;
   background-color: #282b30;
   border: 1px solid #ffffff14;
   border-radius: 4px;
@@ -26,6 +27,7 @@ export const HStack = styled.div`
   justify-content: space-between;
 
   margin-bottom: 2px;
+  gap: 8px;
 
   width: 100%;
 `;
@@ -52,7 +54,7 @@ export const ModalDivider = styled.div`
   box-shadow: 0 1px 0 #ffffff12;
   height: 1px;
   width: calc(100% + 16px);
-  margin: 8px -8px;
+  margin: 2px -8px;
 `;
 
 export const CloseButton = styled.button`
@@ -81,4 +83,22 @@ cursor: pointer;
 `;
 
 export const ModalButton = styled.button`
+  color: white;
+  background-color: #282323;
+  flex: 1;
+  max-width: 30%;
+  height: 32px;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 3px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #302b2b;
+  }
+
+  &:active {
+    background-color: #3f3939;
+    border: 1px solid #777777;
+  }
 `;

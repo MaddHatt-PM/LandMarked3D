@@ -34,7 +34,7 @@ export const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 100;
-  animation: ${fadeInKeyframes} 0.15s ease-out;
+  animation: ${fadeInKeyframes} 0.3s ease-out;
 
   & > :first-child{
     animation: ${scaleInChild} 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
