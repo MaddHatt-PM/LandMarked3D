@@ -11,7 +11,8 @@ import SegmentedSwitch from "../SegmentedSwitch/SegmentedSwitch";
 import { Group, Wrapper } from "./PointPolygonInspector.styles";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
 import windowEvents from "../../WindowEvents/window-events";
-import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
+import { dismissScreenOverlayEvent, setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
+import BaseOverlay from "../BaseOverlay/BaseOverlay";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
@@ -128,14 +129,14 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                 buttonText="Test screen overlay"
                 callback={() => {
                   const overlay = (
-                    <>
-                      <button onClick={() => {
-                        window.dispatchEvent(new CustomEvent(windowEvents.DismissScreenOverlay.valueOf()))
-                      }}
+                    <BaseOverlay
+                    modalName={"Test screen overlay"}
+                    >
+                      <button onClick={dismissScreenOverlayEvent}
                       >
                         Dismiss overlay
                       </button>
-                    </>
+                    </BaseOverlay>
                   )
 
                   setScreenOverlayEvent({ overlay })

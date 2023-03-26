@@ -13,3 +13,7 @@ export const setScreenOverlayEvent = ({ overlay }: SetScreenOverlayEventDetail) 
 
   window.dispatchEvent(event);
 }
+
+export const dismissScreenOverlayEvent = () => {
+  window.dispatchEvent(new CustomEvent(windowEvents.DismissScreenOverlay.valueOf()))
+}
