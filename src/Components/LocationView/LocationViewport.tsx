@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SamplePointData } from "../../Types/SamplePointData";
 import PointPolygon from "../PointPolygon/PointPolygon";
-import SamplePointView from "../SamplePointView/SamplePointView";
+import PointField from "../PointField/PointField";
 import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./LocationViewport.styles";
 import { PointPolygonData } from "../../Types/PointPolygonData"
 import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
@@ -9,16 +9,26 @@ import { clamp } from "../../Utilities/math";
 import appendPoint from "../../Types/PointPolygonData/ToolInteractions/append-point";
 import { MouseButtons } from "../../Utilities/mouse-buttons";
 import removePoint from "../../Types/PointPolygonData/ToolInteractions/remove-last-point";
+import { PointFieldData } from "../../Types/PointFieldData";
+import ImageView from "../ImageView/ImageView";
 
 interface LocationViewportProps {
   activeToolMode: ToolModes;
   activePointPolygonID: number;
 
-  renderData: ViewportRenderData;
 
-  pointPolygons: PointPolygonData[]
-  setPointPolygon: (id: number, data: PointPolygonData) => void;
+
+  renderData: ViewportRenderData;
   // setRenderData: (data: ViewportRenderData) => void;
+
+  pointPolygons: PointPolygonData[];
+  setPointPolygon: (id: number, polygon: PointPolygonData | undefined) => void;
+
+  pointFields: PointFieldData[];
+  setPointField: (id: number, field: PointFieldData) => void;
+
+  imageMaps: ImageMapData[];
+  setImageMap: (id: number, image: ImageMapData) => void;
 }
 
 
@@ -91,14 +101,6 @@ const LocationViewport = (props: LocationViewportProps) => {
     // TODO: zoom to mouse cursor
   };
 
-  const testSamplePointData: SamplePointData[] = [
-    { id: 0, x: 0, y: 0, elevation: 10 },
-    { id: 1, x: 5, y: 35, elevation: 10 },
-    { id: 2, x: 15, y: 25, elevation: 20 },
-    { id: 3, x: 25, y: 15, elevation: 30 },
-    { id: 4, x: 35, y: 5, elevation: 40 },
-  ]
-
   return (
     <Container>
       <EventCatcher
@@ -122,14 +124,29 @@ const LocationViewport = (props: LocationViewportProps) => {
       >
 
         {/* Images go here */}
-        <Image src={"https://www.maptiler.com/img/maps/satellite/slider-2/slider-5.webp"} />
-        <Image src="https://4.bp.blogspot.com/-xstBGhuD2gk/UA-73uP0isI/AAAAAAAAKGE/oq3-yqXs9rs/s1600/jotunheimen_contours.png" />
+        {props.renderData.displayImageMaps &&
+          props.imageMaps?.map((imageData, id) => {
+            return (
+              <ImageView
+                key={id}
+                imageMapData={imageData} />
+            )
+          })
+        }
 
         {/* SVG Elements */}
-        <SamplePointView
-          data={testSamplePointData}
-          zoom={zoom}
-        />
+        {props.renderData.displayPointFields &&
+          props.pointFields?.map((field, id) => {
+            return (
+              <PointField
+                key={id}
+                data={field}
+                zoom={zoom}
+                renderData={props.renderData}
+              />
+            )
+          })
+        }
 
         {props.renderData.displayPointPolygons &&
           props.pointPolygons?.map((polygon, id) => {

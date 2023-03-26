@@ -9,6 +9,7 @@ import { ReactComponent as cloudDownloadSVG } from "./toolbar-cloud-download.svg
 import { ReactComponent as treeSVG } from "./toolbar-tree.svg"
 import { ReactComponent as pathSVG } from "./toolbar-path.svg"
 import { ReactComponent as groupSVG } from "./toolbar-group.svg"
+import { ReactComponent as samplePointsSVG } from "./toolbar-sample-points.svg"
 
 import { ReactComponent as questionMarkSVG } from "./icon-question.svg"
 import { ReactComponent as copySVG } from "./icon-copy.svg"
@@ -54,6 +55,10 @@ export const CloudDownloadSVG = styled(cloudDownloadSVG) <svgDetails>`
   `;
 
 export const QuestionMarkSVG = styled(questionMarkSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const SamplePointsSVG = styled(samplePointsSVG) <svgDetails>`
   ${(props) => svgProps(props)}
 `;
 

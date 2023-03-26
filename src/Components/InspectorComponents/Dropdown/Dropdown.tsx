@@ -10,7 +10,7 @@ interface SideButtonProps {
 interface DropdownProps {
   options: any[];
   selectedID: number | null;
-  optionToName: (item: any) => any;
+  optionToName: (item: any, id: number) => any;
   onSelect: (id: number) => void;
   leadingButtons?: SideButtonProps[];
   trailingButtons?: SideButtonProps[];
@@ -42,7 +42,7 @@ const Dropdown = (props: DropdownProps) => {
     const id = props.selectedID;
     if (id !== null && 0 <= id && id < props.options.length) {
       const selected = props.options[id];
-      return props.optionToName(selected);
+      return props.optionToName(selected, id);
     }
 
     return "Select a polygon to edit"
@@ -63,15 +63,15 @@ const Dropdown = (props: DropdownProps) => {
           {getSelectedName()}
           <ChevronIcon className={isOpen ? "is-open" : ""} />
         </DropdownButton>
-        
+
         {isOpen && (
-          <DropdownList 
+          <DropdownList
             leadingButtonCount={props.leadingButtons?.length ?? 0}
             trailingButtonCount={props.trailingButtons?.length ?? 0}
           >
             {props.options.map((option, id) => (
               <DropdownListItem key={id} onClick={() => handleOptionClick(id)}>
-                {props.optionToName ? props.optionToName(option) : option}
+                {props.optionToName ? props.optionToName(option, id) : option}
               </DropdownListItem>
             ))}
           </DropdownList>

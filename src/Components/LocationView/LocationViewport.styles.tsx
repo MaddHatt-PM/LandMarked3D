@@ -69,5 +69,4 @@ export const Image = styled.img`
   flex-grow: 0;
   user-select: none;
   -webkit-user-drag: none;
-  
 `

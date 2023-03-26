@@ -4,13 +4,16 @@ import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
 import StatusBar from "../../Components/StatusBar/StatusBar";
 import Toolbar from "../../Components/Toolbar/Toolbar";
 import { HStack, VStack, Wrapper } from "./LocationViewerPage.styles";
-import { AreaSVG as PointPolygonSVG, CloudDownloadSVG, ExportSVG, GearSVG, GroupSVG, LayersSVG, PathSVG, QuestionMarkSVG, TreeSVG } from "../../Assets/SVGAssets";
+import { AreaSVG as PointPolygonSVG, CloudDownloadSVG, ExportSVG, GearSVG, GroupSVG, LayersSVG, PathSVG, QuestionMarkSVG, SamplePointsSVG, TreeSVG } from "../../Assets/SVGAssets";
 import ControlsView from "../../Components/ControlsView/ControlsView";
 import UITestPanel from "../../Components/UITestPanel/UITestPanel";
 import NotImplementedPanel from "../../Components/NotImplementedPanel/NotImplementedPanel";
 import AreaEditorPanel from "../../Components/PointPolygonInspector/PointPolygonInspector";
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import { ToolModes } from "./ToolModes";
+import { PointFieldData } from "../../Types/PointFieldData";
+import SamplePointInspector from "../../Components/SamplePointInspector/SamplePointInspector";
+import ImageMapInspector from "../../Components/ImageMapInspector/ImageMapInspector";
 
 
 enum InspectorModes {
@@ -18,12 +21,14 @@ enum InspectorModes {
   PointPolygonInspector,
   GroupInspector,
   TreeInspector,
+  SamplePointsInspector,
+  PathInspector,
 
   // DEV
   UITest,
 
   // Lower
-  LayerEditor,
+  ImageMapEditor,
   Download,
   Export,
   Settings,
@@ -59,10 +64,7 @@ function LocationViewerPage() {
     },
   ])
 
-  const addPointPolygonData = (toAdd: PointPolygonData) => {
-    setAllPointPolygons([...allPointPolygons, toAdd]);
-    setActiveAreaID(allPointPolygons.length + 1);
-  }
+
 
   const setPointPolygonData = (id: number, modified: PointPolygonData | undefined) => {
     if (modified === undefined) {
@@ -87,12 +89,74 @@ function LocationViewerPage() {
     }
   }
 
-  const removePointPolygonData = (id: number) => {
-    const newActivePolygonID = activePolygonID !== null && activePolygonID - 1 >= 0
-      ? activePolygonID - 1
-      : null;
-    setActiveAreaID(newActivePolygonID);
-    setAllPointPolygons(allPointPolygons.splice(id, 1))
+  const [allPointFields, setAllPointFields] = useState<PointFieldData[]>([
+    {
+      name: "testPoints",
+      color: "#e8b322",
+      isViewable: true,
+      points: [
+        { id: 0, x: 0, y: 0, elevation: 10 },
+        { id: 1, x: 5, y: 35, elevation: 10 },
+        { id: 2, x: 15, y: 25, elevation: 20 },
+        { id: 3, x: 25, y: 15, elevation: 30 },
+        { id: 4, x: 35, y: 5, elevation: 40 },
+      ]
+    }
+  ]);
+
+  const setPointFieldData = (id: number, modified: PointFieldData | undefined) => {
+    if (modified === undefined) {
+      // Delete
+      return;
+    }
+
+    if (id === -1) {
+      // Add new
+      return;
+    }
+
+    if (0 <= id && id < allPointFields.length) {
+      const newPointFieldData = [...allPointFields];
+      newPointFieldData[id] = modified;
+      setAllPointFields(newPointFieldData);
+      return;
+    }
+  }
+
+  const [allImageMaps, setAllImageMapData] = useState<ImageMapData[]>([
+    {
+      name: "Terrain",
+      opacity: 1.0,
+      url: "https://www.maptiler.com/img/maps/satellite/slider-2/slider-5.webp",
+      isViewable: true,
+      filters: []
+    },
+    {
+      name: "Contours",
+      opacity: 1.0,
+      url: "https://4.bp.blogspot.com/-xstBGhuD2gk/UA-73uP0isI/AAAAAAAAKGE/oq3-yqXs9rs/s1600/jotunheimen_contours.png",
+      isViewable: true,
+      filters: []
+    }
+  ])
+
+  const setImageMapData = (id: number, modified: ImageMapData | undefined) => {
+    if (modified === undefined) {
+      // Delete
+      return;
+    }
+
+    if (id === -1) {
+      // Add new
+      return;
+    }
+
+    if (0 <= id && id < allPointFields.length) {
+      const newImageData = [...allImageMaps];
+      newImageData[id] = modified;
+      setAllImageMapData(newImageData);
+      return;
+    }
   }
 
   const [renderData, setRenderData] = useState<ViewportRenderData>({
@@ -100,14 +164,17 @@ function LocationViewerPage() {
     strokeWidth: 4,
     lastLineAsSolid: true,
     displayPointPolygons: true,
+
+    pointFieldRadius: 8,
+    displayPointFields: true,
+
+    displayImageMaps: true,
   })
 
   const inspectors: Record<InspectorModes, ReactNode> = {
     [InspectorModes.PointPolygonInspector]: (<AreaEditorPanel
       pointPolygons={allPointPolygons}
-      addPointPolygonData={addPointPolygonData}
       setPointPolygonData={setPointPolygonData}
-      removePointPolygonData={removePointPolygonData}
 
       activeToolMode={activeToolMode}
       setActiveToolMode={setActiveToolMode}
@@ -119,8 +186,18 @@ function LocationViewerPage() {
       setActivePointPolygonID={setActiveAreaID}
     />),
     [InspectorModes.GroupInspector]: (<NotImplementedPanel name={"Group Inspector"} />),
+    [InspectorModes.SamplePointsInspector]: (<SamplePointInspector
+
+      renderData={renderData}
+      setRenderData={setRenderData}
+    />),
+    [InspectorModes.PathInspector]: (<NotImplementedPanel name={"Path Inspector"} />),
     [InspectorModes.TreeInspector]: (<NotImplementedPanel name={"TreeEditor"} />),
-    [InspectorModes.LayerEditor]: (<NotImplementedPanel name={"LayerEditor"} />),
+    [InspectorModes.ImageMapEditor]: (<ImageMapInspector
+
+      renderData={renderData}
+      setRenderData={setRenderData}
+    />),
     [InspectorModes.Download]: (<NotImplementedPanel name={"Download"} />),
     [InspectorModes.Export]: (<NotImplementedPanel name={"Export"} />),
     [InspectorModes.Settings]: (<NotImplementedPanel name={"Settings"} />),
@@ -145,8 +222,10 @@ function LocationViewerPage() {
             <Toolbar
               upperElements={[
                 { text: "Point Polygon Editor", icon: (<PointPolygonSVG color="white" width={"20"} />), mode: InspectorModes.PointPolygonInspector },
-                { text: "Polygon Group Editor", icon: (<GroupSVG color="white" width={"22"} />), mode: InspectorModes.GroupInspector },
-                { text: "Path Editor", icon: (<PathSVG color="white" width={"22"} />), mode: InspectorModes.GroupInspector },
+                // { text: "Polygon Group Editor", icon: (<GroupSVG color="white" width={"22"} />), mode: InspectorModes.GroupInspector },
+                { text: "Path Editor", icon: (<PathSVG color="white" width={"22"} />), mode: InspectorModes.PathInspector },
+                { text: "Sample Point Editor", icon: (<SamplePointsSVG color="white" width={"20"} />), mode: InspectorModes.SamplePointsInspector },
+                { text: "Layers", icon: (<LayersSVG color="white" width={"20"} />), mode: InspectorModes.ImageMapEditor },
                 { text: "Tree Editor", icon: (<TreeSVG color="white" width={"20"} />), mode: InspectorModes.TreeInspector },
               ].map((o, id) => <HoverButton
                 key={id}
@@ -158,7 +237,6 @@ function LocationViewerPage() {
 
               lowerElements={[
                 { text: "DEV: UI Test", icon: (<QuestionMarkSVG color="white" width={"12"} />), mode: InspectorModes.UITest },
-                { text: "Layers", icon: (<LayersSVG color="white" width={"20"} />), mode: InspectorModes.LayerEditor },
                 { text: "Download Data", icon: (<CloudDownloadSVG color="white" width={"20"} />), mode: InspectorModes.Download },
                 { text: "Export", icon: (<ExportSVG color="white" width={"18"} />), mode: InspectorModes.Export },
                 { text: "Settings", icon: (<GearSVG color="white" width={"20"} />), mode: InspectorModes.Settings },
@@ -181,14 +259,18 @@ function LocationViewerPage() {
               ))
             }
             <LocationViewport
-
               activeToolMode={activeToolMode}
               activePointPolygonID={activePolygonID ?? -1}
-
               renderData={renderData}
+
+              pointFields={allPointFields}
+              setPointField={setPointFieldData}
 
               pointPolygons={allPointPolygons}
               setPointPolygon={setPointPolygonData}
+
+              imageMaps={allImageMaps}
+              setImageMap={setImageMapData}
             />
 
             <ControlsView enabledContent={

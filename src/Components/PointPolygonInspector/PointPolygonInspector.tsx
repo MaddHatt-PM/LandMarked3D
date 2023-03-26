@@ -17,12 +17,11 @@ import showResetPointPolygonOverlay from "../../Types/PointPolygonData/show-rese
 import showDeletePointPolygonOverlay from "../../Types/PointPolygonData/show-delete-point-polygon-overlay";
 import showCreatePointPolygonOverlay from "../../Types/PointPolygonData/show-create-point-polygon-overlay";
 import { MinusSVG, PlusSVG, SelectSVG } from "../../Assets/SVGAssets";
+import { Divider } from "../StatusBar/StatusBar.styles";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
-  addPointPolygonData: (toAdd: PointPolygonData) => void;
   setPointPolygonData: (id: number, modified: PointPolygonData | undefined) => void;
-  removePointPolygonData: (id: number) => void;
 
   activeToolMode: ToolModes;
   setActiveToolMode: (modeToSet: ToolModes) => void;
@@ -48,7 +47,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
     props.setActiveToolMode(newTool);
   }
 
-  const handleRenderPointPolygonsToggle = (isChecked: boolean) => {
+  const handleRenderToggle = (isChecked: boolean) => {
     props.setRenderData({ ...props.renderData, displayPointPolygons: isChecked });
   }
 
@@ -82,14 +81,11 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
 
   return (
     <Panel width="300px">
-      <div
-        style={{ height: "14px", margin: "-10px 0 2px" }}
-      >
-
+      <div style={{ height: "14px", margin: "-10px 0 2px" }} >
         <Toggle
           initialState={true}
           label={"Point Polygon Inspector"}
-          callback={handleRenderPointPolygonsToggle}
+          callback={handleRenderToggle}
         />
       </div>
 
@@ -104,7 +100,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
               <Dropdown
                 selectedID={props.activePointPolygonID}
                 options={props.pointPolygons}
-                optionToName={(item: PointPolygonData) => {
+                optionToName={(item: PointPolygonData, id: number) => {
                   return (
                     <span>
                       <svg width={"16px"} height={"10px"}>
@@ -115,7 +111,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                           fill={item.color}
                         />
                       </svg>
-                      {item.name}
+                      {id}  <Divider style={{margin:"0 4px", opacity:0.3}}/>  {item.name}
                     </span>)
                 }}
                 onSelect={(newAreaID) => { props.setActivePointPolygonID(newAreaID) }}

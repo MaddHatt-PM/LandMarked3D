@@ -1,39 +1,39 @@
 import React, { useState } from "react";
+import { PointFieldData } from "../../Types/PointFieldData";
 import { SamplePointData } from "../../Types/SamplePointData";
-import { SamplePoint, Tooltip } from "./SamplePointView.styles";
+import { SamplePoint, Tooltip } from "./PointField.styles";
 
 interface SamplePointViewProps {
-  data: SamplePointData[];
+  data: PointFieldData;
   zoom: number;
+  renderData: ViewportRenderData;
 }
 
-const SamplePointView = (props: SamplePointViewProps) => {
+const PointField = (props: SamplePointViewProps) => {
   const [selectedPoint, setSelectedPoint] = useState<SamplePointData | null>(null);
 
   const handleMouseOver = (event: React.MouseEvent<SVGCircleElement>, id: number) => {
-    setSelectedPoint(props.data[id])
+    setSelectedPoint(props.data.points[id])
   };
 
   const handleMouseOut = () => {
     setSelectedPoint(null);
   };
 
-  const radius = 6;
-
   return (
     <>
-      {props.data.map((samplePoint) => {
+      {props.data.points.map((point, id) => {
         return (
           <SamplePoint
-            index={samplePoint.id} key={samplePoint.id}
-            width={radius} height={radius}
-            x={samplePoint.x} y={samplePoint.y} radius={radius}>
+            index={point.id} key={id}
+            width={props.renderData.pointFieldRadius} height={props.renderData.pointFieldRadius}
+            x={point.x} y={point.y} radius={props.renderData.pointFieldRadius}>
             <circle
-              fill="#860cdd"
-              cx={radius / 2}
-              cy={radius / 2}
-              r={radius / 2}
-              onMouseOver={(event) => handleMouseOver(event, samplePoint.id)}
+              fill={props.data.color}
+              cx={props.renderData.pointFieldRadius / 2}
+              cy={props.renderData.pointFieldRadius / 2}
+              r={props.renderData.pointFieldRadius / 2}
+              onMouseOver={(event) => handleMouseOver(event, point.id)}
               onMouseOut={handleMouseOut}
             />
           </SamplePoint>
@@ -45,7 +45,7 @@ const SamplePointView = (props: SamplePointViewProps) => {
           left: selectedPoint?.x,
           display: selectedPoint ? "block" : "none",
           fontSize: `${12 / props.zoom}px`,
-          padding: `${8 / props.zoom}px`,
+          padding: `${6 / props.zoom}px`,
           borderRadius: `${4 / props.zoom}px`
         }
       }>
@@ -55,4 +55,4 @@ const SamplePointView = (props: SamplePointViewProps) => {
   );
 };
 
-export default SamplePointView;
+export default PointField;

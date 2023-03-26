@@ -14,7 +14,7 @@ const StatusBar = () => {
       <HStack>
         <Text>test</Text>
         <Text>test</Text>
-        <Divider></Divider>
+        <Divider/>
         <Text>Lat:85.9853</Text>
         <Text>Lon:65.2349</Text>
         <Text>Ele:215.5ft</Text>
