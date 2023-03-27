@@ -16,8 +16,6 @@ interface LocationViewportProps {
   activeToolMode: ToolModes;
   activePointPolygonID: number;
 
-
-
   renderData: ViewportRenderData;
   // setRenderData: (data: ViewportRenderData) => void;
 

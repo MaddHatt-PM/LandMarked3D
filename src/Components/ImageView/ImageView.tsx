@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Image } from "./ImageView.styles";
 
 interface ImageViewProps {
-  imageMapData: ImageMapData
+  imageMapData: ImageMapData;
 }
 
 const ImageView = (props: ImageViewProps) => {
@@ -11,6 +11,7 @@ const ImageView = (props: ImageViewProps) => {
     <Image
       src={props.imageMapData.url}
       style={{
+        display: props.imageMapData.isViewable ? "block" : "none",
         opacity: props.imageMapData.opacity,
       }}
     />

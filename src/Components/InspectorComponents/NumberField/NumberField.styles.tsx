@@ -34,8 +34,8 @@ export const SliderInput = styled.input<SliderInputProps>`
   &::-webkit-slider-thumb {
     position: relative;
     appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background-color: #e1e1e1;
     border-radius: 50%;
     cursor: pointer;

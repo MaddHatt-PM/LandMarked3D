@@ -17,6 +17,8 @@ import { ReactComponent as checkmarkCircleSVG } from "./icon-checkmark-circle.sv
 import { ReactComponent as selectSVG } from "./icon-select.svg"
 import { ReactComponent as plusSVG } from "./icon-plus.svg"
 import { ReactComponent as minusSVG } from "./icon-minus.svg"
+import { ReactComponent as chevronUpSVG } from "./icon-chevron-up.svg"
+import { ReactComponent as chevronDownSVG } from "./icon-chevron-down.svg"
 
 interface svgDetails {
   height?: number;
@@ -79,5 +81,13 @@ export const MinusSVG = styled(minusSVG) <svgDetails>`
 `;
 
 export const SelectSVG = styled(selectSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const ChevronUpSVG = styled(chevronUpSVG) <svgDetails>`
+  ${(props) => svgProps(props)}
+`;
+
+export const ChevronDownSVG = styled(chevronDownSVG) <svgDetails>`
   ${(props) => svgProps(props)}
 `;

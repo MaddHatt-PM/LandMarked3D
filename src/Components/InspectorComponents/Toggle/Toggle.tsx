@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import { Container, ToggleContainer, ToggleSlider, Wrapper } from "./Toggle.styles";
 
 interface ToggleProps {
-  label: string;
+  label: ReactNode;
   initialState: boolean;
   callback: (isChecked: boolean) => void;
 }

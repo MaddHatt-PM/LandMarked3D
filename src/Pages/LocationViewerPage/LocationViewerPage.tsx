@@ -151,12 +151,23 @@ function LocationViewerPage() {
       return;
     }
 
-    if (0 <= id && id < allPointFields.length) {
+    if (0 <= id && id < allImageMaps.length) {
       const newImageData = [...allImageMaps];
       newImageData[id] = modified;
       setAllImageMapData(newImageData);
       return;
     }
+  }
+
+  const swapImageMapPosition = (indexA: number, indexB: number): void => {
+    if (0 > indexA || indexA >= allImageMaps.length) { return; }
+    if (0 > indexB || indexB >= allImageMaps.length) { return; }
+
+    const newArray = [...allImageMaps];
+    const temp = newArray[indexA];
+    newArray[indexA] = newArray[indexB];
+    newArray[indexB] = temp;
+    setAllImageMapData(newArray)
   }
 
   const [renderData, setRenderData] = useState<ViewportRenderData>({
@@ -194,6 +205,9 @@ function LocationViewerPage() {
     [InspectorModes.PathInspector]: (<NotImplementedPanel name={"Path Inspector"} />),
     [InspectorModes.TreeInspector]: (<NotImplementedPanel name={"TreeEditor"} />),
     [InspectorModes.ImageMapEditor]: (<ImageMapInspector
+      allImageMaps={allImageMaps}
+      setImageMapData={setImageMapData}
+      swapImageMapPosition={swapImageMapPosition}
 
       renderData={renderData}
       setRenderData={setRenderData}

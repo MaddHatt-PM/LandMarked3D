@@ -171,20 +171,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                 }}
               />
 
-              <InspectorButton
-                buttonText="Test screen overlay"
-                callback={() => {
-                  const overlay = (
-                    <BaseOverlay
-                      modalName={"Test screen overlay"}
-                    >
-
-                    </BaseOverlay>
-                  )
-
-                  setScreenOverlayEvent({ overlay })
-                }}
-              />
             </Group>
           </Wrapper>
         }
@@ -202,8 +188,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
             />
           </>
         }
-
-        <p>{"activeID: " + props.activePointPolygonID}</p>
       </div>
 
     </Panel>
