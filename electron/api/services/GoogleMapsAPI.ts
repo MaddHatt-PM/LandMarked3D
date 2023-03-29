@@ -7,16 +7,16 @@ const getElevationData: GetDataFromPoint = {
   modifiedKeys: ["elevation"],
   requestCostType: RequestCostType.perRequest,
 
-  prepareRequests: (points: Point[]) => {
+  prepareAPIUrls: (points: Point[]) => {
     if (points === undefined || points.length === 0) {
-      console.log("getElevationData was called with 0 points")
+      console.log("getElevationData was called with 0 points");
       return [];
     }
 
-    const urlPrefix = "https://maps.googleapis.com/maps/api/elevation/json?locations="
-    const urlApiKey = `&key=${"Seperate out store stuff"}`
-    const formatPoint = (p: Point) => `${p.x}%2C${p.y}`
-    const seperator = "%7C"
+    const urlPrefix = "https://maps.googleapis.com/maps/api/elevation/json?locations=";
+    const urlApiKey = `&key=${"Seperate out store stuff"}`;
+    const formatPoint = (p: Point) => `${p.x}%2C${p.y}`;
+    const seperator = "%7C";
 
     const maxPointsPerRequest = 250;
     const pointBins: Point[][] = [];
@@ -26,13 +26,17 @@ const getElevationData: GetDataFromPoint = {
 
     const urls: string[] = pointBins
       .map((bin) => bin.map((p) => formatPoint(p)).join(seperator))
-      .map((urlLocation) => urlPrefix + urlLocation + urlApiKey)
+      .map((urlLocation) => urlPrefix + urlLocation + urlApiKey);
 
     return urls;
   },
 
   prepareValidationTest: function (): boolean {
-    throw new Error("Function not implemented.")
+    throw new Error("Function not implemented.");
+  },
+  
+  handleAPIPayload: function (data: any[]): void {
+    throw new Error("Function not implemented.");
   }
 }
 

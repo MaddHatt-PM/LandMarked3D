@@ -20,8 +20,10 @@ declare interface GetDataFromPoint {
   modifiedKeys: string[];
   requestCostType: RequestCostType;
 
-  prepareRequests: (points: Point[]) => string[];
+  prepareAPIUrls: (points: Point[]) => string[];
   prepareValidationTest: () => boolean;
+
+  handleAPIPayload: (data: any[]) => void; 
 }
 
 declare interface GetImageryFromRect {
@@ -32,6 +34,8 @@ declare interface GetImageryFromRect {
 
   prepareRequests: (points: Point[]) => string[];
   validationTest: () => boolean;
+
+  handleAPIPayload: (data: any[]) => void;
 }
 
 export enum RequestCostType {

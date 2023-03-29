@@ -127,14 +127,14 @@ function LocationViewerPage() {
     {
       name: "Terrain",
       opacity: 1.0,
-      url: "https://www.maptiler.com/img/maps/satellite/slider-2/slider-5.webp",
+      url: "https://raw.githubusercontent.com/MaddHatt-PM/golf-course-data-processors/main/SavedAreas/DemoCourse/Satelite.png",
       isViewable: true,
       filters: []
     },
     {
       name: "Contours",
       opacity: 1.0,
-      url: "https://4.bp.blogspot.com/-xstBGhuD2gk/UA-73uP0isI/AAAAAAAAKGE/oq3-yqXs9rs/s1600/jotunheimen_contours.png",
+      url: "https://raw.githubusercontent.com/MaddHatt-PM/golf-course-data-processors/main/SavedAreas/DemoCourse/Contour.png",
       isViewable: true,
       filters: []
     }
