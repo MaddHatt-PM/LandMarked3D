@@ -111,7 +111,7 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                         activePointPath: props.pointPaths[props.activePointPathID!],
                         activePointPathID: props.activePointPathID!,
                         setPointPath: props.setPointPathData
-                      })
+                      });
                     }
                   },
 
@@ -119,10 +119,7 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                     icon: (<PlusSVG width={10} height={10} />), text: "Create new area", callback: () => {
                       showCreatePointPathOverlay({
                         setPointPolygon: props.setPointPathData
-                      })
-                      // showCreatePointPolygonOverlay({
-                      //   setPointPolygon: props.setPointPolygonData,
-                      // })
+                      });
                     }
                   },
                 ]}

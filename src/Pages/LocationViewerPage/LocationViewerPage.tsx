@@ -223,7 +223,6 @@ function LocationViewerPage() {
   const [renderData, setRenderData] = useState<ViewportRenderData>({
     pointPolygonVertexRadius: 6,
     pointPolygonStrokeWidth: 4,
-    pointPolygonLastLineAsSolid: true,
     displayPointPolygons: true,
 
     pointFieldRadius: 8,

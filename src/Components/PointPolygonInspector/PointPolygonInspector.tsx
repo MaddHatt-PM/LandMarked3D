@@ -37,9 +37,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
   ]
 
   const handleToolModeChange = (newTool: ToolModes) => {
-    const lastLineAsSolid = newTool !== ToolModes.PointPolygonAppend;
-
-    props.setRenderData({ ...props.renderData, pointPolygonLastLineAsSolid: lastLineAsSolid });
+    
     props.setActiveToolMode(newTool);
   }
 

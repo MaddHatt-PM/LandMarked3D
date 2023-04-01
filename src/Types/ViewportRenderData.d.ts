@@ -1,7 +1,6 @@
 declare interface ViewportRenderData {
   pointPolygonVertexRadius: number;
   pointPolygonStrokeWidth: number;
-  pointPolygonLastLineAsSolid: boolean;
   displayPointPolygons: boolean;
   
   pointFieldRadius: number;

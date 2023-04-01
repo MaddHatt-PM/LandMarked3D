@@ -91,14 +91,6 @@ const PointPolygon = (props: PointPolygonProps) => {
     }
   }
 
-  const doDrawLastLineAsSolid = () => {
-    if (props.renderData.pointPolygonLastLineAsSolid) {
-      return true;
-    }
-
-    return props.isActive;
-  }
-
   return (
     <>
       <svg
@@ -145,9 +137,9 @@ const PointPolygon = (props: PointPolygonProps) => {
             strokeLinejoin='round'
             strokeLinecap='round'
             fill="transparent"
-            strokeDasharray={
-              ? ''
-              : `${props.renderData.pointPolygonStrokeWidth},${props.renderData.pointPolygonStrokeWidth * 2}`}
+            strokeDasharray={props.isActive && props.activeToolMode === ToolModes.PointPolygonAppend
+              ? `${props.renderData.pointPolygonStrokeWidth},${props.renderData.pointPolygonStrokeWidth * 2}`
+              : ''}
             points={`${props.data.points[props.data.points.length - 1].x},${props.data.points[props.data.points.length - 1].y} ${props.data.points[0].x},${props.data.points[0].y}`}
           />
         }
@@ -172,7 +164,7 @@ const PointPolygon = (props: PointPolygonProps) => {
         }
 
         {/* Point Vertices (Visual Only) */}
-        {isPolygonTool(props.activeToolMode) && props.isActive &&
+        {isPolygonTool(props.activeToolMode) && 
           props.data.points.map((p, index) => (
             <circle
               key={index + " visual"}
@@ -183,7 +175,7 @@ const PointPolygon = (props: PointPolygonProps) => {
               fill={activePointID === index
                 ? props.data.color
                 : d3.color(props.data.color)?.darker(1.0).formatHex() ?? "black"}
-              strokeWidth={4 / props.zoom}
+              strokeWidth={props.isActive ?  4 / props.zoom : 0}
             />
           ))}
 
