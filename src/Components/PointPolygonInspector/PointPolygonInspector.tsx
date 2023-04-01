@@ -5,18 +5,14 @@ import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
 import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
 import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
 import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
-import clearAllPoints from "../../Types/PointPolygonData/ToolInteractions/clear-all-points";
 import Panel from "../Panel/Panel";
 import SegmentedSwitch from "../SegmentedSwitch/SegmentedSwitch";
 import { Group, Wrapper } from "./PointPolygonInspector.styles";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
-import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import BaseOverlay, { AcceptPrompts, DismissPrompts } from "../BaseOverlay/BaseOverlay";
-import ConfirmationOverlay from "../ConfirmationOverlay/ConfirmationOverlay";
 import showResetPointPolygonOverlay from "../../Types/PointPolygonData/show-reset-point-polygon-overlay";
 import showDeletePointPolygonOverlay from "../../Types/PointPolygonData/show-delete-point-polygon-overlay";
 import showCreatePointPolygonOverlay from "../../Types/PointPolygonData/show-create-point-polygon-overlay";
-import { MinusSVG, PlusSVG, SelectSVG } from "../../Assets/SVGAssets";
+import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { Divider } from "../StatusBar/StatusBar.styles";
 
 interface PointPolygonInspectorProps {
@@ -43,7 +39,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
   const handleToolModeChange = (newTool: ToolModes) => {
     const lastLineAsSolid = newTool !== ToolModes.PointPolygonAppend;
 
-    props.setRenderData({ ...props.renderData, lastLineAsSolid: lastLineAsSolid });
+    props.setRenderData({ ...props.renderData, pointPolygonLastLineAsSolid: lastLineAsSolid });
     props.setActiveToolMode(newTool);
   }
 

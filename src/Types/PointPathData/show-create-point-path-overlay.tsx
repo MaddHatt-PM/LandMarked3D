@@ -2,50 +2,51 @@ import { useState } from "react"
 import BaseOverlay from "../../Components/BaseOverlay/BaseOverlay";
 import TextField from "../../Components/TextField/TextField";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import { PointPolygonData } from "../PointPolygonData";
+import { PointPathData } from "../PointPathData";
 
-interface ShowCreatePointPolygonOverlayProps {
-  setPointPolygon: (id: number, data: PointPolygonData | undefined) => void;
+interface ShowCreatePointPathOverlayProps {
+  setPointPolygon: (id: number, data: PointPathData | undefined) => void;
 }
 
-const showCreatePointPolygonOverlay = (props: ShowCreatePointPolygonOverlayProps) => {
+const showCreatePointPathOverlay = (props: ShowCreatePointPathOverlayProps) => {
   const overlay = (<CreatePointPolygonOverlay
-    setPointPolygon={props.setPointPolygon}
+    setPointPath={props.setPointPolygon}
   />)
   setScreenOverlayEvent({ overlay });
 }
 
-interface CreatePointPolygonOverlayProps {
-  setPointPolygon: (id: number, modified: PointPolygonData | undefined) => void;
+interface CreatePointPathOverlayProps {
+  setPointPath: (id: number, modified: PointPathData | undefined) => void;
 }
 
-const CreatePointPolygonOverlay = (props: CreatePointPolygonOverlayProps) => {
+const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
   const [name, setName] = useState("name");
   const [group, setGroup] = useState("");
 
   return (
     <BaseOverlay
-      modalName={"Create new Point Polygon"}
+      modalName={"Create new Point Path"}
       // hideDismissButton={true}
       buttonsProps={[{
         text: "Create", callback: () => {
-          const newPointPolygon: PointPolygonData = {
+          const newPointPolygon: PointPathData = {
             name: name,
             color: "red",
-            points: []
+            points: [],
+            wasImported: false,
           }
-          props.setPointPolygon(-1, newPointPolygon);
+          props.setPointPath(-1, newPointPolygon);
         }
       }]}
     >
       <TextField
-        label="Point Polygon Name:"
+        label="Point Path Name:"
         initialText={name}
         onChange={(o) => { setName(o) }}
       />
 
       <TextField
-        label="Group:"
+        label="Collection:"
         initialText={group}
         onChange={(o) => { setGroup(o) }}
       />
@@ -56,4 +57,4 @@ const CreatePointPolygonOverlay = (props: CreatePointPolygonOverlayProps) => {
 
 
 
-export default showCreatePointPolygonOverlay;
+export default showCreatePointPathOverlay;

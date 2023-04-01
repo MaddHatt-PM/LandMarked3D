@@ -1,26 +1,25 @@
 import React, { useRef, useState } from "react";
-import { PointPolygonData } from "../../Types/PointPolygonData";
 import * as d3 from 'd3';
 import { SamplePointData } from "../../Types/SamplePointData";
 import { MouseButtons } from "../../Utilities/mouse-buttons";
 import removePoint from "../../Types/PointGenericFunctions/remove-last-point";
-import { isPolygonTool, ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
+import { PointPathData } from "../../Types/PointPathData";
+import { isPathTool, ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
 
-interface PointPolygonProps {
-  data: PointPolygonData;
+interface PointPathProps {
+  data: PointPathData;
   position: { x: number, y: number };
   zoom: number;
   isAlreadyDragging: boolean;
-
   activeToolMode: ToolModes;
 
   id: number;
   isActive: boolean;
   renderData: ViewportRenderData
-  setPointPolygon: (id: number, pointPolygon: PointPolygonData) => void;
-}
+  setPointPath: (id: number, pointPolygon: PointPathData) => void;
 
-const PointPolygon = (props: PointPolygonProps) => {
+}
+const PointPath = (props: PointPathProps) => {
   const [activePointID, setActivePoint] = useState<number | null>(null);
   const [deltaChange, setDeltaChange] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
   const [deltaPoints, setDeltaPoints] = useState<SamplePointData[] | null>(null)
@@ -52,15 +51,22 @@ const PointPolygon = (props: PointPolygonProps) => {
       placementPointRef.current?.setAttribute("transform", `translate(${newDelta.x} ${newDelta.y})`);
       setDeltaChange(newDelta);
 
-      const lastIndex = props.data.points.length - 1;
-      const prevIndex = (activePointID === 0) ? lastIndex : activePointID - 1;
-      const nextIndex = (activePointID === lastIndex) ? 0 : activePointID + 1;
+      const newDeltaPoints = []
+      if (activePointID - 1 >= 0) {
+        newDeltaPoints.push(props.data.points[activePointID - 1]);
+      }
 
-      const activePoint = { ...props.data.points[activePointID] };
-      activePoint.x += newDelta.x;
-      activePoint.y += newDelta.y;
+      const deltaActivePoint = { ...props.data.points[activePointID] }
+      deltaActivePoint.x += newDelta.x;
+      deltaActivePoint.y += newDelta.y;
+      newDeltaPoints.push(deltaActivePoint)
 
-      setDeltaPoints([props.data.points[prevIndex], activePoint, props.data.points[nextIndex]]);
+
+      if (activePointID + 1 < props.data.points.length) {
+        newDeltaPoints.push(props.data.points[activePointID + 1]);
+      }
+
+      setDeltaPoints(newDeltaPoints);
     }
   }
 
@@ -75,8 +81,9 @@ const PointPolygon = (props: PointPolygonProps) => {
         points: newPoints,
       }
 
-      props.setPointPolygon(props.id, updatedPolygon)
+      props.setPointPath(props.id, updatedPolygon)
       setActivePoint(null);
+      setDeltaPoints([])
       setDeltaChange({ x: 0, y: 0 })
       event.currentTarget.setAttribute("transform", `translate(${0} ${0})`);
     }
@@ -86,17 +93,27 @@ const PointPolygon = (props: PointPolygonProps) => {
         activePointGeneric: props.data,
         activePointGenericID: props.id,
         indexToRemove: index,
-        setPointPolygon: props.setPointPolygon
+        setPointPolygon: props.setPointPath
       })
     }
   }
 
-  const doDrawLastLineAsSolid = () => {
-    if (props.renderData.pointPolygonLastLineAsSolid) {
-      return true;
+  const setPointFill = (index: number) => {
+    if (props.data.wasImported) {
+      return props.data.color;
     }
 
-    return props.isActive;
+    return activePointID === index
+      ? props.data.color
+      : d3.color(props.data.color)?.darker(1.0).formatHex() ?? "black"
+  }
+
+  const isInteractable = () => {
+    if (isPathTool(props.activeToolMode) === false) {
+      return false;
+    }
+
+    return props.isActive && props.data.wasImported === false;
   }
 
   return (
@@ -120,13 +137,6 @@ const PointPolygon = (props: PointPolygonProps) => {
           style={{ animation: "dash 2000s linear forwards" }}
         />
 
-        {/* Polygon fill */}
-        <polygon
-          fill={props.data.color}
-          fillOpacity={0.25}
-          points={props.data.points.map((p) => `${p.x},${p.y}`).join(' ')}
-        />
-
         {/* Polygon stroke */}
         <polyline
           stroke={d3.color(props.data.color)?.brighter(0.5).formatHex() ?? "white"}
@@ -137,23 +147,8 @@ const PointPolygon = (props: PointPolygonProps) => {
           points={props.data.points.map((p) => `${p.x},${p.y}`).join(' ')}
         />
 
-        {/* Polygon stroke to last and first vertex */}
-        {props.data.points.length > 2 &&
-          <polyline
-            stroke={d3.color(props.data.color)?.brighter(0.5).formatHex() ?? "white"}
-            strokeWidth={props.renderData.pointPolygonStrokeWidth / props.zoom}
-            strokeLinejoin='round'
-            strokeLinecap='round'
-            fill="transparent"
-            strokeDasharray={
-              ? ''
-              : `${props.renderData.pointPolygonStrokeWidth},${props.renderData.pointPolygonStrokeWidth * 2}`}
-            points={`${props.data.points[props.data.points.length - 1].x},${props.data.points[props.data.points.length - 1].y} ${props.data.points[0].x},${props.data.points[0].y}`}
-          />
-        }
-
         {/* Event catcher for point interaction */}
-        {isPolygonTool(props.activeToolMode) && props.isActive &&
+        {isInteractable() &&
           props.data.points.map((p, index) => (
             <circle
               key={index}
@@ -172,7 +167,7 @@ const PointPolygon = (props: PointPolygonProps) => {
         }
 
         {/* Point Vertices (Visual Only) */}
-        {isPolygonTool(props.activeToolMode) && props.isActive &&
+        {isPathTool(props.activeToolMode) &&
           props.data.points.map((p, index) => (
             <circle
               key={index + " visual"}
@@ -180,10 +175,8 @@ const PointPolygon = (props: PointPolygonProps) => {
               cy={p.y}
               r={props.renderData.pointPolygonVertexRadius / props.zoom * (activePointID === index ? 1.0 : 1.0)}
               stroke={props.data.color}
-              fill={activePointID === index
-                ? props.data.color
-                : d3.color(props.data.color)?.darker(1.0).formatHex() ?? "black"}
-              strokeWidth={4 / props.zoom}
+              fill={setPointFill(index)}
+              strokeWidth={props.data.wasImported ? 0 : 4 / props.zoom}
             />
           ))}
 
@@ -205,4 +198,4 @@ const PointPolygon = (props: PointPolygonProps) => {
   );
 };
 
-export default PointPolygon;
+export default PointPath;

@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import LocationViewport from "../../Components/LocationView/LocationViewport";
+import ViewportRenderer from "../../Components/ViewportRenderer/ViewportRenderer";
 import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
 import StatusBar from "../../Components/StatusBar/StatusBar";
 import Toolbar from "../../Components/Toolbar/Toolbar";
@@ -14,6 +14,8 @@ import { ToolModes } from "./ToolModes";
 import { PointFieldData } from "../../Types/PointFieldData";
 import SamplePointInspector from "../../Components/SamplePointInspector/SamplePointInspector";
 import ImageMapInspector from "../../Components/ImageMapInspector/ImageMapInspector";
+import PointPathInspector from "../../Components/PointPathInspector/PointPathInspector";
+import { PointPathData } from "../../Types/PointPathData";
 
 
 enum InspectorModes {
@@ -64,8 +66,6 @@ function LocationViewerPage() {
     },
   ])
 
-
-
   const setPointPolygonData = (id: number, modified: PointPolygonData | undefined) => {
     if (modified === undefined) {
       const newActiveAreaID = allPointPolygons.length - 2;
@@ -85,6 +85,56 @@ function LocationViewerPage() {
       const newPointPolygonData = [...allPointPolygons];
       newPointPolygonData[id] = modified;
       setAllPointPolygons(newPointPolygonData);
+      return;
+    }
+  }
+
+  const [allPointPaths, setAllPointPaths] = useState<PointPathData[]>([
+    {
+      name: "testpath",
+      color: "#e21d90",
+      wasImported: false,
+      points: [
+        { id: 0, x: 800, y: 400, elevation: 10 },
+        { id: 1, x: 850, y: 400, elevation: 10 },
+        { id: 2, x: 950, y: 500, elevation: 20 },
+        { id: 2, x: 1050, y: 550, elevation: 20 },
+      ]
+    },
+        {
+      name: "imported path",
+      color: "#e25b1d",
+      wasImported: true,
+      points: [
+        { id: 0, x: 900, y: 400, elevation: 10 },
+        { id: 1, x: 950, y: 400, elevation: 10 },
+        { id: 2, x: 1050, y: 500, elevation: 20 },
+        { id: 2, x: 1150, y: 550, elevation: 20 },
+      ]
+    }
+  ])
+
+  
+  const [activePathID, setActivePathID] = useState<number | null>(0);
+  const setPointPathData = (id:number, modified: PointPathData | undefined) => {
+    if (modified === undefined) {
+      const newActivePathID = allPointPaths.length - 2;
+      setActivePathID(newActivePathID < 0 ? null : newActivePathID);
+      setAllPointPaths(allPointPaths.filter((_, index) => index !== id))
+      // TODO: Set a parameter somewhere that lets backend know to delete those files
+      return;
+    }
+
+    if (id === -1) {
+      setActivePathID(allPointPaths.length);
+      setAllPointPaths([...allPointPaths, modified]);
+      return;
+    }
+
+    if (0 <= id && id < allPointPaths.length) {
+      const newPointPathData = [...allPointPaths];
+      newPointPathData[id] = modified;
+      setAllPointPaths(newPointPathData);
       return;
     }
   }
@@ -171,13 +221,17 @@ function LocationViewerPage() {
   }
 
   const [renderData, setRenderData] = useState<ViewportRenderData>({
-    vertexRadius: 6,
-    strokeWidth: 4,
-    lastLineAsSolid: true,
+    pointPolygonVertexRadius: 6,
+    pointPolygonStrokeWidth: 4,
+    pointPolygonLastLineAsSolid: true,
     displayPointPolygons: true,
 
     pointFieldRadius: 8,
     displayPointFields: true,
+
+    pointPathVertexRadius: 6,
+    pointPathStrokeWidth: 4,
+    displayPointPaths:true,
 
     displayImageMaps: true,
   })
@@ -198,11 +252,23 @@ function LocationViewerPage() {
     />),
     [InspectorModes.GroupInspector]: (<NotImplementedPanel name={"Group Inspector"} />),
     [InspectorModes.SamplePointsInspector]: (<SamplePointInspector
-
       renderData={renderData}
       setRenderData={setRenderData}
     />),
-    [InspectorModes.PathInspector]: (<NotImplementedPanel name={"Path Inspector"} />),
+
+    [InspectorModes.PathInspector]: (<PointPathInspector
+      pointPaths={allPointPaths}
+      setPointPathData={setPointPathData}
+
+      activeToolMode={activeToolMode}
+      setActiveToolMode={setActiveToolMode}
+
+      renderData={renderData}
+      setRenderData={setRenderData}
+
+      activePointPathID={activePathID}
+      setActivePointPathID={setActivePathID}
+    />),
     [InspectorModes.TreeInspector]: (<NotImplementedPanel name={"TreeEditor"} />),
     [InspectorModes.ImageMapEditor]: (<ImageMapInspector
       allImageMaps={allImageMaps}
@@ -222,6 +288,15 @@ function LocationViewerPage() {
     if (inspector === newInspector) {
       setShowInspector(!showInspector);
       return;
+    } 
+    
+    if(newInspector === InspectorModes.PointPolygonInspector) {
+      setActiveToolMode(ToolModes.PointPolygonAppend);
+    }
+
+    if (newInspector === InspectorModes.PathInspector) {
+      setActiveToolMode(ToolModes.PointPathAppend);
+      console.log("test??")
     }
 
     setInspector(newInspector);
@@ -272,13 +347,16 @@ function LocationViewerPage() {
                 </div>
               ))
             }
-            <LocationViewport
+            <ViewportRenderer
               activeToolMode={activeToolMode}
               activePointPolygonID={activePolygonID ?? -1}
               renderData={renderData}
 
               pointFields={allPointFields}
               setPointField={setPointFieldData}
+
+              pointPaths={allPointPaths}
+              setPointPath={setPointPathData}
 
               pointPolygons={allPointPolygons}
               setPointPolygon={setPointPolygonData}

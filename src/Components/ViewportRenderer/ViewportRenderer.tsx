@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { SamplePointData } from "../../Types/SamplePointData";
 import PointPolygon from "../PointPolygon/PointPolygon";
 import PointField from "../PointField/PointField";
-import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./LocationViewport.styles";
+import { Container, EventCatcher, GridLines, Image, TransformableDiv } from "./ViewportRenderer.styles";
 import { PointPolygonData } from "../../Types/PointPolygonData"
 import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
 import { clamp } from "../../Utilities/math";
 import appendPoint from "../../Types/PointPolygonData/ToolInteractions/append-point";
 import { MouseButtons } from "../../Utilities/mouse-buttons";
-import removePoint from "../../Types/PointPolygonData/ToolInteractions/remove-last-point";
+import removePoint from "../../Types/PointGenericFunctions/remove-last-point";
 import { PointFieldData } from "../../Types/PointFieldData";
 import ImageView from "../ImageView/ImageView";
+import { PointPathData } from "../../Types/PointPathData";
+import PointPath from "../PointPath/PointPath";
 
-interface LocationViewportProps {
+interface ViewportRendererProps {
   activeToolMode: ToolModes;
   activePointPolygonID: number;
 
@@ -22,6 +24,9 @@ interface LocationViewportProps {
   pointPolygons: PointPolygonData[];
   setPointPolygon: (id: number, polygon: PointPolygonData | undefined) => void;
 
+  pointPaths: PointPathData[];
+  setPointPath: (id: number, polygon: PointPathData | undefined) => void;
+
   pointFields: PointFieldData[];
   setPointField: (id: number, field: PointFieldData) => void;
 
@@ -30,12 +35,14 @@ interface LocationViewportProps {
 }
 
 
-const LocationViewport = (props: LocationViewportProps) => {
+const ViewportRenderer = (props: ViewportRendererProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [prevPosition, setPrevPosition] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
+
+  const zoomDeltaIncrement = 0.05;
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.button === MouseButtons.Middle || (event.ctrlKey && event.button === MouseButtons.Left)) {
@@ -66,8 +73,8 @@ const LocationViewport = (props: LocationViewportProps) => {
 
       if (event.button === MouseButtons.Right) {
         removePoint({
-          activePointPolygonID: props.activePointPolygonID,
-          activePointPolygon: activePointPolygon,
+          activePointGenericID: props.activePointPolygonID,
+          activePointGeneric: activePointPolygon,
           indexToRemove: activePointPolygon.points.length - 1,
           setPointPolygon: props.setPointPolygon
         })
@@ -93,7 +100,7 @@ const LocationViewport = (props: LocationViewportProps) => {
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     // const newZoom = Math.max(0.1, Math.min(5, zoom + (event.deltaY > 0 ? -0.1 : 0.1)));
-    const newZoom = clamp(0.1, 5, zoom + (event.deltaY > 0 ? -0.1 : 0.1));
+    const newZoom = clamp(zoomDeltaIncrement, 5, zoom + (event.deltaY > 0 ? -zoomDeltaIncrement : zoomDeltaIncrement));
     setZoom(newZoom);
 
     // TODO: zoom to mouse cursor
@@ -146,6 +153,25 @@ const LocationViewport = (props: LocationViewportProps) => {
           })
         }
 
+        {props.renderData.displayPointPaths &&
+          props.pointPaths?.map((path, id) => {
+            return (
+              <PointPath
+                key={id}
+                data={path}
+                position={{ x: translateX, y: translateY }}
+                zoom={zoom}
+                isAlreadyDragging={isDragging}
+                renderData={props.renderData}
+                activeToolMode={props.activeToolMode}
+                id={id}
+                isActive={id === props.activePointPolygonID}
+                setPointPath={props.setPointPath}
+              />
+            )
+          })
+        }
+
         {props.renderData.displayPointPolygons &&
           props.pointPolygons?.map((polygon, id) => {
             return (
@@ -157,6 +183,7 @@ const LocationViewport = (props: LocationViewportProps) => {
                 isAlreadyDragging={isDragging}
                 renderData={props.renderData}
                 id={id}
+                activeToolMode={props.activeToolMode}
                 isActive={id === props.activePointPolygonID}
                 setPointPolygon={props.setPointPolygon}
               />
@@ -169,4 +196,4 @@ const LocationViewport = (props: LocationViewportProps) => {
   );
 };
 
-export default LocationViewport;
+export default ViewportRenderer;
