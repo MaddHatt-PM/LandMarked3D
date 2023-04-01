@@ -1,10 +1,12 @@
 import React from "react";
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
-import { PointPathData } from "../../Types/PointPathData";
-import { getPointPathInfo } from "../../Types/PointPathData/get-point-path-info";
-import showCreatePointPathOverlay from "../../Types/PointPathData/show-create-point-path-overlay";
-import showDeletePointPathOverlay from "../../Types/PointPathData/show-delete-point-path-overlay";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
+import { getPointBookmarkInfo } from "../../Types/PointBookmarks/get-point-bookmark-info";
+import showCreatePointBookmarkOverlay from "../../Types/PointBookmarks/show-create-point-bookmark-overlay";
+import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
+import { AcceptPrompts, DismissPrompts } from "../BaseOverlay/BaseOverlay";
+import ConfirmationOverlay from "../ConfirmationOverlay/ConfirmationOverlay";
 import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
 import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
 import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
@@ -12,51 +14,54 @@ import InspectorButton from "../InspectorComponents/InspectorButton/InspectorBut
 import Toggle from "../InspectorComponents/Toggle/Toggle";
 import Panel from "../Panel/Panel";
 import { Divider } from "../StatusBar/StatusBar.styles";
-import { Group, Wrapper } from "./PointPathInspector.styles";
+import { Container, Group, Wrapper } from "./PointBookmarkInspector.styles";
 
-interface PointPathInspectorProps {
-  pointPaths: PointPathData[];
-  activePointPathID: number | null
-  setPointPathData: (id: number, modified: PointPathData | undefined) => void;
-  setActivePointPathID: (id: number) => void;
+interface PointBookMarkInspectorProps {
+  pointBookmarks: PointBookmarkData[];
+  activePointBookmarkID: number | null
+  setPointBookmarkData: (id: number, modified: PointBookmarkData | undefined) => void;
+  setActivePointBookmarkID: (id: number) => void;
 
   activeToolMode: ToolModes;
   setActiveToolMode: (modeToSet: ToolModes) => void;
 
   renderData: ViewportRenderData;
   setRenderData: (data: ViewportRenderData) => void;
+
 }
-const PointPathInspector = (props: PointPathInspectorProps) => {
 
-  const handleRenderToggle = () => {
-
-  }
+const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
 
   const generateHelpbox = () => {
-    if (props.activePointPathID === undefined) {
+    if (props.activePointBookmarkID === undefined) {
       return (<></>)
     }
 
-    if (props.pointPaths[props.activePointPathID!] === undefined) {
+    if (props.pointBookmarks[props.activePointBookmarkID!] === undefined) {
       return (<></>)
     }
 
-    if (props.pointPaths[props.activePointPathID!].points.length === 0) {
+    const point = props.pointBookmarks[props.activePointBookmarkID!].point; 
+
+    if (point.x < -1000 || point.y < -1000) {
       return (
         <HelpBox
-          title={`${props.pointPaths[props.activePointPathID!].name} has no data points`}
           text={`Click in the viewport to add a point.`}
         />
       )
     } else {
       return (
         <HelpBox
-          title={`${props.pointPaths[props.activePointPathID!].name} Info`}
-          text={getPointPathInfo(props.pointPaths[props.activePointPathID!])}
+          title={`${props.pointBookmarks[props.activePointBookmarkID!].name} Info`}
+          text={getPointBookmarkInfo(props.pointBookmarks[props.activePointBookmarkID!])}
           includeCopySymbol={true}
         />
       )
     }
+  }
+
+  const handleRenderToggle = () => {
+
   }
 
   return (
@@ -64,7 +69,7 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
       <div style={{ height: "14px", margin: "-10px 0 2px" }} >
         <Toggle
           initialState={true}
-          label={"Point Path Inspector"}
+          label={"Point Bookmark Inspector"}
           callback={handleRenderToggle}
         />
 
@@ -75,13 +80,13 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
         : { pointerEvents: "none", opacity: 0.5 }
       }>
 
-        {props.activePointPathID !== null &&
+        {props.activePointBookmarkID !== null &&
           <Wrapper>
             <Group>
               <Dropdown
-                selectedID={props.activePointPathID}
-                options={props.pointPaths}
-                optionToName={(item: PointPathData, id: number) => {
+                selectedID={props.activePointBookmarkID}
+                options={props.pointBookmarks}
+                optionToName={(item: PointBookmarkData, id: number) => {
                   return (
                     <span>
                       <svg width={"16px"} height={"10px"}>
@@ -95,7 +100,7 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                       {id}  <Divider style={{ margin: "0 4px", opacity: 0.3 }} />  {item.name}
                     </span>)
                 }}
-                onSelect={(newPointPath) => { props.setActivePointPathID(newPointPath) }}
+                onSelect={(newPointPath) => { props.setActivePointBookmarkID(newPointPath) }}
                 leadingButtons={[
                   // {
                   //   icon: (<SelectSVG width={12} height={12} />), text: "Select area from viewport", callback: () => {
@@ -106,35 +111,45 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                 trailingButtons={[
                   {
                     icon: (<MinusSVG width={10} height={10} />), text: "Create new area", callback: () => {
-                      showDeletePointPathOverlay({
-                        activePointPath: props.pointPaths[props.activePointPathID!],
-                        activePointPathID: props.activePointPathID!,
-                        setPointPath: props.setPointPathData
-                      });
+                      setScreenOverlayEvent({
+                        overlay: (<ConfirmationOverlay
+                          modalName="Delete Point Bookmark"
+                          acceptPrompt={AcceptPrompts.Confirm}
+                          dismissPrompt={DismissPrompts.Cancel}
+                          description={`Are you sure you want to delete ${props.pointBookmarks[props.activePointBookmarkID!].name}?`}
+                          acceptCallback={() => {
+                            props.setPointBookmarkData(props.activePointBookmarkID!, undefined);
+                          }}
+                        />)
+                      })
                     }
                   },
 
                   {
                     icon: (<PlusSVG width={10} height={10} />), text: "Create new area", callback: () => {
-                      showCreatePointPathOverlay({
-                        setPointPolygon: props.setPointPathData
+                      showCreatePointBookmarkOverlay({
+                        setPointBookmark: props.setPointBookmarkData
                       });
                     }
                   },
                 ]}
               />
 
+              <HDivider />
+
+              {generateHelpbox()}
+
             </Group>
           </Wrapper>
         }
 
-        {props.activePointPathID === null &&
+        {props.activePointBookmarkID === null &&
           <>
             <InspectorButton
               buttonText={"Create new Point Path"}
               callback={() => {
-                showCreatePointPathOverlay({
-                  setPointPolygon: props.setPointPathData
+                showCreatePointBookmarkOverlay({
+                  setPointBookmark: props.setPointBookmarkData
                 });
               }}
             />
@@ -148,4 +163,4 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
   );
 };
 
-export default PointPathInspector;
+export default PointBookMarkInspector;

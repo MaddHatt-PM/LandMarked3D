@@ -13,6 +13,7 @@ import { PointFieldData } from "../../Types/PointFieldData";
 import ImageView from "../ImageView/ImageView";
 import { PointPathData } from "../../Types/PointPathData";
 import PointPath from "../PointPath/PointPath";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
 
 interface ViewportRendererProps {
   activeToolMode: ToolModes;
@@ -20,6 +21,9 @@ interface ViewportRendererProps {
 
   renderData: ViewportRenderData;
   // setRenderData: (data: ViewportRenderData) => void;
+
+  pointBookmarks: PointBookmarkData[];
+  setPointBookmarks: (id: number, polygon: PointBookmarkData | undefined) => void;
 
   pointPolygons: PointPolygonData[];
   setPointPolygon: (id: number, polygon: PointPolygonData | undefined) => void;

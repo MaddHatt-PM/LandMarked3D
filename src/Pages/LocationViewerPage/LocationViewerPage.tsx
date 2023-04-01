@@ -16,10 +16,14 @@ import SamplePointInspector from "../../Components/SamplePointInspector/SamplePo
 import ImageMapInspector from "../../Components/ImageMapInspector/ImageMapInspector";
 import PointPathInspector from "../../Components/PointPathInspector/PointPathInspector";
 import { PointPathData } from "../../Types/PointPathData";
+import { SamplePointData } from "../../Types/SamplePointData";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
+import PointBookMarkInspector from "../../Components/PointBookmarkInspector/PointBookmarkInspector";
 
 
 enum InspectorModes {
   // Upper
+  PointBookmarkInspector,
   PointPolygonInspector,
   GroupInspector,
   TreeInspector,
@@ -42,7 +46,45 @@ function LocationViewerPage() {
 
   const [activeToolMode, setActiveToolMode] = useState(ToolModes.PointPolygonAppend);
 
-  const [activePolygonID, setActiveAreaID] = useState<number | null>(0);
+  const [allPointBookmarks, setAllPointBookmarks] = useState<PointBookmarkData[]>([
+    {
+      name: "Starting area",
+      description: "",
+      color: "#000",
+      iconName: "star",
+      point: {
+        id: 0,
+        x: 1200,
+        y: 1200,
+        elevation: 10
+      }
+    }
+  ]);
+
+  const [activePointBookmarkID, setActivePointBookmarkID] = useState<number | null>(0);
+  const setPointBookmarkData = (id: number, modified: PointBookmarkData | undefined) => {
+    if (modified === undefined) {
+      const nextActive = allPointBookmarks.length - 2;
+      setActivePointBookmarkID(nextActive < 0 ? null : nextActive);
+      setAllPointBookmarks(allPointBookmarks.filter((_, index) => index !== id))
+      // TODO: Set a parameter somewhere that lets backend know to delete those files
+      return;
+    }
+
+    if (id === -1) {
+      setActivePointBookmarkID(allPointBookmarks.length);
+      setAllPointBookmarks([...allPointBookmarks, modified]);
+      return;
+    }
+
+    if (0 <= id && id < allPointBookmarks.length) {
+      const newBookmarkData = [...allPointBookmarks];
+      newBookmarkData[id] = modified;
+      setAllPointBookmarks(newBookmarkData);
+      return;
+    }
+  }
+
   const [allPointPolygons, setAllPointPolygons] = useState<PointPolygonData[]>([
     {
       name: "Example A",
@@ -66,6 +108,7 @@ function LocationViewerPage() {
     },
   ])
 
+  const [activePolygonID, setActiveAreaID] = useState<number | null>(0);
   const setPointPolygonData = (id: number, modified: PointPolygonData | undefined) => {
     if (modified === undefined) {
       const newActiveAreaID = allPointPolygons.length - 2;
@@ -101,7 +144,7 @@ function LocationViewerPage() {
         { id: 2, x: 1050, y: 550, elevation: 20 },
       ]
     },
-        {
+    {
       name: "imported path",
       color: "#e25b1d",
       wasImported: true,
@@ -114,9 +157,9 @@ function LocationViewerPage() {
     }
   ])
 
-  
+
   const [activePathID, setActivePathID] = useState<number | null>(0);
-  const setPointPathData = (id:number, modified: PointPathData | undefined) => {
+  const setPointPathData = (id: number, modified: PointPathData | undefined) => {
     if (modified === undefined) {
       const newActivePathID = allPointPaths.length - 2;
       setActivePathID(newActivePathID < 0 ? null : newActivePathID);
@@ -230,12 +273,25 @@ function LocationViewerPage() {
 
     pointPathVertexRadius: 6,
     pointPathStrokeWidth: 4,
-    displayPointPaths:true,
+    displayPointPaths: true,
 
     displayImageMaps: true,
   })
 
   const inspectors: Record<InspectorModes, ReactNode> = {
+    [InspectorModes.PointBookmarkInspector]: (<PointBookMarkInspector
+      activePointBookmarkID={activePointBookmarkID}
+      pointBookmarks={allPointBookmarks}
+
+      setActivePointBookmarkID={setActivePointBookmarkID}
+      setPointBookmarkData={setPointBookmarkData}
+
+      activeToolMode={activeToolMode}
+      setActiveToolMode={setActiveToolMode}
+
+      renderData={renderData}
+      setRenderData={setRenderData}
+    />),
     [InspectorModes.PointPolygonInspector]: (<AreaEditorPanel
       pointPolygons={allPointPolygons}
       setPointPolygonData={setPointPolygonData}
@@ -287,9 +343,9 @@ function LocationViewerPage() {
     if (inspector === newInspector) {
       setShowInspector(!showInspector);
       return;
-    } 
-    
-    if(newInspector === InspectorModes.PointPolygonInspector) {
+    }
+
+    if (newInspector === InspectorModes.PointPolygonInspector) {
       setActiveToolMode(ToolModes.PointPolygonAppend);
     }
 
@@ -309,6 +365,7 @@ function LocationViewerPage() {
           <HStack>
             <Toolbar
               upperElements={[
+                { text: "Point Bookmark Editor", icon: (<QuestionMarkSVG color="white" width={"12"} />), mode: InspectorModes.PointBookmarkInspector },
                 { text: "Point Polygon Editor", icon: (<PointPolygonSVG color="white" width={"20"} />), mode: InspectorModes.PointPolygonInspector },
                 // { text: "Polygon Group Editor", icon: (<GroupSVG color="white" width={"22"} />), mode: InspectorModes.GroupInspector },
                 { text: "Path Editor", icon: (<PathSVG color="white" width={"22"} />), mode: InspectorModes.PathInspector },
@@ -350,6 +407,9 @@ function LocationViewerPage() {
               activeToolMode={activeToolMode}
               activePointPolygonID={activePolygonID ?? -1}
               renderData={renderData}
+
+              pointBookmarks={allPointBookmarks}
+              setPointBookmarks={setPointBookmarkData}
 
               pointFields={allPointFields}
               setPointField={setPointFieldData}

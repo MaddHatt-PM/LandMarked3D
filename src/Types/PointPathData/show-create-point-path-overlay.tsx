@@ -45,12 +45,6 @@ const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
         onChange={(o) => { setName(o) }}
       />
 
-      <TextField
-        label="Collection:"
-        initialText={group}
-        onChange={(o) => { setGroup(o) }}
-      />
-
     </BaseOverlay>
   )
 }
