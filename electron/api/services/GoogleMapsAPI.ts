@@ -3,7 +3,7 @@ import { ApiBase } from "../APIBase"
 
 const getElevationData: GetDataFromPoint = {
   name: "Elevation from Points",
-  description: "",
+  description: "Projection method: Mercator",
   modifiedKeys: ["elevation"],
   requestCostType: RequestCostType.perRequest,
 

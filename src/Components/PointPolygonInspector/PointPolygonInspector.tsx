@@ -172,8 +172,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                 }}
               />
 
-
-
               <InspectorButton
                 buttonText="Reset Points"
                 callback={() => {

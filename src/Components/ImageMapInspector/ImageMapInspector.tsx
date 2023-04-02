@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ChevronDownSVG, ChevronUpSVG } from "../../Assets/SVGAssets";
+import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 import { H3, HDivider } from "../InspectorComponents/Headers/Headers.styles";
 import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
+import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
 import NumberField from "../InspectorComponents/NumberField/NumberField";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
 import Panel from "../Panel/Panel";
@@ -16,8 +18,6 @@ interface ImageMapInspectorProps {
   setRenderData: (data: ViewportRenderData) => void;
 }
 const ImageMapInspector = (props: ImageMapInspectorProps) => {
-  const [allImageInfo, setImageInfo] = useState<string[][]>([]);
-
   const handleRenderToggle = (enabled: boolean) => {
     props.setRenderData({ ...props.renderData, displayImageMaps: enabled });
   }
@@ -76,7 +76,8 @@ const ImageMapInspector = (props: ImageMapInspectorProps) => {
           <div style={
             {
               opacity: imageData.isViewable ? 1.0 : 0.5,
-              filter: `grayscale(${imageData.isViewable ? 0 : 1})`
+              pointerEvents: imageData.isViewable ? 'all' : 'none',
+              filter: `grayscale(${imageData.isViewable ? 0 : 1})`,
             }
           }>
 
@@ -88,6 +89,23 @@ const ImageMapInspector = (props: ImageMapInspectorProps) => {
               step={0.01}
               hasSlider={true}
               onChange={(value) => { setOpacity(imageData, id, value) }}
+            />
+
+            <InspectorButton
+              buttonText="Rename"
+              callback={() => {
+                showRenameOverlay({
+                  modalName: "Rename Image",
+                  labelText: "Image name:",
+                  originalName: props.allImageMaps[id].name,
+                  finalizeRename: (newName: string) => {
+                    const modified = { ...props.allImageMaps[id] }
+                    modified.name = newName;
+
+                    props.setImageMapData(id, modified)
+                  }
+                })
+              }}
             />
 
             <HelpBox

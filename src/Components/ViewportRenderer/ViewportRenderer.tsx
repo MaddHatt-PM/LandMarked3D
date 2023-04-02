@@ -16,6 +16,7 @@ import PointPath from "../PointPath/PointPath";
 import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import PointBookmark from "../PointBookmark/PointBookmark";
 import isPointBookmarkInInvalidPosition from "../../Types/PointBookmarks/is-point-bookmark-in-invalid-position";
+import { sendViewportCoordinatesEvent } from "../../WindowEvents/send-viewport-coordinates";
 
 interface ViewportRendererProps {
   activeToolMode: ToolModes;
@@ -104,6 +105,12 @@ const ViewportRenderer = (props: ViewportRendererProps) => {
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const cursorHeight = 32;
+    sendViewportCoordinatesEvent({
+      pixelX: (event.clientX - translateX) / zoom,
+      pixelY: (event.clientY - translateY - cursorHeight) / zoom,
+    })
+
     if (isDragging) {
       event.preventDefault();
       const { clientX, clientY } = event;

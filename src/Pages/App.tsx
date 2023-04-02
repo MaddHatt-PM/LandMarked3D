@@ -25,7 +25,6 @@ function App() {
     const handleDismissEvent = () => { setScreenOverlayNode(null); }
     window.addEventListener(windowEvents.DismissScreenOverlay.valueOf(), handleDismissEvent);
 
-
     const cleanup = () => {
       window.removeEventListener(windowEvents.SetScreenOverlay.valueOf(), handleSetEvent as EventListener);
       window.removeEventListener(windowEvents.DismissScreenOverlay.valueOf(), handleDismissEvent);

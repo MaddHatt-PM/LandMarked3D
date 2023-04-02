@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import ViewportRenderer from "../../Components/ViewportRenderer/ViewportRenderer";
 import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
 import StatusBar from "../../Components/StatusBar/StatusBar";
@@ -12,13 +12,15 @@ import AreaEditorPanel from "../../Components/PointPolygonInspector/PointPolygon
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import { ToolModes } from "./ToolModes";
 import { PointFieldData } from "../../Types/PointFieldData";
-import SamplePointInspector from "../../Components/SamplePointInspector/SamplePointInspector";
+import SamplePointInspector from "../../Components/PointFieldInspector/PointFieldInspector";
 import ImageMapInspector from "../../Components/ImageMapInspector/ImageMapInspector";
 import PointPathInspector from "../../Components/PointPathInspector/PointPathInspector";
 import { PointPathData } from "../../Types/PointPathData";
 import { SamplePointData } from "../../Types/SamplePointData";
 import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import PointBookMarkInspector from "../../Components/PointBookmarkInspector/PointBookmarkInspector";
+import { LoadedLocationPayload } from "../../Types/LoadedLocationPayload";
+import windowEvents from "../../WindowEvents/window-events";
 
 
 enum InspectorModes {
@@ -43,7 +45,6 @@ enum InspectorModes {
 function LocationViewerPage() {
   const [inspector, setInspector] = useState(InspectorModes.PointPolygonInspector);
   const [showInspector, setShowInspector] = useState(true);
-
   const [activeToolMode, setActiveToolMode] = useState(ToolModes.PointPolygonAppend);
 
   const [allPointBookmarks, setAllPointBookmarks] = useState<PointBookmarkData[]>([
@@ -80,7 +81,8 @@ function LocationViewerPage() {
     if (0 <= id && id < allPointBookmarks.length) {
       const newBookmarkData = [...allPointBookmarks];
       newBookmarkData[id] = modified;
-      console.log(modified.point)
+      setAllPointBookmarks(newBookmarkData);
+      // console.log(modified.point)
       return;
     }
   }
@@ -197,13 +199,16 @@ function LocationViewerPage() {
     }
   ]);
 
+  const [activePointFieldID, setActivePointFieldID] = useState<number | null>(0);
   const setPointFieldData = (id: number, modified: PointFieldData | undefined) => {
     if (modified === undefined) {
       // Delete
+      console.log("TODO: setPointFieldData - delete")
       return;
     }
 
     if (id === -1) {
+      console.log("TODO: setPointFieldData - add")
       // Add new
       return;
     }
@@ -309,6 +314,12 @@ function LocationViewerPage() {
     />),
     [InspectorModes.GroupInspector]: (<NotImplementedPanel name={"Group Inspector"} />),
     [InspectorModes.SamplePointsInspector]: (<SamplePointInspector
+      activePointFieldID={activePointFieldID}
+      setActivePointFieldID={setActivePointFieldID}
+
+      pointFields={allPointFields}
+      setPointFieldData={setPointFieldData}
+
       renderData={renderData}
       setRenderData={setRenderData}
     />),
@@ -357,12 +368,37 @@ function LocationViewerPage() {
 
     if (newInspector === InspectorModes.PathInspector) {
       setActiveToolMode(ToolModes.PointPathAppend);
-      console.log("test??")
     }
 
     setInspector(newInspector);
     setShowInspector(true);
   };
+
+  
+  useEffect(()=> {
+    const handleSaveLocationToFileSystem = () => {
+      const dataToSave: LoadedLocationPayload = {
+        bookmarks: allPointBookmarks,
+        imageMaps: allImageMaps,
+        locationCorners: window.locationCorners!,
+        paths: allPointPaths,
+        polygons: allPointPolygons,
+        renderData: renderData
+      }
+
+      console.log(dataToSave);
+    }
+    console.log("happened")
+    window.addEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem)
+    
+    const cleanup = () => {
+      window.removeEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem)
+    }
+
+    return cleanup;
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -412,7 +448,7 @@ function LocationViewerPage() {
             <ViewportRenderer
               activeToolMode={activeToolMode}
               renderData={renderData}
-              
+
               activePointBookmarkID={activePointBookmarkID}
               pointBookmarks={allPointBookmarks}
               setPointBookmark={setPointBookmarkData}
@@ -420,13 +456,13 @@ function LocationViewerPage() {
               activePointPolygonID={activePolygonID}
               pointPolygons={allPointPolygons}
               setPointPolygon={setPointPolygonData}
-              
+
               pointPaths={allPointPaths}
               setPointPath={setPointPathData}
 
               pointFields={allPointFields}
               setPointField={setPointFieldData}
-              
+
               imageMaps={allImageMaps}
               setImageMap={setImageMapData}
             />

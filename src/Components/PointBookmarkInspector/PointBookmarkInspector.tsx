@@ -4,6 +4,7 @@ import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
 import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import { getPointBookmarkInfo } from "../../Types/PointBookmarks/get-point-bookmark-info";
 import showCreatePointBookmarkOverlay from "../../Types/PointBookmarks/show-create-point-bookmark-overlay";
+import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 import { AcceptPrompts, DismissPrompts } from "../BaseOverlay/BaseOverlay";
 import ConfirmationOverlay from "../ConfirmationOverlay/ConfirmationOverlay";
@@ -14,7 +15,7 @@ import InspectorButton from "../InspectorComponents/InspectorButton/InspectorBut
 import Toggle from "../InspectorComponents/Toggle/Toggle";
 import Panel from "../Panel/Panel";
 import { Divider } from "../StatusBar/StatusBar.styles";
-import { Container, Group, Wrapper } from "./PointBookmarkInspector.styles";
+import { Group, Wrapper } from "./PointBookmarkInspector.styles";
 
 interface PointBookMarkInspectorProps {
   pointBookmarks: PointBookmarkData[];
@@ -136,7 +137,24 @@ const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
               />
 
               <HDivider />
+              <InspectorButton
+                buttonText="Rename Bookmark"
+                callback={() => {
+                  showRenameOverlay({
+                    modalName: "Rename Polygon",
+                    labelText: "Polygon name",
+                    originalName: props.pointBookmarks[props.activePointBookmarkID!].name,
+                    finalizeRename: (newName: string) => {
+                      const modified = { ...props.pointBookmarks[props.activePointBookmarkID!] }
+                      modified.name = newName;
+                      console.log(modified)
+                      props.setPointBookmarkData(props.activePointBookmarkID!, modified)
+                    }
+                  })
+                }}
+              />
 
+              <HDivider />
               {generateHelpbox()}
 
             </Group>

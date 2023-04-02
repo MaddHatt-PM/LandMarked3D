@@ -1,6 +1,7 @@
 import React from "react";
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
+import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 import { PointPathData } from "../../Types/PointPathData";
 import { getPointPathInfo } from "../../Types/PointPathData/get-point-path-info";
 import showCreatePointPathOverlay from "../../Types/PointPathData/show-create-point-path-overlay";
@@ -122,6 +123,25 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                     }
                   },
                 ]}
+              />
+
+              <HDivider/>
+              
+              <InspectorButton
+                buttonText="Rename Polygon"
+                callback={() => {
+                  showRenameOverlay({
+                    modalName: "Rename Polygon",
+                    labelText: "Polygon name",
+                    originalName: props.pointPaths[props.activePointPathID!].name,
+                    finalizeRename: (newName: string) => {
+                      const newPolygon = { ...props.pointPaths[props.activePointPathID!] }
+                      newPolygon.name = newName;
+
+                      props.setPointPathData(props.activePointPathID!, newPolygon)
+                    }
+                  })
+                }}
               />
 
             </Group>

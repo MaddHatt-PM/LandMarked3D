@@ -8,6 +8,7 @@ import Detail from "../InspectorComponents/Detail/Detail";
 import TextField from "../TextField/TextField";
 import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
 import Toggle from "../InspectorComponents/Toggle/Toggle";
+import { saveLocationToFileSystem } from "../../WindowEvents/save-location-to-file-system";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -66,6 +67,14 @@ const UITestPanel = () => {
         <HelpBox
           title="Helpbox"
           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed odio magna, imperdiet eu tincidunt ut, volutpat. "
+        />
+
+        <HDivider/>
+        <HDivider/>
+
+        <InspectorButton
+        buttonText="Save Location to File System"
+        callback={saveLocationToFileSystem}
         />
       </>
     )} />
