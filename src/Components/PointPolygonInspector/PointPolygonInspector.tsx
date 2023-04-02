@@ -14,6 +14,7 @@ import showDeletePointPolygonOverlay from "../../Types/PointPolygonData/show-del
 import showCreatePointPolygonOverlay from "../../Types/PointPolygonData/show-create-point-polygon-overlay";
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { Divider } from "../StatusBar/StatusBar.styles";
+import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
@@ -37,7 +38,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
   ]
 
   const handleToolModeChange = (newTool: ToolModes) => {
-    
+
     props.setActiveToolMode(newTool);
   }
 
@@ -105,7 +106,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                           fill={item.color}
                         />
                       </svg>
-                      {id}  <Divider style={{margin:"0 4px", opacity:0.3}}/>  {item.name}
+                      {id}  <Divider style={{ margin: "0 4px", opacity: 0.3 }} />  {item.name}
                     </span>)
                 }}
                 onSelect={(newAreaID) => { props.setActivePointPolygonID(newAreaID) }}
@@ -155,7 +156,22 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
               <HDivider />
 
               <InspectorButton
-              
+                buttonText="Rename Polygon"
+                callback={() => {
+                  showRenameOverlay({
+                    modalName: "Rename Polygon",
+                    labelText: "Polygon name",
+                    originalName: props.pointPolygons[props.activePointPolygonID!].name,
+                    finalizeRename: (newName: string) => {
+                      const newPolygon = { ...props.pointPolygons[props.activePointPolygonID!] }
+                      newPolygon.name = newName;
+                      
+                      props.setPointPolygonData(props.activePointPolygonID!, newPolygon)
+                    }
+                  })
+                }}
+              />
+
 
 
               <InspectorButton
