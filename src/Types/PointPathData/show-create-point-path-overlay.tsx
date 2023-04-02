@@ -21,7 +21,6 @@ interface CreatePointPathOverlayProps {
 
 const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
   const [name, setName] = useState("name");
-  const [group, setGroup] = useState("");
 
   return (
     <BaseOverlay

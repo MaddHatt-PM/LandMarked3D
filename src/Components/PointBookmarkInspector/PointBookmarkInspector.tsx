@@ -18,8 +18,9 @@ import { Container, Group, Wrapper } from "./PointBookmarkInspector.styles";
 
 interface PointBookMarkInspectorProps {
   pointBookmarks: PointBookmarkData[];
-  activePointBookmarkID: number | null
   setPointBookmarkData: (id: number, modified: PointBookmarkData | undefined) => void;
+  
+  activePointBookmarkID: number | null
   setActivePointBookmarkID: (id: number) => void;
 
   activeToolMode: ToolModes;
@@ -27,7 +28,6 @@ interface PointBookMarkInspectorProps {
 
   renderData: ViewportRenderData;
   setRenderData: (data: ViewportRenderData) => void;
-
 }
 
 const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
@@ -100,7 +100,7 @@ const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
                       {id}  <Divider style={{ margin: "0 4px", opacity: 0.3 }} />  {item.name}
                     </span>)
                 }}
-                onSelect={(newPointPath) => { props.setActivePointBookmarkID(newPointPath) }}
+                onSelect={(newBookmark) => { props.setActivePointBookmarkID(newBookmark) }}
                 leadingButtons={[
                   // {
                   //   icon: (<SelectSVG width={12} height={12} />), text: "Select area from viewport", callback: () => {
@@ -146,15 +146,12 @@ const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
         {props.activePointBookmarkID === null &&
           <>
             <InspectorButton
-              buttonText={"Create new Point Path"}
+              buttonText={"Create new Point Bookmark"}
               callback={() => {
                 showCreatePointBookmarkOverlay({
                   setPointBookmark: props.setPointBookmarkData
                 });
               }}
-            />
-            <HelpBox
-              text={"Create a new area to get started"}
             />
           </>
         }

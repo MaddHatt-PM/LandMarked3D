@@ -4,6 +4,7 @@ import TextField from "../../Components/TextField/TextField";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 import { PointBookmarkData } from "../PointBookmarkData";
 import { PointPolygonData } from "../PointPolygonData";
+import { invalidBookmarkPosition } from "./is-point-bookmark-in-invalid-position";
 
 interface ShowCreatePointBookmarkOverlayProps {
   setPointBookmark: (id: number, data: PointBookmarkData | undefined) => void;
@@ -36,8 +37,8 @@ const CreatePointPolygonOverlay = (props: CreatePointBookmarkOverlayProps) => {
             iconName: "",
             point: {
               id: 0,
-              x: -10000,
-              y: -10000,
+              x: invalidBookmarkPosition.x,
+              y: invalidBookmarkPosition.y,
               elevation: 0,
             }
           }

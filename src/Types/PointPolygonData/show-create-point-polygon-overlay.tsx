@@ -15,6 +15,8 @@ const showCreatePointPolygonOverlay = (props: ShowCreatePointPolygonOverlayProps
   setScreenOverlayEvent({ overlay });
 }
 
+export default showCreatePointPolygonOverlay;
+
 interface CreatePointPolygonOverlayProps {
   setPointPolygon: (id: number, modified: PointPolygonData | undefined) => void;
 }
@@ -41,13 +43,13 @@ const CreatePointPolygonOverlay = (props: CreatePointPolygonOverlayProps) => {
       <TextField
         label="Point Polygon Name:"
         initialText={name}
-        onChange={(o) => { setName(o) }}
+        onChange={o => setName(o)}
       />
 
       <TextField
         label="Group:"
         initialText={group}
-        onChange={(o) => { setGroup(o) }}
+        onChange={o => setGroup(o)}
       />
 
     </BaseOverlay>
@@ -55,5 +57,3 @@ const CreatePointPolygonOverlay = (props: CreatePointPolygonOverlayProps) => {
 }
 
 
-
-export default showCreatePointPolygonOverlay;

@@ -92,7 +92,6 @@ const PointPolygon = (props: PointPolygonProps) => {
   }
 
   return (
-    <>
       <svg
         width="100%"
         height="100%"
@@ -193,7 +192,6 @@ const PointPolygon = (props: PointPolygonProps) => {
           />
         }
       </svg>
-    </>
   );
 };
 

@@ -50,12 +50,12 @@ function LocationViewerPage() {
     {
       name: "Starting area",
       description: "",
-      color: "#000",
+      color: "#2ae2d9",
       iconName: "star",
       point: {
         id: 0,
-        x: 1200,
-        y: 1200,
+        x: 800,
+        y: 800,
         elevation: 10
       }
     }
@@ -80,7 +80,7 @@ function LocationViewerPage() {
     if (0 <= id && id < allPointBookmarks.length) {
       const newBookmarkData = [...allPointBookmarks];
       newBookmarkData[id] = modified;
-      setAllPointBookmarks(newBookmarkData);
+      console.log(modified.point)
       return;
     }
   }
@@ -275,6 +275,8 @@ function LocationViewerPage() {
     pointPathStrokeWidth: 4,
     displayPointPaths: true,
 
+    displayPointBookmarks: true,
+
     displayImageMaps: true,
   })
 
@@ -345,6 +347,10 @@ function LocationViewerPage() {
       return;
     }
 
+    if (newInspector === InspectorModes.PointBookmarkInspector) {
+      setActiveToolMode(ToolModes.PointBookmarkGeneral);
+    }
+
     if (newInspector === InspectorModes.PointPolygonInspector) {
       setActiveToolMode(ToolModes.PointPolygonAppend);
     }
@@ -405,21 +411,22 @@ function LocationViewerPage() {
             }
             <ViewportRenderer
               activeToolMode={activeToolMode}
-              activePointPolygonID={activePolygonID ?? -1}
               renderData={renderData}
-
+              
+              activePointBookmarkID={activePointBookmarkID}
               pointBookmarks={allPointBookmarks}
-              setPointBookmarks={setPointBookmarkData}
+              setPointBookmark={setPointBookmarkData}
 
-              pointFields={allPointFields}
-              setPointField={setPointFieldData}
-
+              activePointPolygonID={activePolygonID}
+              pointPolygons={allPointPolygons}
+              setPointPolygon={setPointPolygonData}
+              
               pointPaths={allPointPaths}
               setPointPath={setPointPathData}
 
-              pointPolygons={allPointPolygons}
-              setPointPolygon={setPointPolygonData}
-
+              pointFields={allPointFields}
+              setPointField={setPointFieldData}
+              
               imageMaps={allImageMaps}
               setImageMap={setImageMapData}
             />

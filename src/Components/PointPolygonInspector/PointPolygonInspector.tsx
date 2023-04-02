@@ -155,6 +155,10 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
               <HDivider />
 
               <InspectorButton
+              
+
+
+              <InspectorButton
                 buttonText="Reset Points"
                 callback={() => {
                   showResetPointPolygonOverlay({

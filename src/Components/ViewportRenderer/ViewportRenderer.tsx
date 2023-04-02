@@ -14,17 +14,19 @@ import ImageView from "../ImageView/ImageView";
 import { PointPathData } from "../../Types/PointPathData";
 import PointPath from "../PointPath/PointPath";
 import { PointBookmarkData } from "../../Types/PointBookmarkData";
+import PointBookmark from "../PointBookmark/PointBookmark";
+import isPointBookmarkInInvalidPosition from "../../Types/PointBookmarks/is-point-bookmark-in-invalid-position";
 
 interface ViewportRendererProps {
   activeToolMode: ToolModes;
-  activePointPolygonID: number;
 
   renderData: ViewportRenderData;
-  // setRenderData: (data: ViewportRenderData) => void;
 
+  activePointBookmarkID: number | null;
   pointBookmarks: PointBookmarkData[];
-  setPointBookmarks: (id: number, polygon: PointBookmarkData | undefined) => void;
+  setPointBookmark: (id: number, polygon: PointBookmarkData | undefined) => void;
 
+  activePointPolygonID: number | null;
   pointPolygons: PointPolygonData[];
   setPointPolygon: (id: number, polygon: PointPolygonData | undefined) => void;
 
@@ -82,6 +84,21 @@ const ViewportRenderer = (props: ViewportRendererProps) => {
           indexToRemove: activePointPolygon.points.length - 1,
           setPointPolygon: props.setPointPolygon
         })
+      }
+    }
+
+    if (props.activeToolMode === ToolModes.PointBookmarkGeneral) {
+      const activeBookmarkID = props.activePointBookmarkID;
+      if (activeBookmarkID !== null && isPointBookmarkInInvalidPosition(props.pointBookmarks[activeBookmarkID])) {
+        const modified = { ...props.pointBookmarks[activeBookmarkID] };
+
+        const cursorHeight = 32;
+        modified.point.x = (event.clientX - translateX) / zoom;
+        modified.point.y = (event.clientY - translateY - cursorHeight) / zoom;
+
+        props.setPointBookmark(props.activePointBookmarkID!, modified);
+        // x: (event.clientX - translateX) / zoom,
+        //   y: (event.clientY - translateY - cursorHeight) / zoom,
       }
     }
   };
@@ -194,6 +211,24 @@ const ViewportRenderer = (props: ViewportRendererProps) => {
             )
           })
         }
+
+        {props.renderData.displayPointBookmarks &&
+          props.pointBookmarks?.map((bookmark, id) => {
+            return (
+              <PointBookmark
+                key={id}
+                data={bookmark}
+                position={{ x: translateX, y: translateY }}
+                zoom={zoom}
+                isAlreadyDragging={isDragging}
+                renderData={props.renderData}
+                id={id}
+                activeToolMode={props.activeToolMode}
+                isActive={id === props.activePointBookmarkID}
+                setPointBookmark={props.setPointBookmark}
+              />
+            )
+          })}
       </TransformableDiv>
 
     </Container>

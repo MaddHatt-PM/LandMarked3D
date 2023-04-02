@@ -138,9 +138,6 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                 });
               }}
             />
-            <HelpBox
-              text={"Create a new area to get started"}
-            />
           </>
         }
       </div>

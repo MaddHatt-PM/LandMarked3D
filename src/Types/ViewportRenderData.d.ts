@@ -10,5 +10,7 @@ declare interface ViewportRenderData {
   pointPathStrokeWidth: number;
   displayPointPaths: boolean;
 
+  displayPointBookmarks: boolean;
+  
   displayImageMaps: boolean;
 }

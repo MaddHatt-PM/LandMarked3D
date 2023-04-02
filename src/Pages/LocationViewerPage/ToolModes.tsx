@@ -1,4 +1,6 @@
 export enum ToolModes {
+  PointBookmarkGeneral = "PointBookmarkGeneral",
+
   PointPolygonAppend = "PointPolygonAppend",
   PointPolygonInsert = "PointPolygonInsert",
   PointPolygonTransform = "PointsPolygonTransform",
@@ -15,6 +17,12 @@ interface ToolModeDetailProps {
 }
 
 export const ToolModeDetails: Record<ToolModes, ToolModeDetailProps> = {
+  [ToolModes.PointBookmarkGeneral]: {
+    displayName: "Point Bookmark General",
+    tooltip: "TODO",
+    displayNode: <>PointBookmarkGeneral</>,
+  },
+
   [ToolModes.PointPolygonAppend]: {
     displayName: "Append point",
     tooltip: "TODO",
@@ -70,4 +78,12 @@ export const isPathTool = (toolMode: ToolModes) => {
   ];
   
   return pathTools.includes(toolMode);
+}
+
+export const isBookmarkTool = (toolMode: ToolModes) => {
+  const bookmarkTools: ToolModes[] = [
+    ToolModes.PointBookmarkGeneral,
+  ];
+
+  return bookmarkTools.includes(toolMode);
 }
