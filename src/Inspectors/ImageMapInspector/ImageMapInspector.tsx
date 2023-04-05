@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { ChevronDownSVG, ChevronUpSVG } from "../../Assets/SVGAssets";
 import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
-import { H3, HDivider } from "../InspectorComponents/Headers/Headers.styles";
-import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
-import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
-import NumberField from "../InspectorComponents/NumberField/NumberField";
-import Toggle from "../InspectorComponents/Toggle/Toggle";
-import Panel from "../Panel/Panel";
+import { H3, HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
+import InspectorButton from "../../Components/InspectorComponents/InspectorButton/InspectorButton";
+import NumberField from "../../Components/InspectorComponents/NumberField/NumberField";
+import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
+import Panel from "../../Components/Panel/Panel";
 import { SideButton } from "./ImageMapInspector.styles";
 
 interface ImageMapInspectorProps {

@@ -1,11 +1,11 @@
 import React from "react";
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { PointFieldData } from "../../Types/PointFieldData";
-import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
-import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
-import Toggle from "../InspectorComponents/Toggle/Toggle";
-import Panel from "../Panel/Panel";
-import { Divider } from "../StatusBar/StatusBar.styles";
+import Dropdown from "../../Components/InspectorComponents/Dropdown/Dropdown";
+import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
+import Panel from "../../Components/Panel/Panel";
+import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Container, Group, Wrapper } from "./PointFieldInspector.styles";
 
 interface SamplePointInspectorProps {

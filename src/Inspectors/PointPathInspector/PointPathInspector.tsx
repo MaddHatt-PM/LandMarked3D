@@ -6,13 +6,13 @@ import { PointPathData } from "../../Types/PointPathData";
 import { getPointPathInfo } from "../../Types/PointPathData/get-point-path-info";
 import showCreatePointPathOverlay from "../../Types/PointPathData/show-create-point-path-overlay";
 import showDeletePointPathOverlay from "../../Types/PointPathData/show-delete-point-path-overlay";
-import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
-import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
-import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
-import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
-import Toggle from "../InspectorComponents/Toggle/Toggle";
-import Panel from "../Panel/Panel";
-import { Divider } from "../StatusBar/StatusBar.styles";
+import Dropdown from "../../Components/InspectorComponents/Dropdown/Dropdown";
+import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
+import InspectorButton from "../../Components/InspectorComponents/InspectorButton/InspectorButton";
+import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
+import Panel from "../../Components/Panel/Panel";
+import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Group, Wrapper } from "./PointPathInspector.styles";
 
 interface PointPathInspectorProps {

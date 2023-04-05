@@ -1,13 +1,13 @@
 import React from "react";
-import Panel from "../Panel/Panel";
-import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
-import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
-import { H1, H2, H3, HDivider, Text } from "../InspectorComponents/Headers/Headers.styles";
-import NumberField from "../InspectorComponents/NumberField/NumberField";
-import Detail from "../InspectorComponents/Detail/Detail";
-import TextField from "../TextField/TextField";
-import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
-import Toggle from "../InspectorComponents/Toggle/Toggle";
+import Panel from "../../Components/Panel/Panel";
+import InspectorButton from "../../Components/InspectorComponents/InspectorButton/InspectorButton";
+import Dropdown from "../../Components/InspectorComponents/Dropdown/Dropdown";
+import { H1, H2, H3, HDivider, Text } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import NumberField from "../../Components/InspectorComponents/NumberField/NumberField";
+import Detail from "../../Components/InspectorComponents/Detail/Detail";
+import TextField from "../../Components/TextField/TextField";
+import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
+import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
 import { saveLocationToFileSystem } from "../../WindowEvents/save-location-to-file-system";
 
 interface UITestPanelProps { }

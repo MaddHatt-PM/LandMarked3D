@@ -1,19 +1,19 @@
 import { ToolModeDetails, ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
 import { PointPolygonData } from "../../Types/PointPolygonData";
 import { getPointPolygonInfo } from "../../Types/PointPolygonData/get-point-polygon-info";
-import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
-import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
-import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
-import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
-import Panel from "../Panel/Panel";
-import SegmentedSwitch from "../SegmentedSwitch/SegmentedSwitch";
+import Dropdown from "../../Components/InspectorComponents/Dropdown/Dropdown";
+import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
+import InspectorButton from "../../Components/InspectorComponents/InspectorButton/InspectorButton";
+import Panel from "../../Components/Panel/Panel";
+import SegmentedSwitch from "../../Components/SegmentedSwitch/SegmentedSwitch";
 import { Group, Wrapper } from "./PointPolygonInspector.styles";
-import Toggle from "../InspectorComponents/Toggle/Toggle";
+import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
 import showResetPointPolygonOverlay from "../../Types/PointPolygonData/show-reset-point-polygon-overlay";
 import showDeletePointPolygonOverlay from "../../Types/PointPolygonData/show-delete-point-polygon-overlay";
 import showCreatePointPolygonOverlay from "../../Types/PointPolygonData/show-create-point-polygon-overlay";
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
-import { Divider } from "../StatusBar/StatusBar.styles";
+import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 
 interface PointPolygonInspectorProps {

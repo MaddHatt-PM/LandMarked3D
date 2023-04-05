@@ -6,15 +6,15 @@ import { getPointBookmarkInfo } from "../../Types/PointBookmarks/get-point-bookm
 import showCreatePointBookmarkOverlay from "../../Types/PointBookmarks/show-create-point-bookmark-overlay";
 import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import { AcceptPrompts, DismissPrompts } from "../BaseOverlay/BaseOverlay";
-import ConfirmationOverlay from "../ConfirmationOverlay/ConfirmationOverlay";
-import Dropdown from "../InspectorComponents/Dropdown/Dropdown";
-import { HDivider } from "../InspectorComponents/Headers/Headers.styles";
-import HelpBox from "../InspectorComponents/HelpBox/HelpBox";
-import InspectorButton from "../InspectorComponents/InspectorButton/InspectorButton";
-import Toggle from "../InspectorComponents/Toggle/Toggle";
-import Panel from "../Panel/Panel";
-import { Divider } from "../StatusBar/StatusBar.styles";
+import { AcceptPrompts, DismissPrompts } from "../../Components/BaseOverlay/BaseOverlay";
+import ConfirmationOverlay from "../../Components/ConfirmationOverlay/ConfirmationOverlay";
+import Dropdown from "../../Components/InspectorComponents/Dropdown/Dropdown";
+import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
+import InspectorButton from "../../Components/InspectorComponents/InspectorButton/InspectorButton";
+import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
+import Panel from "../../Components/Panel/Panel";
+import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Group, Wrapper } from "./PointBookmarkInspector.styles";
 
 interface PointBookMarkInspectorProps {

@@ -1,6 +1,6 @@
 import React from "react";
-import { H3 } from "../InspectorComponents/Headers/Headers.styles";
-import Panel from "../Panel/Panel";
+import { H3 } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import Panel from "../../Components/Panel/Panel";
 import { Container } from "./NotImplementedPanel.styles";
 
 interface NotImplentedPanelProps {
