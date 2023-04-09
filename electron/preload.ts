@@ -14,7 +14,7 @@ for (let i = 0; i < requestEvents.length; i++) {
   }
 }
 
-let responseEvents = Object.values(toRendererEvents);
+let responseEvents:any[] = Object.values(toRendererEvents);
 for (let i = 0; i < responseEvents.length; i++) {
   const item: any = responseEvents[i];
 
@@ -30,7 +30,7 @@ for (let i = 0; i < responseEvents.length; i++) {
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
   "api", {
-  request: (message: any, data: any) => {
+  request: (message: any, data?: any) => {
     if (requestEvents.includes(message)) {
       ipcRenderer.send(message, data);
 

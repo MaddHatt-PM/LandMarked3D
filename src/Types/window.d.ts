@@ -4,7 +4,8 @@ declare global {
   interface Window {
     locationCorners: LocationCorners | undefined;
     api: {
-      request: (params: any) => void;
+      request: (eventname: string, data?:any) => void;
+      // request: (eventname: string, data: any) => void;
     };
   }
 }

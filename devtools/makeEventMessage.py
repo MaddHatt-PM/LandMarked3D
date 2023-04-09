@@ -50,8 +50,8 @@ if key_name[0].isalpha() == False:
 """Prepare files"""
 fromRendererPath = Path("../electron/events/ipc-from-renderer-events.ts")
 toRendererPath = Path("../electron/events/ipc-to-renderer-events.ts")
-fromMainPath = Path("../src/Events/ipc-from-main-events.ts")
-toMainPath = Path("../src/Events/ipc-to-main-events.ts")
+fromMainPath = Path("../src/IPCEvents/ipc-from-main-events.ts")
+toMainPath = Path("../src/IPCEvents/ipc-to-main-events.ts")
 
 if event_direction == "toMain":
     targets = [fromRendererPath, toMainPath]

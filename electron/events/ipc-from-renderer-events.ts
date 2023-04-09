@@ -11,4 +11,5 @@ export const fromRendererEvents = {
     activate: 'activate',
     secondInstance: 'second-instance',
   },
+  saveLocation: 'save-location',
 };

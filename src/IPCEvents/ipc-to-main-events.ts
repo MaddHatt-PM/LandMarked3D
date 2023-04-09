@@ -11,6 +11,7 @@ const toMainEvents = {
     activate: 'activate',
     secondInstance: 'second-instance',
   },
+  saveLocation: 'save-location',
 };
 
 export default toMainEvents;

@@ -9,9 +9,14 @@ import TextField from "../../Components/TextField/TextField";
 import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
 import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
 import { saveLocationToFileSystem } from "../../WindowEvents/save-location-to-file-system";
+import toMainEvents from "../../IPCEvents/ipc-to-main-events";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
+
+  const saveLocation = () => {
+    window.api.request(toMainEvents.saveLocation, {data: "name"});
+  }
 
   return (
     <Panel children={(
@@ -74,7 +79,7 @@ const UITestPanel = () => {
 
         <InspectorButton
         buttonText="Save Location to File System"
-        callback={saveLocationToFileSystem}
+          callback={saveLocation}
         />
       </>
     )} />

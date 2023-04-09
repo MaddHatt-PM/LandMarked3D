@@ -95,11 +95,11 @@ function createWindow() {
       window.maximize();
     }
   });
-
+  
   ipcMain.on(fromRenderer.systems.toggleAlwaysOnTop, function (event) {
     window.setAlwaysOnTop(!window.isAlwaysOnTop())
   })
-
+  
   ipcMain.on(fromRenderer.systems.closeWindow, function (event) {
     if (window.id === 1) {
       store.set('windowBounds', window.getBounds());
@@ -108,6 +108,13 @@ function createWindow() {
     console.log('saved info')
     window.close();
   });
+  
+  // ------------------------------
+  // ----File-System-Events--------
+  ipcMain.on(fromRenderer.saveLocation, function (event, props) {
+    // console.log(event);
+    console.log(props.data);
+  })
 }
 
 
