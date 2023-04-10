@@ -8,12 +8,12 @@ import { loadLocationFromExplorer } from './systems/load-location-from-explorer'
 import { loadLocationWithKnownPath } from './systems/load-location-with-known-path';
 import { pickDirectory } from './systems/pick-directory';
 
-import * as fs from 'fs'
 import { checkDirectoryForProjectFile } from './systems/check-directory-for-project-file';
 import getPreferencesStore from './stores/get-preferences-store';
 import { requestRecentLocations } from './requestRecentLocations';
 import { fstat } from 'fs';
-import { toRendererEvents } from './events/ipc-to-renderer-events';
+import { clearRecentProjects } from './stores/get-recent-locations-store';
+import { cloneLocation } from './systems/clone-location';
 
 require('dotenv').config();
 
@@ -137,37 +137,14 @@ function createWindow() {
   ipcMain.on(fromRenderer.requestRecentLocations, (_) => {
     requestRecentLocations(window);
   })
+  
+  ipcMain.on(fromRenderer.clearRecentProjects, (_)=> {
+    clearRecentProjects();
+    requestRecentLocations(window);
+  })
 
   ipcMain.on(fromRenderer.cloneLocation, (_, args) => {
-    const sourcePath = args.sourcePath;
-    const destinationPath = args.destinationPath;
-
-    console.log(sourcePath)
-    console.log(destinationPath)
-
-    return fs.promises.readdir(sourcePath)
-      .then(files => {
-        return fs.promises.mkdir(destinationPath, {recursive: true})
-          .then(() => {
-            return Promise.all(files.map((f) => {
-              const srcFile = path.join(sourcePath, f);
-              const destFile = path.join(destinationPath, f);
-              return fs.promises.copyFile(srcFile, destFile);
-            }));
-          });
-      })
-      .then(() => {
-        window.webContents.send(toRendererEvents.cloneLocationReport, {
-          code: 100
-        })
-      })
-      .catch(err => {
-        console.error('Error duplicating project:', err);
-        window.webContents.send(toRendererEvents.cloneLocationReport, {
-          code: 500,
-          error: err
-        })
-      });
+    cloneLocation(args.sourcePath, args.destinationPath, window);
   })
 }
 

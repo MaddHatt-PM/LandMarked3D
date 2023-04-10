@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { toRendererEvents } from '../events/ipc-to-renderer-events';
-import { pushNewLocation } from '../stores/get-recent-locations-store';
+import { getRecentLocations, pushNewLocation as pushNewLocationToRecent } from '../stores/get-recent-locations-store';
 import loadLocation from './load-location';
 
 export function loadLocationWithKnownPath(window: BrowserWindow, filepath: any) {
@@ -18,11 +18,13 @@ export function loadLocationWithKnownPath(window: BrowserWindow, filepath: any) 
         timeout: 2000
       });
 
+
       window.webContents.send(toRendererEvents.loadLocation, {
         data: data
       });
 
-      pushNewLocation({name: data.name, filepath:filepath})
+      pushNewLocationToRecent({ name: data.name, filepath: filepath })
+      console.log(getRecentLocations)
     })
     .catch((err) => {
       if (err.message === 'Timeout exceeded') {

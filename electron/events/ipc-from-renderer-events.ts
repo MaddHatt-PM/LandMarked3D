@@ -22,4 +22,5 @@ export const fromRendererEvents = {
   requestRecentLocations: 'request-recent-locations',
   loadTestLocation: 'load-test-location',
   cloneLocation: 'clone-location',
+  clearRecentProjects: 'clear-recent-projects',
 };

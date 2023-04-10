@@ -16,6 +16,9 @@ import checkDirectoryForProjectFile from "../../Utilities/file-io/check-director
 import fromMainEvents from "../../IPCEvents/ipc-from-main-events";
 import pickDirectory from "../../Utilities/file-io/pick-directory";
 import cloneProject from "../../Utilities/file-io/clone-project";
+import revertProjectToFile from "../../Utilities/file-io/revert-project-to-file";
+import getRecentLocations from "../../Utilities/file-io/get-recent-locations";
+import clearRecentLocations from "../../Utilities/file-io/clear-recent-locations";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -32,6 +35,10 @@ const UITestPanel = () => {
   window.api.response(fromMainEvents.checkDirectoryForProjectReport, (args: any) => {
     console.log(args)
   })
+
+  window.api.response(fromMainEvents.requestRecentLocations, (args: any) => {
+    console.log(args)
+  }) 
 
   return (
     <Panel>
@@ -107,6 +114,25 @@ const UITestPanel = () => {
       />
 
       <InspectorButton
+        buttonText="Revert Changes"
+        callback={revertProjectToFile}
+      />
+
+      <HDivider />
+
+      <InspectorButton
+        buttonText="Get recent files"
+        callback={getRecentLocations}
+      />
+
+      <InspectorButton
+        buttonText="Clear recent locations"
+        callback={clearRecentLocations}
+      />
+
+      <HDivider />
+
+      <InspectorButton
         buttonText="Pick directory"
         callback={() => {
           pickDirectory(fromMainEvents.pickDirectoryReport);
@@ -128,10 +154,10 @@ const UITestPanel = () => {
       />
 
       <InspectorButton
-      buttonText="Clone project to selected directory"
-        callback={()=> {
+        buttonText="Clone project to selected directory"
+        callback={() => {
           if (selectedDirPath) {
-            cloneProject({sourcePath: window.projectPath, destinationPath: selectedDirPath })
+            cloneProject({ sourcePath: window.projectDirpath, destinationPath: selectedDirPath })
           }
         }}
       />

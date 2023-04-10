@@ -5,7 +5,8 @@ declare global {
   interface Window {
     locationCorners: LocationCorners | undefined;
     pixelSize: {width: number, height: number};
-    projectPath: string;
+    projectDirpath: string;
+    projectFilepath: string;
     
     remote: any;
     api: {

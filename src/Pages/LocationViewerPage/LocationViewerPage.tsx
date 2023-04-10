@@ -24,6 +24,7 @@ import windowEvents from "../../WindowEvents/window-events";
 import toMainEvents from "../../IPCEvents/ipc-to-main-events";
 import fromMainEvents from "../../IPCEvents/ipc-from-main-events";
 import { webContents } from "electron";
+import setLocationNameEvent from "../../WindowEvents/set-location-name";
 // import { ipcRenderer } from "electron";
 
 
@@ -54,7 +55,13 @@ enum LocationStates {
   ErroredOnLoad,
 }
 
+interface LocationViewerPageProps {
+  projectPath: string;
+}
+
 function LocationViewerPage() {
+  const [locationName, setLocationName] = useState("");
+  const [projectDirpath, setProjectDirPath] = useState("D:\terrain-viewer\save-tests\testing-region")
   const [locationState, setLocationState] = useState(LocationStates.NotLoaded);
 
   const [isDirty, setIsDirty] = useState(false);
@@ -68,24 +75,9 @@ function LocationViewerPage() {
   const [showInspector, setShowInspector] = useState(true);
   const [activeToolMode, setActiveToolMode] = useState(ToolModes.PointPolygonAppend);
 
-  const [locationName, setLocationName] = useState("");
-  const [projectPath, setProjectPath] = useState("D:\terrain-viewer\save-tests\testing-region")
 
-  const [allPointBookmarks, setAllPointBookmarks] = useState<PointBookmarkData[]>([
-    {
-      name: "Starting area",
-      description: "",
-      color: "#2ae2d9",
-      iconName: "star",
-      point: {
-        id: 0,
-        x: 800,
-        y: 800,
-        elevation: 10
-      }
-    }
-  ]);
-
+  /* ----Point-Bookmarks---- */
+  const [allPointBookmarks, setAllPointBookmarks] = useState<PointBookmarkData[]>([]);
   const [activePointBookmarkID, setActivePointBookmarkID] = useState<number | null>(0);
   const setPointBookmarkData = (id: number, modified: PointBookmarkData | undefined) => {
     handleSetIsDirty(true);
@@ -112,29 +104,8 @@ function LocationViewerPage() {
     }
   }
 
-  const [allPointPolygons, setAllPointPolygons] = useState<PointPolygonData[]>([
-    {
-      name: "Example A",
-      color: "#39dfe2",
-      points: [
-        { id: 0, x: 100, y: 100, elevation: 0 },
-        { id: 0, x: 300, y: 100, elevation: 0 },
-        { id: 0, x: 300, y: 300, elevation: 0 },
-        { id: 0, x: 100, y: 300, elevation: 0 },
-      ]
-    },
-    {
-      name: "Example B",
-      color: "#38e029",
-      points: [
-        { id: 0, x: 500, y: 500, elevation: 0 },
-        { id: 0, x: 850, y: 500, elevation: 0 },
-        { id: 0, x: 850, y: 850, elevation: 0 },
-        { id: 0, x: 500, y: 850, elevation: 0 },
-      ]
-    },
-  ])
-
+  /* ----Point-Polygons---- */
+  const [allPointPolygons, setAllPointPolygons] = useState<PointPolygonData[]>([])
   const [activePolygonID, setActiveAreaID] = useState<number | null>(0);
   const setPointPolygonData = (id: number, modified: PointPolygonData | undefined) => {
     handleSetIsDirty(true);
@@ -143,7 +114,6 @@ function LocationViewerPage() {
       const newActiveAreaID = allPointPolygons.length - 2;
       setActiveAreaID(newActiveAreaID < 0 ? null : newActiveAreaID);
       setAllPointPolygons(allPointPolygons.filter((_, index) => index !== id))
-      // TODO: Set a parameter somewhere that lets backend know to delete those files
       return;
     }
 
@@ -161,32 +131,8 @@ function LocationViewerPage() {
     }
   }
 
-  const [allPointPaths, setAllPointPaths] = useState<PointPathData[]>([
-    {
-      name: "testpath",
-      color: "#e21d90",
-      wasImported: false,
-      points: [
-        { id: 0, x: 800, y: 400, elevation: 10 },
-        { id: 1, x: 850, y: 400, elevation: 10 },
-        { id: 2, x: 950, y: 500, elevation: 20 },
-        { id: 2, x: 1050, y: 550, elevation: 20 },
-      ]
-    },
-    {
-      name: "imported path",
-      color: "#e25b1d",
-      wasImported: true,
-      points: [
-        { id: 0, x: 900, y: 400, elevation: 10 },
-        { id: 1, x: 950, y: 400, elevation: 10 },
-        { id: 2, x: 1050, y: 500, elevation: 20 },
-        { id: 2, x: 1150, y: 550, elevation: 20 },
-      ]
-    }
-  ])
-
-
+  /* ----Point-Paths---- */
+  const [allPointPaths, setAllPointPaths] = useState<PointPathData[]>([])
   const [activePathID, setActivePathID] = useState<number | null>(0);
   const setPointPathData = (id: number, modified: PointPathData | undefined) => {
     handleSetIsDirty(true);
@@ -195,7 +141,6 @@ function LocationViewerPage() {
       const newActivePathID = allPointPaths.length - 2;
       setActivePathID(newActivePathID < 0 ? null : newActivePathID);
       setAllPointPaths(allPointPaths.filter((_, index) => index !== id))
-      // TODO: Set a parameter somewhere that lets backend know to delete those files
       return;
     }
 
@@ -213,21 +158,9 @@ function LocationViewerPage() {
     }
   }
 
-  const [allPointFields, setAllPointFields] = useState<PointFieldData[]>([
-    {
-      name: "testPoints",
-      color: "#e8b322",
-      isViewable: true,
-      points: [
-        { id: 0, x: 0, y: 0, elevation: 10 },
-        { id: 1, x: 5, y: 35, elevation: 10 },
-        { id: 2, x: 15, y: 25, elevation: 20 },
-        { id: 3, x: 25, y: 15, elevation: 30 },
-        { id: 4, x: 35, y: 5, elevation: 40 },
-      ]
-    }
-  ]);
 
+  /* ----Point-Fields---- */
+  const [allPointFields, setAllPointFields] = useState<PointFieldData[]>([]);
   const [activePointFieldID, setActivePointFieldID] = useState<number | null>(0);
   const setPointFieldData = (id: number, modified: PointFieldData | undefined) => {
     handleSetIsDirty(true);
@@ -252,23 +185,9 @@ function LocationViewerPage() {
     }
   }
 
-  const [allImageMaps, setAllImageMapData] = useState<ImageMapData[]>([
-    {
-      name: "Terrain",
-      opacity: 1.0,
-      url: "https://raw.githubusercontent.com/MaddHatt-PM/golf-course-data-processors/main/SavedAreas/DemoCourse/Satelite.png",
-      isViewable: true,
-      filters: []
-    },
-    {
-      name: "Contours",
-      opacity: 1.0,
-      url: "https://raw.githubusercontent.com/MaddHatt-PM/golf-course-data-processors/main/SavedAreas/DemoCourse/Contour.png",
-      isViewable: true,
-      filters: []
-    }
-  ])
 
+  /* ----Image-Maps---- */
+  const [allImageMaps, setAllImageMapData] = useState<ImageMapData[]>([])
   const setImageMapData = (id: number, modified: ImageMapData | undefined) => {
     if (modified === undefined) {
       // Delete
@@ -300,6 +219,8 @@ function LocationViewerPage() {
     handleSetIsDirty(true);
   }
 
+
+  /* ----Render-Data---- */
   const [renderData, setRenderData] = useState<ViewportRenderData>({
     pointPolygonVertexRadius: 6,
     pointPolygonStrokeWidth: 4,
@@ -408,22 +329,27 @@ function LocationViewerPage() {
 
 
   const handleSaveLocationToFileSystem = useCallback(() => {
-    window.api.request(toMainEvents.saveLocation, {
-      data: {
-        name: locationName,
-        projectPath: projectPath,
-        saveTime: (new Date).toISOString(),
-        bookmarks: allPointBookmarks,
-        paths: allPointPaths,
-        polygons: allPointPolygons,
-        fields: allPointFields,
-        imageMaps: allImageMaps,
+    if (window.projectFilepath === undefined) {
+      console.error("Save Location was called while a projectFilepath was not loaded")
+      return;
+    }
 
-        locationCorners: window.locationCorners!,
-        renderData: renderData
-      },
-      filepath: "D:/terrain-viewer/save-tests/testing-region"
-    });
+    const data: LoadedLocationPayload = {
+      name: locationName,
+      projectDirpath: projectDirpath,
+      saveTime: (new Date).toISOString(),
+      bookmarks: allPointBookmarks,
+      paths: allPointPaths,
+      polygons: allPointPolygons,
+      fields: allPointFields,
+      imageMaps: allImageMaps,
+
+      locationCorners: window.locationCorners!,
+      renderData: renderData,
+      projectFilepath: window.projectFilepath!,
+    }
+
+    window.api.request(toMainEvents.saveLocation, { data });
 
     handleSetIsDirty(false);
   }, [allPointBookmarks, allPointPaths, allPointPolygons, allPointFields, allImageMaps, renderData])
@@ -439,16 +365,19 @@ function LocationViewerPage() {
   window.api.response(fromMainEvents.loadLocation, (args: any) => {
     const data = args.data as LoadedLocationPayload;
     setLocationName(data.name ?? "error")
-    setProjectPath(data.projectPath ?? "error")
+    setProjectDirPath(data.projectDirpath ?? "error")
     setAllPointBookmarks(data.bookmarks ?? []);
     setAllPointPolygons(data.polygons ?? []);
     setAllPointPaths(data.paths ?? []);
     setAllPointFields(data.fields ?? []);
     setAllImageMapData(data.imageMaps ?? []);
+    setRenderData(data.renderData);
 
     window.locationCorners = data.locationCorners;
-    window.projectPath = data.projectPath;
-    setRenderData(data.renderData);
+    window.projectDirpath = data.projectDirpath;
+    window.projectFilepath = data.projectFilepath;
+
+    setLocationNameEvent({ name: data.name })
   });
 
   return (

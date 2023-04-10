@@ -6,7 +6,8 @@ import { PointPolygonData } from "./PointPolygonData";
 
 declare interface LoadedLocationPayload {
   name: string;
-  projectPath: string;
+  projectDirpath: string;
+  projectFilepath: string;
   saveTime: string;
   locationCorners: LocationCorners;
 

@@ -2,7 +2,7 @@ import { DataStore } from './datastore';
 
 const getRecentLocationsStore = () => {
   return new DataStore({
-    filename: 'user-preferences',
+    filename: 'recent-locations',
     defaultState: {
       recentLocations: []
     }
@@ -14,14 +14,23 @@ interface RecentLocation {
   filepath: string
 }
 
+const recentLocationsKey = "recentLocations"
+
 export const pushNewLocation = (newLocation: RecentLocation) => {
   const store = getRecentLocationsStore();
-  const key = "recentLocations";
-  const recentLocations = store.get(key) as RecentLocation[];
 
-  store.set(key, [newLocation, ...recentLocations]);
+  let recentLocations = store.get(recentLocationsKey) as RecentLocation[];
+  recentLocations = recentLocations.filter(o => o.filepath === newLocation.filepath)
+  recentLocations = [newLocation, ...recentLocations];
+
+  store.set(recentLocationsKey, recentLocations);
+  console.log(recentLocations)
 }
 
 export const getRecentLocations = () => {
-  return getRecentLocationsStore().get("recentLocations");
+  return getRecentLocationsStore().get(recentLocationsKey);
+}
+
+export const clearRecentProjects = () => {
+  getRecentLocationsStore().set(recentLocationsKey, []);
 }

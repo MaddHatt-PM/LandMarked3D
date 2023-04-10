@@ -4,7 +4,7 @@ export interface SetLocationNameProps {
   name: string
 }
 
-const setLocationName = (props: SetLocationNameProps) => {
+const setLocationNameEvent = (props: SetLocationNameProps) => {
   const event = new CustomEvent<SetLocationNameProps>(
     windowEvents.SetLocationName.valueOf(), {
       detail: { name: props.name}
@@ -14,4 +14,4 @@ const setLocationName = (props: SetLocationNameProps) => {
   window.dispatchEvent(event);
 }
 
-export default setLocationName;
+export default setLocationNameEvent;

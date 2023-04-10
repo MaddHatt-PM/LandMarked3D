@@ -23,6 +23,7 @@ const toMainEvents = {
   requestRecentLocations: 'request-recent-locations',
   loadTestLocation: 'load-test-location',
   cloneLocation: 'clone-location',
+  clearRecentProjects: 'clear-recent-projects',
 };
 
 export default toMainEvents;

@@ -3,8 +3,7 @@ import * as fs from 'fs'
 import { toRendererEvents } from '../events/ipc-to-renderer-events';
 
 interface saveLocationToFileSystemProps {
-  data: any,
-  filepath: string
+  data: any
 }
 
 const saveLocationToFileSystem = (window: BrowserWindow, props: saveLocationToFileSystemProps, timeoutMS = 5_000): void => {
@@ -14,11 +13,14 @@ const saveLocationToFileSystem = (window: BrowserWindow, props: saveLocationToFi
     timeout: 10_000
   });
 
+  const {filepath, ...rawData} = props.data;
+
+
   Promise.race([
     new Promise<void>((resolve, reject) => {
-      const data = JSON.stringify(props.data, null, 2);
+      const data = JSON.stringify(rawData, null, 2);
       
-      fs.writeFile(props.filepath + "/location.project", data, (err) => {
+      fs.writeFile(filepath + "/location.project", data, (err) => {
         if (err) {
           reject({ type: "file-system", error: err });
         } else {

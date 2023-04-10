@@ -9,7 +9,7 @@ const loadLocation = (filepath: string, timeoutMS = 5_000): Promise<any> => {
           reject(err);
         } else {
           try {
-            const data = JSON.parse(rawdata);
+            const data = { projectFilepath: filepath, ...JSON.parse(rawdata)};
             resolve(data);
           } catch (err) {
             reject(err);
