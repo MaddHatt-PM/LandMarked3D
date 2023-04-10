@@ -1,10 +1,19 @@
-import { app, BrowserWindow, ipcMain, protocol, session } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, ipcRenderer, protocol, session } from 'electron';
 import * as path from 'path';
-import fs = require('fs')
 import os = require('os');
 import isDev = require('electron-is-dev');
-import { DataStore } from './systems/datastore';
-import { fromRendererEvents as fromRenderer } from './events/ipc-from-renderer-events';
+import { fromRendererEvents as fromRenderer, fromRendererEvents } from './events/ipc-from-renderer-events';
+import saveLocationToFileSystem from './systems/save-location-to-file-system';
+import { loadLocationFromExplorer } from './systems/load-location-from-explorer';
+import { loadLocationWithKnownPath } from './systems/load-location-with-known-path';
+import { pickDirectory } from './systems/pick-directory';
+
+import * as fs from 'fs'
+import { checkDirectoryForProjectFile } from './systems/check-directory-for-project-file';
+import getPreferencesStore from './stores/get-preferences-store';
+import { requestRecentLocations } from './requestRecentLocations';
+import { fstat } from 'fs';
+import { toRendererEvents } from './events/ipc-to-renderer-events';
 
 require('dotenv').config();
 
@@ -13,13 +22,7 @@ const preferencesPath = {
   'win32': path.join('C:\\', 'users', os.userInfo().username, 'Documents', '2MinuteTabletop')
 }
 
-const store = new DataStore({
-  filename: 'user-preferences',
-  defaultState: {
-    windowBounds: { x: 800, y: 300, width: 800, height: 600 },
-    wasMaximized: false,
-  }
-});
+const store = getPreferencesStore();
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -56,22 +59,22 @@ function createWindow() {
     window.webContents.openDevTools();
   }
 
-    // Remote
-    const remoteMain = require("@electron/remote/main");
-    remoteMain.initialize();
-    remoteMain.enable(window.webContents);
+  // Remote
+  const remoteMain = require("@electron/remote/main");
+  remoteMain.initialize();
+  remoteMain.enable(window.webContents);
 
-    // Hot Reloading on 'node_modules/.bin/electronPath'
-    require('electron-reload')(__dirname, {
-      electron: path.join(__dirname,
-        '..',
-        '..',
-        'node_modules',
-        '.bin',
-        'electron' + (process.platform === "win32" ? ".cmd" : "")),
-      forceHardReset: true,
-      hardResetMethod: 'exit'
-    });
+  // Hot Reloading on 'node_modules/.bin/electronPath'
+  // require('electron-reload')(__dirname, {
+  //   electron: path.join(__dirname,
+  //     '..',
+  //     '..',
+  //     'node_modules',
+  //     '.bin',
+  //     'electron' + (process.platform === "win32" ? ".cmd" : "")),
+  //   forceHardReset: true,
+  //   hardResetMethod: 'exit'
+  // });
 
   window.once('ready-to-show', () => {
     window.setBounds(store.get('windowBounds') as Electron.Rectangle);
@@ -95,11 +98,11 @@ function createWindow() {
       window.maximize();
     }
   });
-  
+
   ipcMain.on(fromRenderer.systems.toggleAlwaysOnTop, function (event) {
     window.setAlwaysOnTop(!window.isAlwaysOnTop())
   })
-  
+
   ipcMain.on(fromRenderer.systems.closeWindow, function (event) {
     if (window.id === 1) {
       store.set('windowBounds', window.getBounds());
@@ -108,18 +111,69 @@ function createWindow() {
     console.log('saved info')
     window.close();
   });
-  
+
   // ------------------------------
   // ----File-System-Events--------
-  ipcMain.on(fromRenderer.saveLocation, function (event, props) {
-    // console.log(event);
-    console.log(props.data);
+  ipcMain.on(fromRenderer.saveLocation, function (_, args) {
+    saveLocationToFileSystem(window, args)
+  })
+
+  ipcMain.on(fromRenderer.loadLocationWithKnownPath, (_, args) => {
+    loadLocationWithKnownPath(window, args.filepath);
+  })
+
+  ipcMain.on(fromRenderer.loadLocationFromExplorer, (_) => {
+    loadLocationFromExplorer(window);
+  })
+
+  ipcMain.on(fromRenderer.pickDirectory, (_, args) => {
+    pickDirectory(window, args.recieverEvent);
+  })
+
+  ipcMain.on(fromRenderer.checkDirectoryForProject, (_, args) => {
+    checkDirectoryForProjectFile(window, args.dirPath, args.recieverEvent);
+  })
+
+  ipcMain.on(fromRenderer.requestRecentLocations, (_) => {
+    requestRecentLocations(window);
+  })
+
+  ipcMain.on(fromRenderer.cloneLocation, (_, args) => {
+    const sourcePath = args.sourcePath;
+    const destinationPath = args.destinationPath;
+
+    console.log(sourcePath)
+    console.log(destinationPath)
+
+    return fs.promises.readdir(sourcePath)
+      .then(files => {
+        return fs.promises.mkdir(destinationPath, {recursive: true})
+          .then(() => {
+            return Promise.all(files.map((f) => {
+              const srcFile = path.join(sourcePath, f);
+              const destFile = path.join(destinationPath, f);
+              return fs.promises.copyFile(srcFile, destFile);
+            }));
+          });
+      })
+      .then(() => {
+        window.webContents.send(toRendererEvents.cloneLocationReport, {
+          code: 100
+        })
+      })
+      .catch(err => {
+        console.error('Error duplicating project:', err);
+        window.webContents.send(toRendererEvents.cloneLocationReport, {
+          code: 500,
+          error: err
+        })
+      });
   })
 }
 
 
 app.whenReady()
-  // WARNING: ReactDevTools will not load due to change in 
+  // WARNING: ReactDevTools will not load due to change in extensions
   // .then(async () => {
   //   if (isDev) {
   //     if (process.env.ReactDevTools !== undefined) {

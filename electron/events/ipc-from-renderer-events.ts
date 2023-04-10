@@ -12,4 +12,14 @@ export const fromRendererEvents = {
     secondInstance: 'second-instance',
   },
   saveLocation: 'save-location',
+  loadLocationWithKnownPath: 'load-location-with-known-path',
+
+  setupLocationProject: 'setup-location-project',
+  pickDirectory: 'pick-directory',
+  pickDirectoryReport: 'pick-directory-report',
+  loadLocationFromExplorer: 'load-location-from-explorer',
+  checkDirectoryForProject: 'check-directory-for-project',
+  requestRecentLocations: 'request-recent-locations',
+  loadTestLocation: 'load-test-location',
+  cloneLocation: 'clone-location',
 };

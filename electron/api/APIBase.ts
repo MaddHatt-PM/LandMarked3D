@@ -1,4 +1,4 @@
-import { DataStore } from "../systems/datastore";
+import { DataStore } from "../stores/datastore";
 // import { ApiBaseProps, ApiFunctions, GetDataFromPoint, GetImageryFromRect } from "./APIBase";
 
 import crypto = require("crypto");

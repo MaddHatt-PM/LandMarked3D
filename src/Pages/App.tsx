@@ -15,12 +15,10 @@ function App() {
 
   useEffect(() => {
     const handleSetEvent = (event: CustomEvent<SetScreenOverlayEventDetail>) => {
-      console.log(event.detail.overlay);
       setScreenOverlayNode(event.detail.overlay);
     };
 
     window.addEventListener(windowEvents.SetScreenOverlay.valueOf(), handleSetEvent as EventListener);
-
 
     const handleDismissEvent = () => { setScreenOverlayNode(null); }
     window.addEventListener(windowEvents.DismissScreenOverlay.valueOf(), handleDismissEvent);

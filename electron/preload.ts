@@ -14,7 +14,7 @@ for (let i = 0; i < requestEvents.length; i++) {
   }
 }
 
-let responseEvents:any[] = Object.values(toRendererEvents);
+let responseEvents: any[] = Object.values(toRendererEvents);
 for (let i = 0; i < responseEvents.length; i++) {
   const item: any = responseEvents[i];
 
@@ -43,13 +43,20 @@ contextBridge.exposeInMainWorld(
     }
   },
 
-  response: (channel:string, func: (...args:any) => void) => {
+  response: (channel: string, func: (...args: any) => void) => {
     if (responseEvents.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
+      console.log("this was called")
     } else {
       console.log(`${channel} was denied.`);
     }
   }
 });
+
+process.once("loaded", () => {
+  contextBridge.exposeInMainWorld("ipcRenderer", ipcRenderer);
+  // window.ipcRenderer = ipcRenderer;
+});
+
 
 // window.remote = require('@electron/remote')

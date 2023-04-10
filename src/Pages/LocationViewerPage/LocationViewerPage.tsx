@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import ViewportRenderer from "../../Components/ViewportRenderer/ViewportRenderer";
 import HoverButton from "../../Components/ToolbarButton/ToolbarButton";
 import StatusBar from "../../Components/StatusBar/StatusBar";
@@ -21,6 +21,10 @@ import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import PointBookMarkInspector from "../../Inspectors/PointBookmarkInspector/PointBookmarkInspector";
 import { LoadedLocationPayload } from "../../Types/LoadedLocationPayload";
 import windowEvents from "../../WindowEvents/window-events";
+import toMainEvents from "../../IPCEvents/ipc-to-main-events";
+import fromMainEvents from "../../IPCEvents/ipc-from-main-events";
+import { webContents } from "electron";
+// import { ipcRenderer } from "electron";
 
 
 enum InspectorModes {
@@ -42,10 +46,30 @@ enum InspectorModes {
   Settings,
 }
 
+enum LocationStates {
+  NotLoaded,
+  Loading,
+  Loaded,
+
+  ErroredOnLoad,
+}
+
 function LocationViewerPage() {
+  const [locationState, setLocationState] = useState(LocationStates.NotLoaded);
+
+  const [isDirty, setIsDirty] = useState(false);
+  const handleSetIsDirty = (state = true) => {
+    const notifyEvent = state ? windowEvents.NotifyOnLocationIsDirty : windowEvents.NotifyOnLocationIsClean;
+    window.dispatchEvent(new CustomEvent(notifyEvent));
+    setIsDirty(state);
+  }
+
   const [inspector, setInspector] = useState(InspectorModes.PointPolygonInspector);
   const [showInspector, setShowInspector] = useState(true);
   const [activeToolMode, setActiveToolMode] = useState(ToolModes.PointPolygonAppend);
+
+  const [locationName, setLocationName] = useState("");
+  const [projectPath, setProjectPath] = useState("D:\terrain-viewer\save-tests\testing-region")
 
   const [allPointBookmarks, setAllPointBookmarks] = useState<PointBookmarkData[]>([
     {
@@ -64,6 +88,8 @@ function LocationViewerPage() {
 
   const [activePointBookmarkID, setActivePointBookmarkID] = useState<number | null>(0);
   const setPointBookmarkData = (id: number, modified: PointBookmarkData | undefined) => {
+    handleSetIsDirty(true);
+
     if (modified === undefined) {
       const nextActive = allPointBookmarks.length - 2;
       setActivePointBookmarkID(nextActive < 0 ? null : nextActive);
@@ -82,7 +108,6 @@ function LocationViewerPage() {
       const newBookmarkData = [...allPointBookmarks];
       newBookmarkData[id] = modified;
       setAllPointBookmarks(newBookmarkData);
-      // console.log(modified.point)
       return;
     }
   }
@@ -112,6 +137,8 @@ function LocationViewerPage() {
 
   const [activePolygonID, setActiveAreaID] = useState<number | null>(0);
   const setPointPolygonData = (id: number, modified: PointPolygonData | undefined) => {
+    handleSetIsDirty(true);
+
     if (modified === undefined) {
       const newActiveAreaID = allPointPolygons.length - 2;
       setActiveAreaID(newActiveAreaID < 0 ? null : newActiveAreaID);
@@ -162,6 +189,8 @@ function LocationViewerPage() {
 
   const [activePathID, setActivePathID] = useState<number | null>(0);
   const setPointPathData = (id: number, modified: PointPathData | undefined) => {
+    handleSetIsDirty(true);
+
     if (modified === undefined) {
       const newActivePathID = allPointPaths.length - 2;
       setActivePathID(newActivePathID < 0 ? null : newActivePathID);
@@ -201,6 +230,8 @@ function LocationViewerPage() {
 
   const [activePointFieldID, setActivePointFieldID] = useState<number | null>(0);
   const setPointFieldData = (id: number, modified: PointFieldData | undefined) => {
+    handleSetIsDirty(true);
+
     if (modified === undefined) {
       // Delete
       console.log("TODO: setPointFieldData - delete")
@@ -266,6 +297,7 @@ function LocationViewerPage() {
     newArray[indexA] = newArray[indexB];
     newArray[indexB] = temp;
     setAllImageMapData(newArray)
+    handleSetIsDirty(true);
   }
 
   const [renderData, setRenderData] = useState<ViewportRenderData>({
@@ -374,31 +406,50 @@ function LocationViewerPage() {
     setShowInspector(true);
   };
 
-  
-  useEffect(()=> {
-    const handleSaveLocationToFileSystem = () => {
-      const dataToSave: LoadedLocationPayload = {
+
+  const handleSaveLocationToFileSystem = useCallback(() => {
+    window.api.request(toMainEvents.saveLocation, {
+      data: {
+        name: locationName,
+        projectPath: projectPath,
+        saveTime: (new Date).toISOString(),
         bookmarks: allPointBookmarks,
-        imageMaps: allImageMaps,
-        locationCorners: window.locationCorners!,
         paths: allPointPaths,
         polygons: allPointPolygons,
+        fields: allPointFields,
+        imageMaps: allImageMaps,
+
+        locationCorners: window.locationCorners!,
         renderData: renderData
-      }
+      },
+      filepath: "D:/terrain-viewer/save-tests/testing-region"
+    });
 
-      console.log(dataToSave);
-    }
-    console.log("happened")
-    window.addEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem)
-    
-    const cleanup = () => {
-      window.removeEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem)
-    }
+    handleSetIsDirty(false);
+  }, [allPointBookmarks, allPointPaths, allPointPolygons, allPointFields, allImageMaps, renderData])
 
-    return cleanup;
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  useEffect(() => {
+    window.addEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem);
+
+    return () => {
+      window.removeEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem);
+    }
+  }, [handleSaveLocationToFileSystem]);
+
+  window.api.response(fromMainEvents.loadLocation, (args: any) => {
+    const data = args.data as LoadedLocationPayload;
+    setLocationName(data.name ?? "error")
+    setProjectPath(data.projectPath ?? "error")
+    setAllPointBookmarks(data.bookmarks ?? []);
+    setAllPointPolygons(data.polygons ?? []);
+    setAllPointPaths(data.paths ?? []);
+    setAllPointFields(data.fields ?? []);
+    setAllImageMapData(data.imageMaps ?? []);
+
+    window.locationCorners = data.locationCorners;
+    window.projectPath = data.projectPath;
+    setRenderData(data.renderData);
+  });
 
   return (
     <>

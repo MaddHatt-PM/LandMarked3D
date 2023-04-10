@@ -9,6 +9,8 @@ import Minimize from "./window-min.png"
 import Maximize from "./window-max.png"
 import Close from "./window-close.png"
 import toMainEvents from "../../IPCEvents/ipc-to-main-events";
+import windowEvents from "../../WindowEvents/window-events";
+import { SetLocationNameProps } from "../../WindowEvents/set-location-name";
 
 // TODO: Account for mac os UI
 
@@ -19,9 +21,10 @@ import toMainEvents from "../../IPCEvents/ipc-to-main-events";
  * @returns A JSX component.
  */
 const WindowsBar = () => {
-  const [windowName, setWindowName] = useState("");
+  const [locationName, setLocationName] = useState("");
   const [isPinned, setPinned] = useState(false);
   const [isOnline, setOnline] = useState(true);
+  const [locationNeedsSave, setLocationNeedsSave] = useState(false);
 
   function TogglePinned() {
     window.api.request(toMainEvents.systems.toggleAlwaysOnTop);
@@ -30,21 +33,29 @@ const WindowsBar = () => {
 
   useEffect(() => {
     setOnline(navigator.onLine);
-    setWindowName("Testing Area"); // TODO: Add event to get the project name
+    setLocationName("location-name")
     window.addEventListener("online", (event) => { setOnline(true) });
     window.addEventListener("offline", (event) => { setOnline(false) });
+
+    window.addEventListener(windowEvents.NotifyOnLocationIsDirty, (_: any) => { setLocationNeedsSave(true) });
+    window.addEventListener(windowEvents.NotifyOnLocationIsClean, (_: any) => { setLocationNeedsSave(false) });
+    
+    const handleSetLocationName = (event: CustomEvent<SetLocationNameProps>) => {
+      setLocationName(event.detail.name)
+    }
+    window.addEventListener(windowEvents.SetLocationName, handleSetLocationName as EventListener);
   }, [])
 
   return (
     <Container>
       <span id="left-aligned">
         <Logo src={LogoImg} isOnline={isOnline} />
-        <AppName>{isOnline ? "Terrain Viewer" : "Terrain Viewer - Offline"}</AppName>
+        <AppName>{isOnline ? "LandMarked3D" : "LandMarked3D - Offline"}</AppName>
       </span>
 
       <span id="middle-aligned" >
         <WindowsName>
-          {windowName}
+          {`${locationName}${locationNeedsSave ? '*' : ''}`}
         </WindowsName>
       </span>
 
