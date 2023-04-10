@@ -46,7 +46,6 @@ contextBridge.exposeInMainWorld(
   response: (channel: string, func: (...args: any) => void) => {
     if (responseEvents.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
-      console.log("this was called")
     } else {
       console.log(`${channel} was denied.`);
     }

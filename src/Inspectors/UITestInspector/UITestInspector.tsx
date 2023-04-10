@@ -19,6 +19,7 @@ import cloneProject from "../../Utilities/file-io/clone-project";
 import revertProjectToFile from "../../Utilities/file-io/revert-project-to-file";
 import getRecentLocations from "../../Utilities/file-io/get-recent-locations";
 import clearRecentLocations from "../../Utilities/file-io/clear-recent-locations";
+import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -38,7 +39,9 @@ const UITestPanel = () => {
 
   window.api.response(fromMainEvents.requestRecentLocations, (args: any) => {
     console.log(args)
-  }) 
+  })
+
+  const [selectedColor, setSelectedColor] = useState<string | null>("");
 
   return (
     <Panel>
@@ -160,6 +163,12 @@ const UITestPanel = () => {
             cloneProject({ sourcePath: window.projectDirpath, destinationPath: selectedDirPath })
           }
         }}
+      />
+
+      <ColorDropdown
+        selectedColor={selectedColor}
+        optionToName={(color) => color}
+        onSelect={(color) => { setSelectedColor(color) }}
       />
     </Panel>
   );
