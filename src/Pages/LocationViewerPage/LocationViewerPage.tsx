@@ -131,6 +131,32 @@ function LocationViewerPage() {
     }
   }
 
+  /* ----Polygon-Groups---- */
+  const [allPolygonGroups, setAllPolygonGroups] = useState<PolygonGroupData[]>([])
+  const setPolygonGroup = (id: number, modified: PolygonGroupData | undefined) => {
+    handleSetIsDirty(true);
+
+    if (modified === undefined) {
+      const newActiveAreaID = allPolygonGroups.length - 2;
+      setActiveAreaID(newActiveAreaID < 0 ? null : newActiveAreaID);
+      setAllPolygonGroups(allPolygonGroups.filter((_, index) => index !== id))
+      return;
+    }
+
+    if (id === -1) {
+      setActiveAreaID(allPolygonGroups.length);
+      setAllPolygonGroups([...allPolygonGroups, modified]);
+      return;
+    }
+
+    if (0 <= id && id < allPolygonGroups.length) {
+      const newPolygonGroupData = [...allPolygonGroups];
+      newPolygonGroupData[id] = modified;
+      setAllPolygonGroups(newPolygonGroupData);
+      return;
+    }
+  }
+
   /* ----Point-Paths---- */
   const [allPointPaths, setAllPointPaths] = useState<PointPathData[]>([])
   const [activePathID, setActivePathID] = useState<number | null>(0);
@@ -256,6 +282,9 @@ function LocationViewerPage() {
       pointPolygons={allPointPolygons}
       setPointPolygonData={setPointPolygonData}
 
+      polygonGroups={allPolygonGroups}
+      setPolygonGroups={setPolygonGroup}
+
       activeToolMode={activeToolMode}
       setActiveToolMode={setActiveToolMode}
 
@@ -338,9 +367,11 @@ function LocationViewerPage() {
       name: locationName,
       projectDirpath: projectDirpath,
       saveTime: (new Date).toISOString(),
+      
       bookmarks: allPointBookmarks,
       paths: allPointPaths,
       polygons: allPointPolygons,
+      groups: allPolygonGroups,
       fields: allPointFields,
       imageMaps: allImageMaps,
 
@@ -371,6 +402,7 @@ function LocationViewerPage() {
     setAllPointPaths(data.paths ?? []);
     setAllPointFields(data.fields ?? []);
     setAllImageMapData(data.imageMaps ?? []);
+    setAllPolygonGroups(data.groups ?? [])
     setRenderData(data.renderData);
 
     window.locationCorners = data.locationCorners;

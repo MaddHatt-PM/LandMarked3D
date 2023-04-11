@@ -18,6 +18,8 @@ export enum DismissPrompts {
 
 interface ButtonOption {
   text: string,
+  validator?: () => boolean;
+  onValidatorFail?: () => void;
   callback: () => void;
 }
 
@@ -61,6 +63,13 @@ const BaseOverlay = (props: BaseOverlayProps) => {
 
             {props.buttonsProps?.map((value, index) => (
               < ModalButton key={index} onClick={() => {
+                if (value.validator !== undefined && value.validator() === false) {
+                  console.log("validator failed")
+                  if (value.onValidatorFail !== undefined) {
+                    value.onValidatorFail();
+                  }
+                  return;
+                }
                 value.callback();
                 dismissScreenOverlayEvent();
               }}>

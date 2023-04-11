@@ -10,6 +10,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
 
   &.is-open {
     margin-bottom: 1px;
@@ -77,6 +78,7 @@ export const SideButton = styled.button`
   flex-shrink: 0;
   
   width: 28px;
+  height: 30px;
   min-width: 28px;
   border: 1px solid black;
   border-radius: 4px;
@@ -105,10 +107,10 @@ interface DropdownListProps {
 export const DropdownList = styled.ul.attrs<DropdownListProps>((props: DropdownListProps) => ({
   style: {
     left: `calc(0% + ${props.leadingButtonCount * 28 + 4 * (props.leadingButtonCount)}px)`,
-    width: `calc(100% - ${(props.leadingButtonCount + props.trailingButtonCount) * 28 + 4 * (props.leadingButtonCount + props.trailingButtonCount)+2}px)`,
+    width: `calc(100% - ${(props.leadingButtonCount + props.trailingButtonCount) * 28 + 4 * (props.leadingButtonCount + props.trailingButtonCount) + 2}px)`,
 
   }
-}))<DropdownListProps>`
+})) <DropdownListProps>`
   position: absolute;
   top: 100%;
   background-color: #242020;

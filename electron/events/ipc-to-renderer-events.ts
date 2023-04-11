@@ -7,4 +7,5 @@ export const toRendererEvents = {
   pickDirectoryReport: 'pick-directory-report',
   requestRecentLocations: 'request-recent-locations',
   cloneLocationReport: 'clone-location-report',
+  pickDirectoryForNewLocation: 'pick-directory-for-new-location',
 };

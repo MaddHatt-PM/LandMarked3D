@@ -10,6 +10,9 @@ export const Container = styled.div`
   outline: 1px solid black;
   box-shadow: 0px 0px 16px #0000004d;
   color: white;
+  display: flex;
+  flex-direction: column;
+  height: auto;
 `;
 
 export const Wrapper = styled.div`

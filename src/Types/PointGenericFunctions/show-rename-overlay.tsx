@@ -40,10 +40,13 @@ const RenameOverlay = (props: ShowRenameOverlayProps) => {
     <BaseOverlay
       modalName={props.modalName}
       buttonsProps={[{
-        text: "Rename", callback: () => {
-          props.finalizeRename(newName);
-        }
+        text: "Rename",
+        validator: () => {return newName !== ""},
+        onValidatorFail: () => { console.log("validator failed"); },
+        callback: () => { props.finalizeRename(newName); }
+
       }]}
+
     >
       <TextField
         label={props.labelText}

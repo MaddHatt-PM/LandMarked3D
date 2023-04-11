@@ -20,6 +20,7 @@ import revertProjectToFile from "../../Utilities/file-io/revert-project-to-file"
 import getRecentLocations from "../../Utilities/file-io/get-recent-locations";
 import clearRecentLocations from "../../Utilities/file-io/clear-recent-locations";
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
+import showCreateLocationOverlay from "../../Overlays/show-create-location";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -41,7 +42,7 @@ const UITestPanel = () => {
     console.log(args)
   })
 
-  const [selectedColor, setSelectedColor] = useState<string | null>("");
+  const [selectedColor, setSelectedColor] = useState<string | null>("#8e24aa");
 
   return (
     <Panel>
@@ -121,6 +122,11 @@ const UITestPanel = () => {
         callback={revertProjectToFile}
       />
 
+      <InspectorButton
+        buttonText="Create new file"
+        callback={showCreateLocationOverlay}
+      />
+
       <HDivider />
 
       <InspectorButton
@@ -165,11 +171,17 @@ const UITestPanel = () => {
         }}
       />
 
+
+      <HDivider />
       <ColorDropdown
+        label={"Selected Color"}
         selectedColor={selectedColor}
         optionToName={(color) => color}
         onSelect={(color) => { setSelectedColor(color) }}
       />
+
+      <HDivider />
+
     </Panel>
   );
 };

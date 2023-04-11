@@ -15,10 +15,16 @@ import showCreatePointPolygonOverlay from "../../Types/PointPolygonData/show-cre
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
+import Detail from "../../Components/InspectorComponents/Detail/Detail";
+import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
+import { Label } from "../../Components/InspectorComponents/Detail/Detail.styles";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
   setPointPolygonData: (id: number, modified: PointPolygonData | undefined) => void;
+
+  polygonGroups: PolygonGroupData[];
+  setPolygonGroups: (id: number, modifier: PolygonGroupData | undefined) => void;
 
   activeToolMode: ToolModes;
   setActiveToolMode: (modeToSet: ToolModes) => void;
@@ -38,7 +44,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
   ]
 
   const handleToolModeChange = (newTool: ToolModes) => {
-
     props.setActiveToolMode(newTool);
   }
 
@@ -110,13 +115,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                     </span>)
                 }}
                 onSelect={(newAreaID) => { props.setActivePointPolygonID(newAreaID) }}
-                leadingButtons={[
-                  // {
-                  //   icon: (<SelectSVG width={12} height={12} />), text: "Select area from viewport", callback: () => {
-                  //     console.log("TODO")
-                  //   }
-                  // }
-                ]}
                 trailingButtons={[
                   {
                     icon: (<MinusSVG width={10} height={10} />), text: "Create new area", callback: () => {
@@ -127,7 +125,6 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                       })
                     }
                   },
-
                   {
                     icon: (<PlusSVG width={10} height={10} />), text: "Create new area", callback: () => {
                       showCreatePointPolygonOverlay({
@@ -139,6 +136,58 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
               />
 
               <HDivider />
+
+              {props.pointPolygons.length !== 0 &&
+                <>
+                  <Dropdown
+                    label={"Group"}
+                    options={props.polygonGroups}
+                    // selectedID={props.pointPolygons[props.activePointPolygonID!].group}
+                    selectedID={null}
+                    optionToName={(group: PolygonGroupData) => group.name}
+                    onSelect={(selected) => {
+                      const newPolygon = { ...props.pointPolygons[props.activePointPolygonID!] }
+                      newPolygon.groupUUID = props.polygonGroups[selected].uuid;
+
+                      props.setPointPolygonData(props.activePointPolygonID!, newPolygon)
+                    }}
+
+                    trailingButtons={[
+                      {
+                        icon: (<MinusSVG width={10} height={10} />), text: "Create new area", callback: () => {
+                          showDeletePointPolygonOverlay({
+                            activePointPolygon: props.pointPolygons[props.activePointPolygonID!],
+                            activePointPolygonID: props.activePointPolygonID!,
+                            setPointPolygon: props.setPointPolygonData
+                          })
+                        }
+                      },
+
+                      {
+                        icon: (<PlusSVG width={10} height={10} />), text: "Create new area", callback: () => {
+                          showCreatePointPolygonOverlay({
+                            setPointPolygon: props.setPointPolygonData,
+                          })
+                        }
+                      },
+                    ]}
+                  />
+
+                  <ColorDropdown
+                    label={"Color"}
+                    selectedColor={props.pointPolygons[props.activePointPolygonID!].color}
+                    optionToName={c => c}
+                    onSelect={(c) => {
+                      const pointPolygon = props.pointPolygons[props.activePointPolygonID!]
+                      pointPolygon.color = c;
+                      props.setPointPolygonData(props.activePointPolygonID!, pointPolygon)
+                    }}
+                  />
+
+                  <HDivider />
+                </>
+              }
+
               <SegmentedSwitch
                 selectedOption={props.activeToolMode}
                 options={availableTools}
@@ -165,7 +214,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
                     finalizeRename: (newName: string) => {
                       const newPolygon = { ...props.pointPolygons[props.activePointPolygonID!] }
                       newPolygon.name = newName;
-                      
+
                       props.setPointPolygonData(props.activePointPolygonID!, newPolygon)
                     }
                   })

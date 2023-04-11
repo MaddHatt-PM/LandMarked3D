@@ -23,4 +23,6 @@ export const fromRendererEvents = {
   loadTestLocation: 'load-test-location',
   cloneLocation: 'clone-location',
   clearRecentProjects: 'clear-recent-projects',
+  createNewLocation: 'create-new-location',
+  pickDirectoryForPathImport: 'pick-directory-for-path-import',
 };

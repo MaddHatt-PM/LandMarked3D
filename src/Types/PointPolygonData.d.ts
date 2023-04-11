@@ -4,4 +4,5 @@ declare interface PointPolygonData {
   name: string;
   points: SamplePointData[];
   color: string;
+  groupUUID?: string;
 }

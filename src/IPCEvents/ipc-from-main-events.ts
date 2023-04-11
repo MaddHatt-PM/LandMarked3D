@@ -7,6 +7,7 @@ const fromMainEvents = {
   pickDirectoryReport: 'pick-directory-report',
   requestRecentLocations: 'request-recent-locations',
   cloneLocationReport: 'clone-location-report',
+  pickDirectoryForNewLocation: 'pick-directory-for-new-location',
 }
 
 export default fromMainEvents;

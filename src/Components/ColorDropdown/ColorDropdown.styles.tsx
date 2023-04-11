@@ -10,6 +10,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
 
   &.is-open {
     margin-bottom: 1px;
@@ -27,6 +28,7 @@ export const DropdownButtonText = styled.span<ButtonTextProps>`
 export const DropdownButton = styled.button`
   border: 1px solid black;
   min-width: 100%;
+  height: 32px;
   color: white;
   text-align: left;
   padding: 6px;
@@ -104,34 +106,39 @@ interface DropdownListProps {
 
 export const DropdownList = styled.ul.attrs<DropdownListProps>((props: DropdownListProps) => ({
   style: {
-    left: `calc(0% + ${props.leadingButtonCount * 28 + 4 * (props.leadingButtonCount)}px)`,
-    width: `calc(100% - ${(props.leadingButtonCount + props.trailingButtonCount) * 28 + 4 * (props.leadingButtonCount + props.trailingButtonCount) + 2}px)`,
+    left: `calc(20% - 18px)`,
+    width: `calc(80%)`,
 
   }
 })) <DropdownListProps>`
   position: absolute;
   top: 100%;
   background-color: #242020;
+  display: grid;
   border: 1px solid black;
   z-index: 1;
   list-style: none;
-  padding: 0;
-  margin: 0;
-  border-radius: 0 0 4px 4px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 5px;
+  padding: 8px;
+  margin: -5px 0;
+  border-radius: 4px 0 4px 4px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  /* gap: 5px; */
 `;
 
 export const DropdownListItem = styled.li`
-  padding: 6px;
   font-size: smaller;
   cursor: pointer;
   color: #ffffff72;
+  padding: 4px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
   
   &:hover {
-    background-color: #302b2b;;
+    background-color: #141111;
+    border-radius: 5px;
   }
   
   &:last-child {

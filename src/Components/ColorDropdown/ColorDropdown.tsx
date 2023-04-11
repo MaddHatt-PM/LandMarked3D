@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Label } from "../InspectorComponents/NumberField/NumberField.styles";
+import { Divider } from "../StatusBar/StatusBar.styles";
 import { ChevronIcon, Container, DropdownButton, DropdownList, DropdownListItem, SideButton } from "./ColorDropdown.styles";
 
 interface SideButtonProps {
@@ -9,6 +11,7 @@ interface SideButtonProps {
 
 interface ColorDropdownProps {
   // options: any[];
+  label: string;
   selectedColor: string | null;
   optionToName: (item: any, id: number) => any;
   onSelect: (id: string) => void;
@@ -33,8 +36,8 @@ const options: ColorOption[] = [
   { name: "Blue", code: "#1e88e5" },
   { name: "Cyan", code: "#00acc1" },
   { name: "Teal", code: "#00897b" },
-  { name: "Green", code: "#43a047" },
-  { name: "Lime", code: "#c0ca33" },
+  { name: "Green", code: "#359b46" },
+  { name: "Lime", code: "#8bd12f" },
   { name: "Yellow", code: "#fdd835" },
   { name: "Amber", code: "#ffb300" },
   { name: "Orange", code: "#fb8c00" },
@@ -66,14 +69,26 @@ const ColorDropdown = (props: ColorDropdownProps) => {
   }, [selfRef]);
   return (
     <Container ref={selfRef} className={isOpen ? "is-open" : ""}>
-      <>Selected</>
+      <Label>{props.label}</Label>
       <div style={{ width: "100%" }} />
 
-      <div style={{ width: "33%" }}>
+      <div style={{ width: "60%" }}>
         <DropdownButton
           className={isOpen ? "is-open" : ""}
           onClick={() => { setIsOpen(!isOpen) }}>
-          {"Test"}
+          <svg
+            viewBox="0 0 20 18"
+            xmlns="http://www.w3.org/2000/svg"
+            fill={props.selectedColor ?? "black"}
+            width={24}
+            style={{
+              transform: "translateY(-1px)"
+            }}
+          >
+            <rect
+              width={16} height={14} rx={4}
+            />
+          </svg>
           <ChevronIcon className={isOpen ? "is-open" : ""} />
         </DropdownButton>
 
@@ -82,13 +97,27 @@ const ColorDropdown = (props: ColorDropdownProps) => {
             leadingButtonCount={props.leadingButtons?.length ?? 0}
             trailingButtonCount={props.trailingButtons?.length ?? 0}
           >
-            {options.map((option:ColorOption, id) => (
-              <>
-              <DropdownListItem>
-                <p>{option.code}</p>
-                
+            {options.map((option: ColorOption, id) => (
+              <DropdownListItem key={option.code}
+              onClick={()=>{
+                props.onSelect(option.code)
+                setIsOpen(false);
+              }}
+              >
+                <svg
+                  viewBox="0 0 20 18"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill={option.code}
+                  width={24}
+                  style={{
+                    padding: "2px 2px"
+                  }}
+                  >
+                  <rect
+                    width={20} height={18} rx={4}
+                  />
+                </svg>
               </DropdownListItem>
-              </>
             ))}
           </DropdownList>
         )}

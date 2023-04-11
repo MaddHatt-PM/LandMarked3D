@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Label } from "../NumberField/NumberField.styles";
 import { ChevronIcon, Container, DropdownButton, DropdownList, DropdownListItem, SideButton } from "./Dropdown.styles";
 
 interface SideButtonProps {
@@ -7,13 +8,23 @@ interface SideButtonProps {
   callback: () => void;
 }
 
+interface DeselectOption {
+  selectedText: string;
+  optionText: string;
+  onSelect: () => void;
+  value: any;
+}
+
 interface DropdownProps {
+  label?: React.ReactNode;
+  leadingButtons?: SideButtonProps[];
+  trailingButtons?: SideButtonProps[];
+
   options: any[];
   selectedID: number | null;
   optionToName: (item: any, id: number) => any;
   onSelect: (id: number) => void;
-  leadingButtons?: SideButtonProps[];
-  trailingButtons?: SideButtonProps[];
+  deselectOption?: DeselectOption;
 }
 
 const Dropdown = (props: DropdownProps) => {
@@ -45,11 +56,17 @@ const Dropdown = (props: DropdownProps) => {
       return props.optionToName(selected, id);
     }
 
+    if (props.options.length === 0) {
+      return "Create an option"
+    }
+
     return "Select a polygon to edit"
   }
 
   return (
     <Container ref={selfRef} className={isOpen ? "is-open" : ""}>
+      <Label>{props.label}</Label>
+
       {props.leadingButtons?.map((data, index) => (
         <SideButton key={index} onClick={data.callback}>
           {data.icon}

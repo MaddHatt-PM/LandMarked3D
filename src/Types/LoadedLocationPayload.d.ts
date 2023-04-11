@@ -13,6 +13,7 @@ declare interface LoadedLocationPayload {
 
   bookmarks: PointBookmarkData[];
   polygons: PointPolygonData[];
+  groups: PolygonGroupData[];
   paths: PointPathData[];
   fields: PointFieldData[];
   imageMaps: ImageMapData[];
