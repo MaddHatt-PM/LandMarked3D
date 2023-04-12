@@ -42,7 +42,6 @@ const WindowsBar = () => {
     
     const handleSetLocationName = (event: CustomEvent<SetLocationNameProps>) => {
       setLocationName(event.detail.name)
-      console.log(event.detail)
     }
     window.addEventListener(windowEvents.SetLocationName, handleSetLocationName as EventListener);
   }, [])

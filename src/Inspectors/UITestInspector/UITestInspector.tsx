@@ -21,6 +21,7 @@ import getRecentLocations from "../../Utilities/file-io/get-recent-locations";
 import clearRecentLocations from "../../Utilities/file-io/clear-recent-locations";
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 import showCreateLocationOverlay from "../../Overlays/show-create-location";
+import testAPI from "../../Utilities/apis/test-api";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -99,6 +100,13 @@ const UITestPanel = () => {
         text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed odio magna, imperdiet eu tincidunt ut, volutpat. "
       />
 
+      <ColorDropdown
+        label={"Selected Color"}
+        selectedColor={selectedColor}
+        optionToName={(color) => color}
+        onSelect={(color) => { setSelectedColor(color) }}
+      />
+
       <HDivider />
       <HDivider />
 
@@ -173,13 +181,20 @@ const UITestPanel = () => {
 
 
       <HDivider />
-      <ColorDropdown
-        label={"Selected Color"}
-        selectedColor={selectedColor}
-        optionToName={(color) => color}
-        onSelect={(color) => { setSelectedColor(color) }}
-      />
 
+
+      <InspectorButton
+        buttonText="Test API"
+        callback={() => {
+          if (window.locationCorners !== undefined) {
+            testAPI({
+              NW: window.locationCorners.NW,
+              SE: window.locationCorners.SE,
+              dirpath: window.projectDirpath
+            })
+          }
+        }}
+      />
       <HDivider />
 
     </Panel>

@@ -2,7 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, ipcRenderer, protocol, session } f
 import * as path from 'path';
 import os = require('os');
 import isDev = require('electron-is-dev');
-import { fromRendererEvents as fromRenderer, fromRendererEvents } from './events/ipc-from-renderer-events';
+import { fromRendererEvents as fromRenderer } from './events/ipc-from-renderer-events';
 import saveLocationToFileSystem from './systems/save-location-to-file-system';
 import { loadLocationFromExplorer } from './systems/load-location-from-explorer';
 import { loadLocationWithKnownPath } from './systems/load-location-with-known-path';
@@ -14,6 +14,7 @@ import { requestRecentLocations } from './requestRecentLocations';
 import { fstat } from 'fs';
 import { clearRecentProjects } from './stores/get-recent-locations-store';
 import { cloneLocation } from './systems/clone-location';
+import { GoogleMapsAPI } from './api/services/GoogleMapsAPI';
 
 require('dotenv').config();
 
@@ -137,14 +138,29 @@ function createWindow() {
   ipcMain.on(fromRenderer.requestRecentLocations, (_) => {
     requestRecentLocations(window);
   })
-  
-  ipcMain.on(fromRenderer.clearRecentProjects, (_)=> {
+
+  ipcMain.on(fromRenderer.clearRecentProjects, (_) => {
     clearRecentProjects();
     requestRecentLocations(window);
   })
 
   ipcMain.on(fromRenderer.cloneLocation, (_, args) => {
     cloneLocation(args.sourcePath, args.destinationPath, window);
+  })
+
+  ipcMain.on(fromRenderer.testApi, (_, args) => {
+    const urls = GoogleMapsAPI.props.getImageryFromRect[0].prepareAPIUrls({
+      NW: { lon: args.NW[0], lat: args.NW[1], },
+      SE: { lon: args.SE[0], lat: args.SE[1], },
+    });
+
+    console.log("got here")
+    console.log(args)
+
+    GoogleMapsAPI.props.getImageryFromRect[0].handleAPIRequest(
+      urls,
+      args.dirpath
+    )
   })
 }
 

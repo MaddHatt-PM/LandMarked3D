@@ -7,6 +7,7 @@ import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
 import Panel from "../../Components/Panel/Panel";
 import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Container, Group, Wrapper } from "./PointFieldInspector.styles";
+import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 
 interface SamplePointInspectorProps {
   pointFields: PointFieldData[];
@@ -61,6 +62,21 @@ const SamplePointInspector = (props: SamplePointInspectorProps) => {
             />
           </Group>
         </Wrapper>
+      }
+
+      <HDivider />
+
+      {props.pointFields.length !== 0 &&
+        <ColorDropdown
+          label={"Color"}
+          selectedColor={props.pointFields[props.activePointFieldID!].color}
+          optionToName={c => c}
+          onSelect={(c) => {
+            const pointPolygon = props.pointFields[props.activePointFieldID!]
+            pointPolygon.color = c;
+            props.setPointFieldData(props.activePointFieldID!, pointPolygon)
+          }}
+        />
       }
 
       <HDivider />

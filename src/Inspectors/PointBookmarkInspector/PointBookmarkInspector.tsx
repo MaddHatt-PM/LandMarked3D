@@ -16,6 +16,7 @@ import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
 import Panel from "../../Components/Panel/Panel";
 import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Group, Wrapper } from "./PointBookmarkInspector.styles";
+import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 
 interface PointBookMarkInspectorProps {
   pointBookmarks: PointBookmarkData[];
@@ -137,6 +138,20 @@ const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
               />
 
               <HDivider />
+              {props.pointBookmarks.length !== 0 &&
+                <ColorDropdown
+                  label={"Color"}
+                  selectedColor={props.pointBookmarks[props.activePointBookmarkID!].color}
+                  optionToName={c => c}
+                  onSelect={(c) => {
+                    const pointPolygon = props.pointBookmarks[props.activePointBookmarkID!]
+                    pointPolygon.color = c;
+                    props.setPointBookmarkData(props.activePointBookmarkID!, pointPolygon)
+                  }}
+                />
+                
+              }
+              
               <InspectorButton
                 buttonText="Rename Bookmark"
                 callback={() => {

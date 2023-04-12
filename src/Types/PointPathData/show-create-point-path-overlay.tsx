@@ -1,5 +1,7 @@
 import { useState } from "react"
 import BaseOverlay from "../../Components/BaseOverlay/BaseOverlay";
+import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
+import SegmentedSwitch from "../../Components/SegmentedSwitch/SegmentedSwitch";
 import TextField from "../../Components/TextField/TextField";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 import { PointPathData } from "../PointPathData";
@@ -19,8 +21,10 @@ interface CreatePointPathOverlayProps {
   setPointPath: (id: number, modified: PointPathData | undefined) => void;
 }
 
+
 const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
   const [name, setName] = useState("name");
+  const [importedCSV, setImportedCSV] = useState<any | undefined>(null);
 
   return (
     <BaseOverlay
@@ -38,6 +42,9 @@ const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
         }
       }]}
     >
+
+
+
       <TextField
         label="Point Path Name:"
         initialText={name}

@@ -25,7 +25,8 @@ import toMainEvents from "../../IPCEvents/ipc-to-main-events";
 import fromMainEvents from "../../IPCEvents/ipc-from-main-events";
 import { webContents } from "electron";
 import setLocationNameEvent from "../../WindowEvents/set-location-name";
-// import { ipcRenderer } from "electron";
+import makeGeoProjectors from "../../Utilities/geographic/make-geo-projectors";
+import makeGeoRectangle from "../../Utilities/geographic/make-geo-rectangle";
 
 
 enum InspectorModes {
@@ -61,7 +62,7 @@ interface LocationViewerPageProps {
 
 function LocationViewerPage() {
   const [locationName, setLocationName] = useState("");
-  const [projectDirpath, setProjectDirPath] = useState("D:\terrain-viewer\save-tests\testing-region")
+  const [projectPath, setProjectDirPath] = useState("D:/terrain-viewer/save-tests/testing-region")
   const [locationState, setLocationState] = useState(LocationStates.NotLoaded);
 
   const [isDirty, setIsDirty] = useState(false);
@@ -365,9 +366,9 @@ function LocationViewerPage() {
 
     const data: LoadedLocationPayload = {
       name: locationName,
-      projectDirpath: projectDirpath,
-      saveTime: (new Date).toISOString(),
-      
+      projectPath: projectPath,
+      saveTime: (new Date()).toISOString(),
+
       bookmarks: allPointBookmarks,
       paths: allPointPaths,
       polygons: allPointPolygons,
@@ -383,7 +384,11 @@ function LocationViewerPage() {
     window.api.request(toMainEvents.saveLocation, { data });
 
     handleSetIsDirty(false);
-  }, [allPointBookmarks, allPointPaths, allPointPolygons, allPointFields, allImageMaps, renderData])
+  }, [
+    allPointBookmarks, allPointPaths, allPointPolygons,
+    allPointFields, allImageMaps, renderData,
+    allPolygonGroups, locationName, projectPath
+  ])
 
   useEffect(() => {
     window.addEventListener(windowEvents.SaveLocationToFileSystem, handleSaveLocationToFileSystem);
@@ -396,7 +401,7 @@ function LocationViewerPage() {
   window.api.response(fromMainEvents.loadLocation, (args: any) => {
     const data = args.data as LoadedLocationPayload;
     setLocationName(data.name ?? "error")
-    setProjectDirPath(data.projectDirpath ?? "error")
+    setProjectDirPath(data.projectPath ?? "error")
     setAllPointBookmarks(data.bookmarks ?? []);
     setAllPointPolygons(data.polygons ?? []);
     setAllPointPaths(data.paths ?? []);
@@ -405,9 +410,27 @@ function LocationViewerPage() {
     setAllPolygonGroups(data.groups ?? [])
     setRenderData(data.renderData);
 
-    window.locationCorners = data.locationCorners;
-    window.projectDirpath = data.projectDirpath;
+    window.projectDirpath = data.projectPath;
+    console.log(data)
     window.projectFilepath = data.projectFilepath;
+
+    window.locationCorners = makeGeoRectangle({
+      NW: { lon: -82.55868647748001, lat: 35.64240864470986, },
+      SE: { lon: -82.5543520277965, lat: 35.640106795695836, }
+    });
+
+    try {
+      const { pixelToGeo, geoToPixel } = makeGeoProjectors({
+        NW: window.locationCorners.NW,
+        SE: window.locationCorners.SE,
+        width: 1615,
+        height: 1055,
+      })
+
+      window.projectors = { pixelToGeo, geoToPixel }
+    } catch (error) {
+      console.error(error);
+    }
 
     setLocationNameEvent({ name: data.name })
   });

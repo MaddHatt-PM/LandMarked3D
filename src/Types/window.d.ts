@@ -9,6 +9,12 @@ declare global {
     projectFilepath: string;
     
     remote: any;
+
+    projectors: {
+      pixelToGeo: (x: number, y: number) => { lon: number, lat: number } 
+      geoToPixel: (lat: number, lon: number) => { x: number, y: number } 
+    }
+    
     api: {
       request: (eventname: string, data?: any) => void;
       response: (channel: string, func: (...args: any) => void) => void;

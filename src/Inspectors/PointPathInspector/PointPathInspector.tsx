@@ -14,6 +14,7 @@ import Toggle from "../../Components/InspectorComponents/Toggle/Toggle";
 import Panel from "../../Components/Panel/Panel";
 import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Group, Wrapper } from "./PointPathInspector.styles";
+import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 
 interface PointPathInspectorProps {
   pointPaths: PointPathData[];
@@ -97,13 +98,6 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                     </span>)
                 }}
                 onSelect={(newPointPath) => { props.setActivePointPathID(newPointPath) }}
-                leadingButtons={[
-                  // {
-                  //   icon: (<SelectSVG width={12} height={12} />), text: "Select area from viewport", callback: () => {
-                  //     console.log("TODO")
-                  //   }
-                  // }
-                ]}
                 trailingButtons={[
                   {
                     icon: (<MinusSVG width={10} height={10} />), text: "Create new area", callback: () => {
@@ -125,25 +119,42 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                 ]}
               />
 
-              <HDivider/>
-              
-              <InspectorButton
-                buttonText="Rename Polygon"
-                callback={() => {
-                  showRenameOverlay({
-                    modalName: "Rename Polygon",
-                    labelText: "Polygon name",
-                    originalName: props.pointPaths[props.activePointPathID!].name,
-                    finalizeRename: (newName: string) => {
-                      const newPolygon = { ...props.pointPaths[props.activePointPathID!] }
-                      newPolygon.name = newName;
 
-                      props.setPointPathData(props.activePointPathID!, newPolygon)
-                    }
-                  })
-                }}
-              />
+              {props.pointPaths.length !== 0 &&
+                <>
+                  <HDivider />
+                  <ColorDropdown
+                    label={"Color"}
+                    selectedColor={props.pointPaths[props.activePointPathID!].color}
+                    optionToName={c => c}
+                    onSelect={(c) => {
+                      const pointPolygon = props.pointPaths[props.activePointPathID!]
+                      pointPolygon.color = c;
+                      props.setPointPathData(props.activePointPathID!, pointPolygon)
+                    }}
+                  />
 
+
+                  <InspectorButton
+                    buttonText="Rename Polygon"
+                    callback={() => {
+                      showRenameOverlay({
+                        modalName: "Rename Polygon",
+                        labelText: "Polygon name",
+                        originalName: props.pointPaths[props.activePointPathID!].name,
+                        finalizeRename: (newName: string) => {
+                          const newPolygon = { ...props.pointPaths[props.activePointPathID!] }
+                          newPolygon.name = newName;
+
+                          props.setPointPathData(props.activePointPathID!, newPolygon)
+                        }
+                      })
+                    }}
+                  />
+                </>
+              }
+
+              <HDivider />
             </Group>
           </Wrapper>
         }

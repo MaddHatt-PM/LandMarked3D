@@ -25,4 +25,5 @@ export const fromRendererEvents = {
   clearRecentProjects: 'clear-recent-projects',
   createNewLocation: 'create-new-location',
   pickDirectoryForPathImport: 'pick-directory-for-path-import',
+  testApi: 'test-api',
 };

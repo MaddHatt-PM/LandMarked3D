@@ -1,4 +1,4 @@
-declare interface APIProps {
+export interface APIProps {
   name: string;
   description: string;
   requiresKey: boolean;
@@ -6,15 +6,15 @@ declare interface APIProps {
   getImageryFromRect: GetImageryFromRect[];
 }
 
-declare interface APIFunctionality {
+export interface APIFunctionality {
   props: APIProps
-  setKey: (key:string) => void;
+  setKey: (key: string) => void;
   getKey: () => string | undefined;
   canGetDataFromPoint: () => boolean;
   canGetImageryFromRect: () => boolean;
 }
 
-declare interface GetDataFromPoint {
+export interface GetDataFromPoint {
   name: string;
   description: string;
   modifiedKeys: string[];
@@ -23,19 +23,24 @@ declare interface GetDataFromPoint {
   prepareAPIUrls: (points: Point[]) => string[];
   prepareValidationTest: () => boolean;
 
-  handleAPIPayload: (data: any[]) => void; 
+  handleAPIPayload: (urls: string[]) => void;
 }
 
-declare interface GetImageryFromRect {
+export interface ImageryPrepAPIUrls {
+  NW: { lon: number, lat: number },
+  SE: { lon: number, lat: number },
+}
+
+export interface GetImageryFromRect {
   name: string;
   description: string;
   filePrefix: string;
   requestCostType: RequestCostType;
 
-  prepareRequests: (points: Point[]) => string[];
+  prepareAPIUrls: (rect: ImageryPrepAPIUrls, props?: Record<string, any>) => string[];
   validationTest: () => boolean;
 
-  handleAPIPayload: (data: any[]) => void;
+  handleAPIRequest: (urls: string[], dirPath: string, props?: Record<string, any>) => void;
 }
 
 export enum RequestCostType {

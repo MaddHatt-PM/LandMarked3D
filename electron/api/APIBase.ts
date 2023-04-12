@@ -2,7 +2,7 @@ import { DataStore } from "../stores/datastore";
 // import { ApiBaseProps, ApiFunctions, GetDataFromPoint, GetImageryFromRect } from "./APIBase";
 
 import crypto = require("crypto");
-import { APIFunctionality, APIProps } from "../types/APIDetails";
+import { APIFunctionality, APIProps } from "./APIDetails";
 
 
 const crytpoStore = new DataStore({

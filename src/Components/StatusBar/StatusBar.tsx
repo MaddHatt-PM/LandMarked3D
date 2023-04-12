@@ -1,6 +1,7 @@
 import { timeout } from "d3";
 import React, { useEffect, useState } from "react";
 import fromMainEvents from "../../IPCEvents/ipc-from-main-events";
+import { GeoPoint } from "../../Types/GeoPoint";
 import generateUUID from "../../Utilities/generate-uuid";
 import { SendViewportCoordinatesProps } from "../../WindowEvents/send-viewport-coordinates";
 import windowEvents from "../../WindowEvents/window-events";
@@ -16,11 +17,18 @@ const StatusBar = () => {
   const [pixelCoordinates, setPixelCoordinates] = useState<SendViewportCoordinatesProps>({
     pixelX: 0,
     pixelY: 0,
-  })
+  });
+
+  const [geoCoordinate, setGeoCoordinate] = useState<GeoPoint>({ lon: 0, lat: 0 });
 
   useEffect(() => {
     const handleSendViewportCoordinates = (event: CustomEvent<SendViewportCoordinatesProps>) => {
       setPixelCoordinates(event.detail);
+      if (window.projectors !== undefined) {
+        setGeoCoordinate(window.projectors.pixelToGeo(event.detail.pixelX, event.detail.pixelY))
+      } else {
+        setGeoCoordinate({ lon: NaN, lat: NaN });
+      }
     }
 
     window.addEventListener(
@@ -82,12 +90,9 @@ const StatusBar = () => {
 
       {/* Right Aligned: Frontend */}
       <HStack>
-        <Text>test</Text>
-        <Text>test</Text>
-        <Divider />
-        <Text>Lat:85.9853</Text>
-        <Text>Lon:65.2349</Text>
-        <Text>Ele:215.5ft</Text>
+        <Text style={{ minWidth: "45px" }}>{`Lon: ${geoCoordinate.lat.toPrecision(8)}`}</Text>
+        <Text style={{ minWidth: "45px" }}>{`Lat: ${geoCoordinate.lon.toPrecision(8)}`}</Text>
+        {/* <Text>Ele:215.5ft</Text> */}
         <Divider />
         <Text style={{ minWidth: "45px" }}>{`X: ${pixelCoordinates.pixelX.toFixed()}`}</Text>
         <Text style={{ minWidth: "45px" }}>{`Y: ${pixelCoordinates.pixelY.toFixed()}`}</Text>
