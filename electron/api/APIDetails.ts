@@ -37,10 +37,10 @@ export interface GetImageryFromRect {
   filePrefix: string;
   requestCostType: RequestCostType;
 
-  prepareAPIUrls: (rect: ImageryPrepAPIUrls, props?: Record<string, any>) => string[];
+  prepareAPIUrls: (rect: ImageryPrepAPIUrls, props?: Record<string, any>) => any[];
   validationTest: () => boolean;
 
-  handleAPIRequest: (urls: string[], dirPath: string, props?: Record<string, any>) => void;
+  handleAPIRequest: (data: any[], dirPath: string, props?: Record<string, any>) => void;
 }
 
 export enum RequestCostType {

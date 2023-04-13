@@ -6,6 +6,7 @@ import * as path from "path";
 import * as https from "https";
 import * as sharp from "sharp";
 import { promisify } from "util";
+import compositeImageTiles from "../../utilities/composite-image-tiles";
 
 const getElevationData: GetDataFromPoint = {
   name: "Elevation from Points",
@@ -79,7 +80,7 @@ const getSatelliteImagery: GetImageryFromRect = {
   filePrefix: "goolemaps-",
   requestCostType: RequestCostType.perRequest,
 
-  prepareAPIUrls: (rect: ImageryPrepAPIUrls, props): string[] => {
+  prepareAPIUrls: (rect: ImageryPrepAPIUrls, props) => {
     const zoom = 19
 
     // Calculate image dimensions
@@ -121,7 +122,7 @@ const getSatelliteImagery: GetImageryFromRect = {
     const heightStep = (rect.SE.lat - rect.NW.lat) / rows
     const heightOffset = heightStep / 2;
 
-    const urls = tiles.map((tile) => {
+    const urls: TileData[] = tiles.map((tile) => {
 
       const center = {
         lon: widthOffset + tile.c * widthStep,
@@ -130,12 +131,18 @@ const getSatelliteImagery: GetImageryFromRect = {
 
       const params = {
         ...baseParams,
-        center: `${rect.NW.lat + center.lat},${rect.NW.lon +center.lon}`,
+        center: `${rect.NW.lat + center.lat},${rect.NW.lon + center.lon}`,
         // center: `${rect.NW.lat - geoCenterY},${rect.NW.lon + geoCenterX}`,
         size: `${tileWidth}x${tileHeight + logoCutOff}`
       }
 
-      return `${baseURL}?${(new URLSearchParams(params)).toString()}`
+      const tileData: TileData = {
+        url: `${baseURL}?${(new URLSearchParams(params)).toString()}`,
+        rowID: tile.r,
+        colID: tile.c
+      }
+
+      return tileData
     })
 
     console.log(urls)
@@ -146,22 +153,28 @@ const getSatelliteImagery: GetImageryFromRect = {
     throw new Error("Function not implemented.");
   },
 
-  handleAPIRequest: (urls: string[], dirPath: string, props?: Record<string, any>) => {
+  handleAPIRequest: (tilesRaw: any[], dirPath: string, props?: Record<string, any>) => {
+    const tiles = tilesRaw as TileData[];
 
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true })
     }
 
-    const imageFilepaths: string[] = []
+    const localTiles: TileData[] = []
 
-    const promises = urls.map((url, index) => {
+    const prepareTiles = tiles.map((tile, index) => {
       const zeroPad = (num: number, places: number) => String(num).padStart(places, '0')
-      const filepath = path.join(dirPath, `temp-maptile-${zeroPad(index, 4)}.png`)
+      const filepath = path.join(dirPath, `${tile.colID}-${tile.rowID}-temp-maptile-${zeroPad(index, 3)}.png`)
       const file = fs.createWriteStream(filepath);
-      imageFilepaths.push(filepath);
+      localTiles.push({
+        url: filepath,
+        colID: tile.colID,
+        rowID: tile.rowID
+      });
 
       return new Promise<void>((resolve, reject) => {
-        https.get(url, response => {
+        console.log(tile.url)
+        https.get(tile.url, response => {
           response.pipe(file);
           file.on('finish', () => {
             file.close();
@@ -175,7 +188,9 @@ const getSatelliteImagery: GetImageryFromRect = {
               .then((metadata) => {
                 width = metadata.width ?? 0
                 height = metadata.height ?? 0
-              }).then(() => {
+                // console.log(metadata)
+              })
+              .then(() => {
 
                 // Crop image
                 sharp(filepath)
@@ -189,18 +204,25 @@ const getSatelliteImagery: GetImageryFromRect = {
                     console.error(err);
                     reject(err);
                   });
-              });
+              })
           });
         });
       });
     });
 
-    Promise.all(promises)
+
+
+    Promise
+      .all(prepareTiles)
+      .then(() => { console.log("finished image downloading") })
       .then(() => {
-        console.log("finished!")
-      })
-      .catch((err) => {
-        console.error(err);
+        compositeImageTiles({
+          tiles: localTiles,
+          options: {
+            outputDir: dirPath,
+            outputFilename: `googlemaps-satellite.png`,
+          }
+        })
       })
   }
 }
