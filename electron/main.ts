@@ -11,10 +11,11 @@ import { pickDirectory } from './systems/pick-directory';
 import { checkDirectoryForProjectFile } from './systems/check-directory-for-project-file';
 import getPreferencesStore from './stores/get-preferences-store';
 import { requestRecentLocations } from './requestRecentLocations';
-import { fstat } from 'fs';
+import { fstat, writeFile } from 'fs';
 import { clearRecentProjects } from './stores/get-recent-locations-store';
 import { cloneLocation } from './systems/clone-location';
 import { GoogleMapsAPI } from './api/services/GoogleMapsAPI';
+import { exportProject } from './systems/export-project';
 
 require('dotenv').config();
 
@@ -160,19 +161,34 @@ function createWindow() {
   })
 
   ipcMain.on(fromRenderer.testGoogleMapsElevation, (_, args) => {
-    const points:Point[] = [
-      { latitude: 32.1111, longitude: -82.1111, uuid: "1111" },
-      { latitude: 32.2222, longitude: -82.2222, uuid: "2222" },
-      { latitude: 32.3333, longitude: -82.3333, uuid: "3333" },
-      { latitude: 32.4444, longitude: -82.4444, uuid: "4444" },
-      { latitude: 32.5555, longitude: -82.5555, uuid: "5555" },
-      { latitude: 36.6666, longitude: -85.6666, uuid: "6666" }
-    ]
+    const {points: pointsRaw} = args;
+
+    const points:Point[] = (pointsRaw as any[]).map((o)=> {
+      return {
+        latitude: o.latitude,
+        longitude: o.longitude,
+        uuid: o.uuid
+      }
+    })
+
+    // const points:Point[] = [
+    //   { latitude: 32.1111, longitude: -82.1111, uuid: "1111" },
+    //   { latitude: 32.2222, longitude: -82.2222, uuid: "2222" },
+    //   { latitude: 32.3333, longitude: -82.3333, uuid: "3333" },
+    //   { latitude: 32.4444, longitude: -82.4444, uuid: "4444" },
+    //   { latitude: 32.5555, longitude: -82.5555, uuid: "5555" },
+    //   { latitude: 36.6666, longitude: -85.6666, uuid: "6666" }
+    // ]
+
     const requestProps = GoogleMapsAPI.props.getDataFromPoint[0].prepareAPIUrls(points);
     // console.log(requestProps)
 
     const result = GoogleMapsAPI.props.getDataFromPoint[0].handleAPIRequest(requestProps);
     console.log(result)
+  })
+
+  ipcMain.on(fromRenderer.exportProject, (_, args) => {
+    exportProject(args);
   })
 }
 
@@ -228,3 +244,5 @@ if (!hasInstanceLock) {
     }
   })
 }
+
+

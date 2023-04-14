@@ -1,4 +1,4 @@
-import { PointBookmarkData } from "../PointBookmarkData";
+import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
 
 export const getPointBookmarkInfo = (pointBookmark: PointBookmarkData) => {
   return `

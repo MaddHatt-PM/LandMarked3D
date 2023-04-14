@@ -1,4 +1,4 @@
-import { LocationCorners } from "./LocationCorners";
+import { LocationCorners } from "../../ipc-types/LocationCorners";
 import { IpcRenderer } from 'electron';
 
 declare global {

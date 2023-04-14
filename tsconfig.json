@@ -21,10 +21,12 @@
     "jsx": "react-jsx",
     "typeRoots": [
       "./node_modules/@types",
-      "./src/types"
+      "./src/types",
+      "../ipc-types"
     ]
   },
   "include": [
-    "src"
-  ]
+    "src",
+    "ipc-types"
+    ]
 }

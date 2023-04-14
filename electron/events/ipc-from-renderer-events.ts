@@ -28,4 +28,5 @@ export const fromRendererEvents = {
   testApi: 'test-api',
   testGoogleMapsImagery: 'test-google-maps-imagery',
   testGoogleMapsElevation: 'test-google-maps-elevation',
+  exportProject: 'export-project',
 };

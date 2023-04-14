@@ -13,7 +13,7 @@ import { PointFieldData } from "../../Types/PointFieldData";
 import ImageView from "../ImageView/ImageView";
 import { PointPathData } from "../../Types/PointPathData";
 import PointPath from "../PointPath/PointPath";
-import { PointBookmarkData } from "../../Types/PointBookmarkData";
+import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
 import PointBookmark from "../PointBookmark/PointBookmark";
 import isPointBookmarkInInvalidPosition from "../../Types/PointBookmarks/is-point-bookmark-in-invalid-position";
 import { sendViewportCoordinatesEvent } from "../../WindowEvents/send-viewport-coordinates";

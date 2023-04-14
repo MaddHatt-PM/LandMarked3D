@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import * as d3 from 'd3';
 import { MouseButtons } from "../../Utilities/mouse-buttons";
 import { isBookmarkTool, ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
-import { PointBookmarkData } from "../../Types/PointBookmarkData";
+import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
 
 interface PointBookmarkProps {
   data: PointBookmarkData;
