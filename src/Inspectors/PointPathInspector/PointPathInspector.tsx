@@ -15,6 +15,7 @@ import Panel from "../../Components/Panel/Panel";
 import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Group, Wrapper } from "./PointPathInspector.styles";
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
+import PointPath from "../../Components/PointPath/PointPath";
 
 interface PointPathInspectorProps {
   pointPaths: PointPathData[];
@@ -149,6 +150,20 @@ const PointPathInspector = (props: PointPathInspectorProps) => {
                           props.setPointPathData(props.activePointPathID!, newPolygon)
                         }
                       })
+                    }}
+                  />
+
+                  <InspectorButton
+                    buttonText={"Clip Boundry"}
+                    callback={() => {
+                      const path = props.pointPaths[props.activePointPathID!]
+                      const { width, height } = window.pixelSize!;
+                      path.points = path.points.filter(p => {
+                        return 0 <= p.x && p.x <= width
+                          && 0 <= p.y && p.y <= height;
+                      })
+
+                      props.setPointPathData(props.activePointPathID!, path);
                     }}
                   />
                 </>

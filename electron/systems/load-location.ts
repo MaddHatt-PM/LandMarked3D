@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import path = require('path');
 
 const loadLocation = (filepath: string, timeoutMS = 5_000): Promise<any> => {
   return Promise.race([
@@ -9,7 +10,11 @@ const loadLocation = (filepath: string, timeoutMS = 5_000): Promise<any> => {
           reject(err);
         } else {
           try {
-            const data = { projectFilepath: filepath, ...JSON.parse(rawdata)};
+            const data = {
+              ...JSON.parse(rawdata),
+              projectPath: path.dirname(filepath),
+              projectFilepath: filepath,
+            };
             resolve(data);
           } catch (err) {
             reject(err);

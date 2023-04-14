@@ -148,19 +148,31 @@ function createWindow() {
     cloneLocation(args.sourcePath, args.destinationPath, window);
   })
 
-  ipcMain.on(fromRenderer.testApi, (_, args) => {
+  ipcMain.on(fromRenderer.testGoogleMapsImagery, (_, args) => {
     const urls = GoogleMapsAPI.props.getImageryFromRect[0].prepareAPIUrls({
       NW: { lon: args.NW[0], lat: args.NW[1], },
       SE: { lon: args.SE[0], lat: args.SE[1], },
     });
 
-    console.log("got here")
     console.log(args)
 
-    GoogleMapsAPI.props.getImageryFromRect[0].handleAPIRequest(
-      urls,
-      args.dirpath
-    )
+    GoogleMapsAPI.props.getImageryFromRect[0].handleAPIRequest(urls, args.dirpath)
+  })
+
+  ipcMain.on(fromRenderer.testGoogleMapsElevation, (_, args) => {
+    const points:Point[] = [
+      { latitude: 32.1111, longitude: -82.1111, uuid: "1111" },
+      { latitude: 32.2222, longitude: -82.2222, uuid: "2222" },
+      { latitude: 32.3333, longitude: -82.3333, uuid: "3333" },
+      { latitude: 32.4444, longitude: -82.4444, uuid: "4444" },
+      { latitude: 32.5555, longitude: -82.5555, uuid: "5555" },
+      { latitude: 36.6666, longitude: -85.6666, uuid: "6666" }
+    ]
+    const requestProps = GoogleMapsAPI.props.getDataFromPoint[0].prepareAPIUrls(points);
+    // console.log(requestProps)
+
+    const result = GoogleMapsAPI.props.getDataFromPoint[0].handleAPIRequest(requestProps);
+    console.log(result)
   })
 }
 

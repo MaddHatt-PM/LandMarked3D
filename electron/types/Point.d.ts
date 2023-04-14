@@ -1,4 +1,5 @@
 declare interface Point {
-  x: number,
-  y: number
+  uuid: string;
+  longitude: number,
+  latitude: number
 } 

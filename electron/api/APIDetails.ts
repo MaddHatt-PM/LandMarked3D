@@ -20,10 +20,10 @@ export interface GetDataFromPoint {
   modifiedKeys: string[];
   requestCostType: RequestCostType;
 
-  prepareAPIUrls: (points: Point[]) => string[];
+  prepareAPIUrls: (points: Point[]) => any[];
   prepareValidationTest: () => boolean;
 
-  handleAPIPayload: (urls: string[]) => void;
+  handleAPIRequest: (urls: string[]) => void;
 }
 
 export interface ImageryPrepAPIUrls {

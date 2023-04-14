@@ -364,10 +364,11 @@ function LocationViewerPage() {
       return;
     }
 
-    const data: LoadedLocationPayload = {
+    const data: any = {
       name: locationName,
-      projectPath: projectPath,
+      // projectPath: projectPath,
       saveTime: (new Date()).toISOString(),
+      pixelSize: window.pixelSize,
 
       bookmarks: allPointBookmarks,
       paths: allPointPaths,
@@ -410,8 +411,8 @@ function LocationViewerPage() {
     setAllPolygonGroups(data.groups ?? [])
     setRenderData(data.renderData);
 
+    window.pixelSize = data.pixelSize ?? { width: 1617, height: 1056 };
     window.projectDirpath = data.projectPath;
-    console.log(data)
     window.projectFilepath = data.projectFilepath;
 
     window.locationCorners = makeGeoRectangle({

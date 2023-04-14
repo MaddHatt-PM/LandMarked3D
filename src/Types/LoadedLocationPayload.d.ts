@@ -8,6 +8,7 @@ declare interface LoadedLocationPayload {
   name: string;
   projectPath: string;
   projectFilepath: string;
+  pixelSize: {width: number, height: number};
   saveTime: string;
   locationCorners: LocationCorners;
 

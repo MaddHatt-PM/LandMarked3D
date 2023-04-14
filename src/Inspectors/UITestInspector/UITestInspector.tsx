@@ -21,7 +21,7 @@ import getRecentLocations from "../../Utilities/file-io/get-recent-locations";
 import clearRecentLocations from "../../Utilities/file-io/clear-recent-locations";
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 import showCreateLocationOverlay from "../../Overlays/show-create-location";
-import testAPI from "../../Utilities/apis/test-api";
+import { testGoogleMapsImagery, testGoogleMapsElevation } from "../../Utilities/apis/test-google-maps";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -180,19 +180,27 @@ const UITestPanel = () => {
       />
 
 
+
       <HDivider />
 
 
       <InspectorButton
-        buttonText="Test API"
+        buttonText="Test Imagery API"
         callback={() => {
           if (window.locationCorners !== undefined) {
-            testAPI({
+            testGoogleMapsImagery({
               NW: window.locationCorners.NW,
               SE: window.locationCorners.SE,
               dirpath: window.projectDirpath
             })
           }
+        }}
+      />
+
+      <InspectorButton
+        buttonText="Test Elevation API"
+        callback={() => {
+          testGoogleMapsElevation({})
         }}
       />
       <HDivider />

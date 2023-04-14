@@ -26,4 +26,6 @@ export const fromRendererEvents = {
   createNewLocation: 'create-new-location',
   pickDirectoryForPathImport: 'pick-directory-for-path-import',
   testApi: 'test-api',
+  testGoogleMapsImagery: 'test-google-maps-imagery',
+  testGoogleMapsElevation: 'test-google-maps-elevation',
 };

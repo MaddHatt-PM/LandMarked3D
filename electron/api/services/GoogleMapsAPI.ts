@@ -8,6 +8,13 @@ import * as sharp from "sharp";
 import { promisify } from "util";
 import compositeImageTiles from "../../utilities/composite-image-tiles";
 
+interface ElevationResult {
+  elevation: number;
+  uuid: string;
+  latitude: number;
+  longitude: number;
+}
+
 const getElevationData: GetDataFromPoint = {
   name: "Elevation from Points",
   description: "Projection method: Mercator",
@@ -20,33 +27,80 @@ const getElevationData: GetDataFromPoint = {
       return [];
     }
 
-    const urlBase = "https://maps.googleapis.com/maps/api/elevation/json?locations=";
-    const urlApiKey = `&key=${"Seperate out store stuff"}`;
-    const formatPoint = (p: Point) => `${p.x}%2C${p.y}`;
-    const seperator = "%7C";
-
     const maxPointsPerRequest = 250;
     const pointBins: Point[][] = [];
-    for (let i = 0; i < points.length; i + maxPointsPerRequest) {
+    for (let i = 0; i < points.length; i += maxPointsPerRequest) {
       pointBins.push(points.slice(i, i + maxPointsPerRequest));
     }
 
-    const urls: string[] = pointBins
-      .map((bin) => bin.map((p) => formatPoint(p)).join(seperator))
-      .map((urlLocation) => urlBase + urlLocation + urlApiKey);
+    const urlBase = "https://maps.googleapis.com/maps/api/elevation/json?locations=";
+    const urlApiKey = `&key=${process.env.GoogleMapsKey}`;
+    const formatPoint = (p: Point) => `${p.latitude}%2C${p.longitude}`;
+    const separator = "%7C";
 
-    return urls;
+    const pointMap: Record<number, string> = {};
+    const requestProps = pointBins.map((bin) => {
+      const urlLocation = bin.map((p, id) => {
+        pointMap[id] = p.uuid;
+        return formatPoint(p);
+      }).join(separator);
+      return { url: urlBase + urlLocation + urlApiKey, pointMap };
+    });
+
+    return requestProps;
   },
+
 
   prepareValidationTest: function (): boolean {
     throw new Error("Function not implemented.");
   },
 
-  handleAPIPayload: function (data: any[]): void {
-    throw new Error("Function not implemented.");
+  handleAPIRequest: function (requestProps: any[]): void {
+    /*
+      - Google Documentation: https://developers.google.com/maps/documentation/elevation/start#maps_http_elevation_locations-py
+      - Submit a single request using https://stackoverflow.com/questions/29418423/how-to-use-an-array-of-coordinates-with-google-elevation-api
+
+      Google Elevation Request example:
+      {
+        'results': [
+          { 'elevation': 358.2732746783741, 'location': { 'lat': 32.1111, 'lng': -82.1111 }, 'resolution': 9.543951988220215 },
+          { 'elevation': 398.2074279785156, 'location': { 'lat': 36.2222, 'lng': -85.2222 }, 'resolution': 9.543951988220215 },
+          ...
+              ],
+          'status': 'OK'
+      }  
+    */
+    async function fetchElevations(data: any[]) {
+      const results: ElevationResult[] = [];
+
+      for (let i = 0; i < data.length; i++) {
+        const { url, pointMap } = data[i];
+        const response = await fetch(url);
+        const json = await response.json();
+
+        if (json.status !== "OK") {
+          console.log(`Request failed for URL: ${url}`);
+          continue;
+        }
+
+        for (let j = 0; j < json.results.length; j++) {
+          const result = json.results[j];
+          const { elevation, location } = result;
+          const { lat, lng } = location;
+          const uuid: string = pointMap[j];
+
+          results.push({ elevation, uuid, latitude: lat, longitude: lng });
+        }
+
+        return results;
+      }
+    }
+
+    fetchElevations(requestProps)
+      .then((results) => console.log(results))
+      .catch((error) => console.error(error));
   }
 }
-
 
 const tau = 2 * Math.PI
 const degree = Math.PI / 180;
@@ -95,7 +149,6 @@ const getSatelliteImagery: GetImageryFromRect = {
     const rows = Math.ceil(totalHeight / maxSize);
     const imageCount = cols * rows;
 
-
     // Prepare tile regions
     const tileWidth = Math.ceil(totalWidth / cols);
     const tileHeight = Math.ceil(totalHeight / rows);
@@ -132,7 +185,6 @@ const getSatelliteImagery: GetImageryFromRect = {
       const params = {
         ...baseParams,
         center: `${rect.NW.lat + center.lat},${rect.NW.lon + center.lon}`,
-        // center: `${rect.NW.lat - geoCenterY},${rect.NW.lon + geoCenterX}`,
         size: `${tileWidth}x${tileHeight + logoCutOff}`
       }
 
@@ -205,6 +257,7 @@ const getSatelliteImagery: GetImageryFromRect = {
                     reject(err);
                   });
               })
+
           });
         });
       });

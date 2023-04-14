@@ -1,6 +1,6 @@
 import * as sharp from 'sharp';
 import { promisify } from 'util';
-import { createWriteStream, mkdir, mkdirSync } from 'fs';
+import { createWriteStream, mkdir, mkdirSync, unlink } from 'fs';
 import { dirname, join } from 'path';
 
 
@@ -55,8 +55,17 @@ async function compositeImageTiles(props: CompositeImageTilesProps) {
     })
   );
 
-  await result.composite( tileBuffers)
+  await result.composite(tileBuffers)
   await result.toFile(join(outputDir, outputFilename));
+
+  // Remove tile files
+  for (const tile of props.tiles) {
+    await unlink(tile.url, (err) => {
+      if (err) {
+        console.error(`Error deleting file ${tile.url}`)
+      }
+    })
+  }
 }
 
 
