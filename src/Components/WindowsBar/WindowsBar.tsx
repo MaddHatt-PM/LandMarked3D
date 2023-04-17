@@ -74,6 +74,9 @@ const WindowsBar = () => {
             ],
             [
               { name: "Export Data", callback: () => { console.log("Export") } },
+            ],
+            [
+              { name: "Exit", callback: () => {window.api.request(toMainEvents.systems.closeWindow)}},
             ]
           ]}
         />
