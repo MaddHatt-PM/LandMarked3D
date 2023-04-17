@@ -22,6 +22,7 @@ import clearRecentLocations from "../../Utilities/file-io/clear-recent-locations
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 import showCreateLocationOverlay from "../../Overlays/show-create-location";
 import { testGoogleMapsImagery, testGoogleMapsElevation } from "../../Utilities/apis/test-google-maps";
+import exportProject from "../../Utilities/file-io/export-project";
 
 interface UITestPanelProps { }
 const UITestPanel = () => {
@@ -179,7 +180,12 @@ const UITestPanel = () => {
         }}
       />
 
-
+        <InspectorButton
+        buttonText="Export Project"
+        callback={()=> {
+          exportProject();
+        }}
+        />
 
       <HDivider />
 

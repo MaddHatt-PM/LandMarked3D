@@ -11,18 +11,21 @@ import { pickDirectory } from './systems/pick-directory';
 import { checkDirectoryForProjectFile } from './systems/check-directory-for-project-file';
 import getPreferencesStore from './stores/get-preferences-store';
 import { requestRecentLocations } from './requestRecentLocations';
-import { fstat, writeFile } from 'fs';
+import { fstat, mkdir, writeFile } from 'fs';
 import { clearRecentProjects } from './stores/get-recent-locations-store';
 import { cloneLocation } from './systems/clone-location';
 import { GoogleMapsAPI } from './api/services/GoogleMapsAPI';
-import { exportProject } from './systems/export-project';
-
+import exportProject, { DataFileType, ImageFileType, OriginPoints } from './systems/exporting/export-project';
+import { join } from 'path';
+import * as sharp from 'sharp';
 require('dotenv').config();
 
 const preferencesPath = {
   'darwin': 'mac', // Figure out best place to put it
   'win32': path.join('C:\\', 'users', os.userInfo().username, 'Documents', '2MinuteTabletop')
 }
+
+const localURLBase = `terrain-viewer://`
 
 const store = getPreferencesStore();
 
@@ -155,15 +158,13 @@ function createWindow() {
       SE: { lon: args.SE[0], lat: args.SE[1], },
     });
 
-    console.log(args)
-
     GoogleMapsAPI.props.getImageryFromRect[0].handleAPIRequest(urls, args.dirpath)
   })
 
   ipcMain.on(fromRenderer.testGoogleMapsElevation, (_, args) => {
-    const {points: pointsRaw} = args;
+    const { points: pointsRaw } = args;
 
-    const points:Point[] = (pointsRaw as any[]).map((o)=> {
+    const points: Point[] = (pointsRaw as any[]).map((o) => {
       return {
         latitude: o.latitude,
         longitude: o.longitude,
@@ -188,7 +189,101 @@ function createWindow() {
   })
 
   ipcMain.on(fromRenderer.exportProject, (_, args) => {
-    exportProject(args);
+    pickDirectory(window, undefined)
+      .then((dir) => {
+
+        exportProject(args, dir!, {
+          dataFileType: DataFileType.JSON,
+          imageFileType: ImageFileType.PNG,
+          origin: OriginPoints.TopLeft
+        });
+      })
+      .catch((err) => {
+        if (err) { console.error(err); }
+      })
+  })
+
+  ipcMain.on(fromRenderer.createNewLocation, (_, args) => {
+    console.log(args)
+    const NW = args.NW.split(",").map(parseFloat)
+    const SE = args.SE.split(",").map(parseFloat)
+    const dirPath = join(args.dirPath, args.locationName)
+
+    const urls = GoogleMapsAPI.props.getImageryFromRect[0].prepareAPIUrls({ NW, SE });
+
+    const createDirectory = (dirpath: string) => {
+      return new Promise<void>((resolve, reject) => {
+        mkdir(dirpath, { recursive: true }, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        })
+      })
+    }
+
+    const createLocationFile = async (imageSize: any, _dirpath: string) => {
+      console.log(dirPath)
+
+      const defaultData = {
+        name: args.locationName,
+
+        pixelSize: { width: imageSize[0], height: imageSize[1] },
+        saveTime: "",
+        locationCorners: {
+          NW: { lon: NW[1], lat: NW[0] },
+          NE: { lon: SE[1], lat: NW[0] },
+          SW: { lon: NW[1], lat: SE[0] },
+          SE: { lon: SE[1], lat: SE[0] },
+        },
+        imageMaps: [{
+          name: "Background",
+          url: `${localURLBase}${join(dirPath, "googlemaps-satellite.png")}`,
+          isViewable: true,
+          opacity: 1,
+          uuid: "BASE-IMAGE",
+
+          imageType: "base-image",
+          properties: {
+            sharpness: 0,
+            brightness: 0,
+            contrast: 0,
+            saturation: 0,
+          },
+        }],
+      }
+
+      return new Promise<string>((resolve, reject) => {
+        const data = JSON.stringify(defaultData, null, 2);
+        const locationPath = join(dirPath, "location.project")
+
+        writeFile(locationPath, data, (err) => {
+          if (err) {
+            reject({ type: "file-system", error: err });
+          } else {
+            resolve(locationPath);
+          }
+        })
+      })
+    }
+
+    createDirectory(dirPath)
+      .then(() => {
+        const urls = GoogleMapsAPI.props.getImageryFromRect[0].prepareAPIUrls({
+          NW: { lon: NW[1], lat: NW[0] },
+          SE: { lon: SE[1], lat: SE[0] },
+        })
+        return GoogleMapsAPI.props.getImageryFromRect[0].handleAPIRequest(urls, dirPath);
+      })
+      .then((imageSize) => {
+        return createLocationFile(imageSize, dirPath)
+      })
+      .then((locationPath) => {
+        loadLocationWithKnownPath(window, locationPath)
+      })
+      .then(() => { console.log("Completed new location") })
+      .catch((err) => { console.error(err) })
   })
 }
 

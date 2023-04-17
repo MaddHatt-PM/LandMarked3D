@@ -6,7 +6,8 @@ enum windowEvents {
   DismissScreenOverlay = "dismiss-screen-overlay",
   SendViewportCoordinates = "send-viewport-coordinates",
   SaveLocationToFileSystem = "save-location-to-file-system",
-  SetLocationName = "set-location-name"
+  SetLocationName = "set-location-name",
+  ExportProject = "export-project",
 }
 
 export default windowEvents;

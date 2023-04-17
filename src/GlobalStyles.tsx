@@ -30,7 +30,7 @@ export const GlobalStyle = createGlobalStyle`
     --text-normal-color: white;
 
     user-select: none;
-  }
+    }
 
     ::-webkit-scrollbar {
     width: 12px;

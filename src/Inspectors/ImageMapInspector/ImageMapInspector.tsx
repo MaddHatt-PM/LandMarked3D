@@ -81,32 +81,36 @@ const ImageMapInspector = (props: ImageMapInspectorProps) => {
             }
           }>
 
-            <NumberField
-              label="Opacity"
-              initialValue={imageData.opacity}
-              min={0} trueMin={0}
-              max={1} trueMax={1}
-              step={0.01}
-              hasSlider={true}
-              onChange={(value) => { setOpacity(imageData, id, value) }}
-            />
+            {/* {imageData.imageType && imageData.imageType !== ImageType.BaseImage && */}
+            <>
+              <NumberField
+                label="Opacity"
+                initialValue={imageData.opacity}
+                min={0} trueMin={0}
+                max={1} trueMax={1}
+                step={0.01}
+                hasSlider={true}
+                onChange={(value) => { setOpacity(imageData, id, value) }}
+              />
 
-            <InspectorButton
-              buttonText="Rename"
-              callback={() => {
-                showRenameOverlay({
-                  modalName: "Rename Image",
-                  labelText: "Image name:",
-                  originalName: props.allImageMaps[id].name,
-                  finalizeRename: (newName: string) => {
-                    const modified = { ...props.allImageMaps[id] }
-                    modified.name = newName;
+              <InspectorButton
+                buttonText="Rename"
+                callback={() => {
+                  showRenameOverlay({
+                    modalName: "Rename Image",
+                    labelText: "Image name:",
+                    originalName: props.allImageMaps[id].name,
+                    finalizeRename: (newName: string) => {
+                      const modified = { ...props.allImageMaps[id] }
+                      modified.name = newName;
 
-                    props.setImageMapData(id, modified)
-                  }
-                })
-              }}
-            />
+                      props.setImageMapData(id, modified)
+                    }
+                  })
+                }}
+              />
+            </>
+            {/* } */}
 
             <HelpBox
               title="Image Stats"

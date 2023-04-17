@@ -13,6 +13,7 @@ export const Container = styled.div`
   justify-content: space-between;
   font-size: 14px;
   border-bottom: 1px solid black;
+  font-size: medium;
 `;
 
 export const WindowsName = styled.span`
@@ -69,10 +70,10 @@ interface LogoProps {
 }
 
 export const Logo = styled.img<LogoProps>`
-    width: 18px;
+    width: 20px;
+    height: 20px;
     float: left;
-    padding-bottom: 1px;
-    padding-left: 8px;
+    margin: auto 4px auto 4px; 
 
     filter: hue-rotate(${props => props.isOnline ? "0deg" : "200deg"});
 `;
@@ -85,4 +86,14 @@ export const AppName = styled.span`
   display: flex;
   padding-left: 8px;
   padding-top: 2px;
+`;
+
+export const HStack = styled.span`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  position: absolute;
+  width: 100%;
 `;

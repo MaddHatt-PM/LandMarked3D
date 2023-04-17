@@ -9,10 +9,6 @@
     "noEmitOnError": true,
     "typeRoots": [
       "node_modules/@types",
-      "ipc-types"
     ]
-  },
-  "include": [
-    "../ipc-types"
-  ]
+  }
 }

@@ -66,6 +66,9 @@ async function compositeImageTiles(props: CompositeImageTilesProps) {
       }
     })
   }
+
+  console.log({finalWidth, finalHeight})
+  return [finalWidth, finalHeight];
 }
 
 

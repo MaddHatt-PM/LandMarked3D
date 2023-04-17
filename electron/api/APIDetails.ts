@@ -40,7 +40,7 @@ export interface GetImageryFromRect {
   prepareAPIUrls: (rect: ImageryPrepAPIUrls, props?: Record<string, any>) => any[];
   validationTest: () => boolean;
 
-  handleAPIRequest: (data: any[], dirPath: string, props?: Record<string, any>) => void;
+  handleAPIRequest: (data: any[], dirPath: string, props?: Record<string, any>) => Promise<any>;
 }
 
 export enum RequestCostType {

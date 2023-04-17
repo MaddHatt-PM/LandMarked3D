@@ -9,17 +9,17 @@ import ControlsView from "../../Components/ControlsView/ControlsView";
 import UITestPanel from "../../Inspectors/UITestInspector/UITestInspector";
 import NotImplementedPanel from "../../Inspectors/NotImplementedPanel/NotImplementedPanel";
 import AreaEditorPanel from "../../Inspectors/PointPolygonInspector/PointPolygonInspector";
-import { PointPolygonData } from "../../../ipc-types/PointPolygonData";
+import { PointPolygonData } from "../../Types/PointPolygonData";
 import { ToolModes } from "./ToolModes";
-import { PointFieldData } from "../../../ipc-types/PointFieldData";
+import { PointFieldData } from "../../Types/PointFieldData";
 import SamplePointInspector from "../../Inspectors/PointFieldInspector/PointFieldInspector";
 import ImageMapInspector from "../../Inspectors/ImageMapInspector/ImageMapInspector";
 import PointPathInspector from "../../Inspectors/PointPathInspector/PointPathInspector";
-import { PointPathData } from "../../../ipc-types/PointPathData";
-import { SamplePointData } from "../../../ipc-types/SamplePointData";
-import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
+import { PointPathData } from "../../Types/PointPathData";
+import { SamplePointData } from "../../Types/SamplePointData";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import PointBookMarkInspector from "../../Inspectors/PointBookmarkInspector/PointBookmarkInspector";
-import { LoadedLocationPayload } from "../../../ipc-types/LoadedLocationPayload";
+
 import windowEvents from "../../WindowEvents/window-events";
 import toMainEvents from "../../IPCEvents/ipc-to-main-events";
 import fromMainEvents from "../../IPCEvents/ipc-from-main-events";
@@ -27,9 +27,10 @@ import { webContents } from "electron";
 import setLocationNameEvent from "../../WindowEvents/set-location-name";
 import makeGeoProjectors from "../../Utilities/geographic/make-geo-projectors";
 import makeGeoRectangle from "../../Utilities/geographic/make-geo-rectangle";
+import { LoadedLocationPayload } from "../../Types/LoadedLocationPayload";
 
 
-enum InspectorModes {
+export enum InspectorModes {
   // Upper
   PointBookmarkInspector,
   PointPolygonInspector,
@@ -379,7 +380,7 @@ function LocationViewerPage() {
 
       locationCorners: window.locationCorners!,
       renderData: renderData,
-      projectFilepath: window.projectFilepath!,
+      filepath: window.projectFilepath!,
     }
 
     window.api.request(toMainEvents.saveLocation, { data });
@@ -399,6 +400,47 @@ function LocationViewerPage() {
     }
   }, [handleSaveLocationToFileSystem]);
 
+  const handleProjectExport = useCallback(() => {
+    if (window.projectFilepath === undefined) {
+      console.error("Save Location was called while a projectFilepath was not loaded")
+      return;
+    }
+
+    const data: any = {
+      name: locationName,
+      // projectPath: projectPath,
+      saveTime: (new Date()).toISOString(),
+      pixelSize: window.pixelSize,
+
+      bookmarks: allPointBookmarks,
+      paths: allPointPaths,
+      polygons: allPointPolygons,
+      groups: allPolygonGroups,
+      fields: allPointFields,
+      imageMaps: allImageMaps,
+
+      locationCorners: window.locationCorners!,
+      renderData: renderData,
+      projectFilepath: window.projectFilepath!,
+    }
+
+    window.api.request(toMainEvents.exportProject, { data });
+
+    handleSetIsDirty(false);
+  }, [
+    allPointBookmarks, allPointPaths, allPointPolygons,
+    allPointFields, allImageMaps, renderData,
+    allPolygonGroups, locationName, projectPath
+  ])
+
+  useEffect(() => {
+    window.addEventListener(windowEvents.ExportProject, handleProjectExport);
+
+    return () => {
+      window.removeEventListener(windowEvents.ExportProject, handleProjectExport);
+    }
+  }, [handleProjectExport]);
+
   window.api.response(fromMainEvents.loadLocation, (args: any) => {
     const data = args.data as LoadedLocationPayload;
     setLocationName(data.name ?? "error")
@@ -409,9 +451,27 @@ function LocationViewerPage() {
     setAllPointFields(data.fields ?? []);
     setAllImageMapData(data.imageMaps ?? []);
     setAllPolygonGroups(data.groups ?? [])
-    setRenderData(data.renderData);
+    setRenderData(data.renderData ?? {
+      pointPolygonVertexRadius: 6,
+      pointPolygonStrokeWidth: 4,
+      displayPointPolygons: true,
+ 
+      pointFieldRadius: 8,
+      displayPointFields: true,
+
+      pointPathVertexRadius: 6,
+      pointPathStrokeWidth: 4,
+      displayPointPaths: true,
+
+      displayPointBookmarks: true,
+
+      displayImageMaps: true,
+    });
 
     window.pixelSize = data.pixelSize ?? { width: 1617, height: 1056 };
+
+    console.log({ projectPath:data.projectPath, filepath: data.projectFilepath })
+
     window.projectDirpath = data.projectPath;
     window.projectFilepath = data.projectFilepath;
 
@@ -483,7 +543,9 @@ function LocationViewerPage() {
             }
             <ViewportRenderer
               activeToolMode={activeToolMode}
+              activeInspector={inspector}
               renderData={renderData}
+              setRenderData={setRenderData}
 
               activePointBookmarkID={activePointBookmarkID}
               pointBookmarks={allPointBookmarks}

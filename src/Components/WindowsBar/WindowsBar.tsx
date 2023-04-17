@@ -11,6 +11,11 @@ import Close from "./window-close.png"
 import toMainEvents from "../../IPCEvents/ipc-to-main-events";
 import windowEvents from "../../WindowEvents/window-events";
 import { SetLocationNameProps } from "../../WindowEvents/set-location-name";
+import MenuDropdown from "../MenuDropdown/MenuDropdown";
+import loadLocation from "../../Utilities/file-io/load-location";
+import revertProjectToFile from "../../Utilities/file-io/revert-project-to-file";
+import saveLocation from "../../Utilities/file-io/save-location";
+import showCreateLocationOverlay from "../../Overlays/show-create-location";
 
 // TODO: Account for mac os UI
 
@@ -26,6 +31,8 @@ const WindowsBar = () => {
   const [isOnline, setOnline] = useState(true);
   const [locationNeedsSave, setLocationNeedsSave] = useState(false);
 
+  // const [isAnyMenuOpen, setIsAnyMenuOpen] = useState(false);
+
   function TogglePinned() {
     window.api.request(toMainEvents.systems.toggleAlwaysOnTop);
     setPinned(current => !current);
@@ -39,18 +46,46 @@ const WindowsBar = () => {
 
     window.addEventListener(windowEvents.NotifyOnLocationIsDirty, (_: any) => { setLocationNeedsSave(true) });
     window.addEventListener(windowEvents.NotifyOnLocationIsClean, (_: any) => { setLocationNeedsSave(false) });
-    
+
     const handleSetLocationName = (event: CustomEvent<SetLocationNameProps>) => {
       setLocationName(event.detail.name)
     }
     window.addEventListener(windowEvents.SetLocationName, handleSetLocationName as EventListener);
   }, [])
 
+
   return (
     <Container>
-      <span id="left-aligned">
+      <span id="left-aligned" style={{ display: "flex" }}>
         <Logo src={LogoImg} isOnline={isOnline} />
-        <AppName>{isOnline ? "LandMarked3D" : "LandMarked3D - Offline"}</AppName>
+        {/* <AppName>{isOnline ? "LandMarked3D" : "LandMarked3D - Offline"}</AppName> */}
+
+        <MenuDropdown
+          name="File"
+          options={[
+            [
+              { name: "New Location", callback: showCreateLocationOverlay },
+              { name: "Open Location", callback: loadLocation },
+              // { name: "Clone Location", callback: () => { console.log("Pressed") } },
+            ],
+            [
+              { name: "Save", callback: saveLocation},
+              { name: "Revert", callback: revertProjectToFile},
+            ],
+            [
+              { name: "Export Data", callback: () => { console.log("Export") } },
+            ]
+          ]}
+        />
+        <MenuDropdown
+          name="Help"
+          options={[
+            [
+              { name: "Open", callback: () => { console.log("Pressed") } }
+            ]
+          ]}
+        />
+
       </span>
 
       <span id="middle-aligned" >

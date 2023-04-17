@@ -1,0 +1,40 @@
+{
+  "saveTime": "",
+  "locationCorners": {
+    "NW": {
+      "lon": -82.50490253321752,
+      "lat": 35.48519249715151
+    },
+    "NE": {
+      "lon": -82.49811367600601,
+      "lat": 35.48519249715151
+    },
+    "SW": {
+      "lon": -82.50490253321752,
+      "lat": 35.48147145850006
+    },
+    "SE": {
+      "lon": -82.49811367600601,
+      "lat": 35.48147145850006
+    }
+  },
+  "bookmarks": [],
+  "polygons": [],
+  "groups": [],
+  "paths": [],
+  "fields": [],
+  "imageMaps": {
+    "name": "Background",
+    "url": "",
+    "isViewable": true,
+    "opacity": 1,
+    "uuid": "BASE-IMAGE",
+    "imageType": "base-image"
+  },
+  "properties": {
+    "sharpness": 0,
+    "brightness": 0,
+    "contrast": 0,
+    "saturation": 0
+  }
+}

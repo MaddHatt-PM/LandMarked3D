@@ -2,7 +2,7 @@ import { useState } from "react"
 import BaseOverlay from "../../Components/BaseOverlay/BaseOverlay";
 import TextField from "../../Components/TextField/TextField";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import { PointPolygonData } from "../PointPolygonData";
 import { invalidBookmarkPosition } from "./is-point-bookmark-in-invalid-position";
 

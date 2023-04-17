@@ -1,7 +1,7 @@
 import React from "react";
 import { MinusSVG, PlusSVG } from "../../Assets/SVGAssets";
 import { ToolModes } from "../../Pages/LocationViewerPage/ToolModes";
-import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import { getPointBookmarkInfo } from "../../Types/PointBookmarks/get-point-bookmark-info";
 import showCreatePointBookmarkOverlay from "../../Types/PointBookmarks/show-create-point-bookmark-overlay";
 import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";

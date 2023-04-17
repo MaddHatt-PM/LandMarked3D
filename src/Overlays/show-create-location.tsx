@@ -4,6 +4,7 @@ import { HDivider } from "../Components/InspectorComponents/Headers/Headers.styl
 import InspectorButton from "../Components/InspectorComponents/InspectorButton/InspectorButton";
 import TextField from "../Components/TextField/TextField";
 import fromMainEvents from "../IPCEvents/ipc-from-main-events";
+import toMainEvents from "../IPCEvents/ipc-to-main-events";
 import pickDirectory from "../Utilities/file-io/pick-directory";
 import { setScreenOverlayEvent } from "../WindowEvents/set-screen-overlay";
 
@@ -48,12 +49,12 @@ const CreateLocationOverlay = () => {
   }
 
   const createLocation = () => {
-    console.log(locationProps)
+    window.api.request(toMainEvents.createNewLocation, locationProps);
   }
 
   window.api.response(fromMainEvents.pickDirectoryForNewLocation, (args: any) => {
     if (args.data) {
-      setLocationProps({ ...locationProps, dirPath: args.data }) 
+      setLocationProps({ ...locationProps, dirPath: args.data })
     }
   })
 

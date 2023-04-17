@@ -212,6 +212,8 @@ const getSatelliteImagery: GetImageryFromRect = {
       fs.mkdirSync(dirPath, { recursive: true })
     }
 
+    console.log(tilesRaw)
+
     const localTiles: TileData[] = []
 
     const prepareTiles = tiles.map((tile, index) => {
@@ -224,7 +226,7 @@ const getSatelliteImagery: GetImageryFromRect = {
         rowID: tile.rowID
       });
 
-      return new Promise<void>((resolve, reject) => {
+      return new Promise<[number, number]>((resolve, reject) => {
         console.log(tile.url)
         https.get(tile.url, response => {
           response.pipe(file);
@@ -241,42 +243,48 @@ const getSatelliteImagery: GetImageryFromRect = {
                 width = metadata.width ?? 0
                 height = metadata.height ?? 0
                 // console.log(metadata)
-              })
-              .then(() => {
 
                 // Crop image
-                sharp(filepath)
+                return sharp(filepath)
                   .extract({ left: 0, top: 0, width: width, height: height - logoCutOff })
-                  .toBuffer()
-                  .then((data: string | NodeJS.ArrayBufferView) => writeFile(filepath, data))
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch((err: any) => {
-                    console.error(err);
-                    reject(err);
-                  });
+                  .toBuffer();
               })
-
+              .then((data: string | NodeJS.ArrayBufferView) => writeFile(filepath, data))
+              .then(() => {
+                resolve([width, height]);
+              })
+              .catch((err: any) => {
+                console.error(err);
+                reject(err);
+              });
           });
         });
       });
     });
 
-
-
-    Promise
+    const compositeImagePromise = Promise
       .all(prepareTiles)
-      .then(() => { console.log("finished image downloading") })
-      .then(() => {
-        compositeImageTiles({
+      .then((dimensionsArray) => {
+        console.log("finished image downloading");
+
+        const dimensions = dimensionsArray.reduce(
+          (result, [width, height]) => {
+            return [Math.max(result[0], width), result[1] + height - logoCutOff];
+          },
+          [0, 0],
+        );
+
+        return compositeImageTiles({
           tiles: localTiles,
           options: {
             outputDir: dirPath,
             outputFilename: `googlemaps-satellite.png`,
-          }
-        })
-      })
+            // imageSize: dimensions,
+          },
+        });
+      });
+
+    return compositeImagePromise;
   }
 }
 

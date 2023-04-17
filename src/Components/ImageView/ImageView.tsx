@@ -13,6 +13,7 @@ const ImageView = (props: ImageViewProps) => {
       style={{
         display: props.imageMapData.isViewable ? "block" : "none",
         opacity: props.imageMapData.opacity,
+        zIndex: -1
       }}
     />
   );

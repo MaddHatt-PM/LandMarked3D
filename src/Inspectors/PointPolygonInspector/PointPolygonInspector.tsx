@@ -18,6 +18,8 @@ import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-ove
 import Detail from "../../Components/InspectorComponents/Detail/Detail";
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
 import { Label } from "../../Components/InspectorComponents/Detail/Detail.styles";
+import getDistanceOfGeoPoints from "../../Utilities/geographic/get-distance-of-geopoints";
+import { GeoPoint } from "../../Types/GeoPoint";
 
 interface PointPolygonInspectorProps {
   pointPolygons: PointPolygonData[];
@@ -77,6 +79,7 @@ const PointPolygonInspector = (props: PointPolygonInspectorProps) => {
       )
     }
   }
+
 
 
   return (

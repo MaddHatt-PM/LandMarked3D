@@ -8,6 +8,9 @@ import Panel from "../../Components/Panel/Panel";
 import { Divider } from "../../Components/StatusBar/StatusBar.styles";
 import { Container, Group, Wrapper } from "./PointFieldInspector.styles";
 import ColorDropdown from "../../Components/ColorDropdown/ColorDropdown";
+import InspectorButton from "../../Components/InspectorComponents/InspectorButton/InspectorButton";
+import makeGeoGrid from "../../Utilities/geographic/make-geo-grid";
+import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
 
 interface SamplePointInspectorProps {
   pointFields: PointFieldData[];
@@ -67,16 +70,46 @@ const SamplePointInspector = (props: SamplePointInspectorProps) => {
       <HDivider />
 
       {props.pointFields.length !== 0 &&
-        <ColorDropdown
-          label={"Color"}
-          selectedColor={props.pointFields[props.activePointFieldID!].color}
-          optionToName={c => c}
-          onSelect={(c) => {
-            const pointPolygon = props.pointFields[props.activePointFieldID!]
-            pointPolygon.color = c;
-            props.setPointFieldData(props.activePointFieldID!, pointPolygon)
-          }}
-        />
+        <>
+          <ColorDropdown
+            label={"Color"}
+            selectedColor={props.pointFields[props.activePointFieldID!].color}
+            optionToName={c => c}
+            onSelect={(c) => {
+              const pointPolygon = props.pointFields[props.activePointFieldID!]
+              pointPolygon.color = c;
+              props.setPointFieldData(props.activePointFieldID!, pointPolygon)
+            }}
+          />
+
+          <InspectorButton
+            buttonText="Add Grid"
+            callback={() => {
+              const modified = props.pointFields[props.activePointFieldID!]
+              modified.points = makeGeoGrid({
+                distanceMeters: 5,
+                extend: 2
+              })
+              props.setPointFieldData(props.activePointFieldID!, modified)
+            }}
+          />
+
+          <InspectorButton
+            buttonText="Clear"
+            callback={() => {
+              const modified = props.pointFields[props.activePointFieldID!]
+              modified.points = []
+              props.setPointFieldData(props.activePointFieldID!, modified)
+            }}
+          />
+
+          <HDivider />
+          <HelpBox
+            text={`
+              Point Count: ${props.pointFields[props.activePointFieldID!].points.length}
+            `}
+          />
+        </>
       }
 
       <HDivider />

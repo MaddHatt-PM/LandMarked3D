@@ -1,5 +1,5 @@
-import { LocationCorners } from "../../ipc-types/LocationCorners";
 import { IpcRenderer } from 'electron';
+import { LocationCorners } from './LocationCorners';
 
 declare global {
   interface Window {

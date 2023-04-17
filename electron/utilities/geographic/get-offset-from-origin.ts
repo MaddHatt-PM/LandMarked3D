@@ -23,9 +23,9 @@ const getOffsetFromOrigin = (props: GetOffsetFromOriginProps): Offsets => {
   const dy = earthRadius * (latRad - originLatRad);
 
   const xFeet = dx * 3.28084;
-  const yFeet = dy * 3.28084;
+  const yFeet = dy * 3.28084 * -1;
   const xMeters = dx;
-  const yMeters = dy;
+  const yMeters = dy * -1;
 
   return { xFeet, yFeet, xMeters, yMeters };
 }

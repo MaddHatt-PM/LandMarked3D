@@ -15,6 +15,7 @@ const loadLocation = (filepath: string, timeoutMS = 5_000): Promise<any> => {
               projectPath: path.dirname(filepath),
               projectFilepath: filepath,
             };
+            console.log(data)
             resolve(data);
           } catch (err) {
             reject(err);

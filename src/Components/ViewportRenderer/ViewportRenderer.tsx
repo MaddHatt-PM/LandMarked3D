@@ -13,15 +13,18 @@ import { PointFieldData } from "../../Types/PointFieldData";
 import ImageView from "../ImageView/ImageView";
 import { PointPathData } from "../../Types/PointPathData";
 import PointPath from "../PointPath/PointPath";
-import { PointBookmarkData } from "../../../ipc-types/PointBookmarkData";
+import { PointBookmarkData } from "../../Types/PointBookmarkData";
 import PointBookmark from "../PointBookmark/PointBookmark";
 import isPointBookmarkInInvalidPosition from "../../Types/PointBookmarks/is-point-bookmark-in-invalid-position";
 import { sendViewportCoordinatesEvent } from "../../WindowEvents/send-viewport-coordinates";
+import { InspectorModes } from "../../Pages/LocationViewerPage/LocationViewerPage";
 
 interface ViewportRendererProps {
   activeToolMode: ToolModes;
+  activeInspector: InspectorModes
 
   renderData: ViewportRenderData;
+  setRenderData: (data: ViewportRenderData) => void;
 
   activePointBookmarkID: number | null;
   pointBookmarks: PointBookmarkData[];
@@ -127,11 +130,36 @@ const ViewportRenderer = (props: ViewportRendererProps) => {
   };
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    // const newZoom = Math.max(0.1, Math.min(5, zoom + (event.deltaY > 0 ? -0.1 : 0.1)));
-    const newZoom = clamp(zoomDeltaIncrement, 5, zoom + (event.deltaY > 0 ? -zoomDeltaIncrement : zoomDeltaIncrement));
-    setZoom(newZoom);
+    // event.preventDefault();
 
-    // TODO: zoom to mouse cursor
+    const { pointPolygonVertexRadius,
+      pointPolygonStrokeWidth,
+      pointFieldRadius,
+      pointPathVertexRadius,
+      pointPathStrokeWidth, } = props.renderData
+
+    const diff = 0.5;
+
+    if (event.shiftKey) {
+      props.setRenderData({
+        ...props.renderData,
+        pointPolygonVertexRadius: clamp(0.1, 100, pointPolygonVertexRadius + (event.deltaY > 0 ? -diff : diff)),
+        pointPolygonStrokeWidth: clamp(0.1, 100, pointPolygonStrokeWidth + (event.deltaY > 0 ? -diff : diff)),
+        pointFieldRadius: clamp(0.1, 100, pointFieldRadius + (event.deltaY > 0 ? -diff : diff)),
+        pointPathVertexRadius: clamp(0.1, 100, pointPathVertexRadius + (event.deltaY > 0 ? -diff : diff)),
+        pointPathStrokeWidth: clamp(0.1, 100, pointPathStrokeWidth + (event.deltaY > 0 ? -diff : diff)),
+      })
+      return;
+    }
+
+    const newZoom = clamp(zoomDeltaIncrement, 5, zoom + (event.deltaY > 0 ? -zoomDeltaIncrement : zoomDeltaIncrement));
+    const { clientX, clientY } = event.nativeEvent;
+    const zoomFactor = newZoom / zoom;
+    const offsetX = (clientX - translateX) * (1 - zoomFactor);
+    const offsetY = (clientY - translateY) * (1 - zoomFactor);
+    setZoom(newZoom);
+    setTranslateX(prevX => prevX + offsetX);
+    setTranslateY(prevY => prevY + offsetY);
   };
 
   return (
@@ -168,7 +196,7 @@ const ViewportRenderer = (props: ViewportRendererProps) => {
         }
 
         {/* SVG Elements */}
-        {props.renderData.displayPointFields &&
+        {props.renderData.displayPointFields && isDragging === false && props.activeInspector === InspectorModes.SamplePointsInspector &&
           props.pointFields?.map((field, id) => {
             return (
               <PointField
