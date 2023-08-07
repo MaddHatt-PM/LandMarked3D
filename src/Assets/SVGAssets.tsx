@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import { svgProps } from "../Utilities/svg-props";
+import { svgColoredProps, svgProps } from "../Utilities/svg-props";
+
+import { ReactComponent as logoSVG } from "./logo.svg"
 
 import { ReactComponent as areaSVG } from "./toolbar-polygon.svg"
 import { ReactComponent as gearSVG } from "./toolbar-gear.svg"
@@ -25,69 +27,73 @@ interface svgDetails {
   color?: string;
 }
 
-export const AreaSVG = styled(areaSVG) <svgDetails>`
+export const LogoSVG = styled(logoSVG) <svgDetails>`
   ${(props) => svgProps(props)}
+`;
+
+export const AreaSVG = styled(areaSVG) <svgDetails>`
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const GearSVG = styled(gearSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const ExportSVG = styled(exportSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const LayersSVG = styled(layersSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const TreeSVG = styled(treeSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 export const PathSVG = styled(pathSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const GroupSVG = styled(groupSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const CloudDownloadSVG = styled(cloudDownloadSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
   `;
 
 export const QuestionMarkSVG = styled(questionMarkSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const SamplePointsSVG = styled(samplePointsSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const CopySVG = styled(copySVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const CheckmarkCircleSVG = styled(checkmarkCircleSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const PlusSVG = styled(plusSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const MinusSVG = styled(minusSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const SelectSVG = styled(selectSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const ChevronUpSVG = styled(chevronUpSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;
 
 export const ChevronDownSVG = styled(chevronDownSVG) <svgDetails>`
-  ${(props) => svgProps(props)}
+  ${(props) => svgColoredProps(props)}
 `;

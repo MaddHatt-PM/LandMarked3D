@@ -50,7 +50,7 @@ const MenuDropdown = (props: MenuDropdownProps) => {
         {isOpen && (
           <DropdownList>
             {props.options.map((group, groupID) =>
-              <>
+              <div key={groupID}>
                 {group.map((option, id) => (
                   <DropdownListItem key={`${groupID}-${id}`} onClick={() => handleOptionClick(groupID, id)}>
                     {option.name}
@@ -58,9 +58,9 @@ const MenuDropdown = (props: MenuDropdownProps) => {
                 ))}
 
                 {groupID !== props.options.length - 1 &&
-                  <HDivider/>
+                  <HDivider key={groupID}/>
                 }
-              </>
+              </div>
             )}
           </DropdownList>
         )}

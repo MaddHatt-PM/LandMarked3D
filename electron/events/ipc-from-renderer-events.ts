@@ -29,4 +29,5 @@ export const fromRendererEvents = {
   testGoogleMapsImagery: 'test-google-maps-imagery',
   testGoogleMapsElevation: 'test-google-maps-elevation',
   exportProject: 'export-project',
+  openInBrowser: 'open-in-browser',
 };

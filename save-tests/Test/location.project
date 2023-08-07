@@ -1,0 +1,42 @@
+{
+  "name": "Test",
+  "pixelSize": {
+    "width": 860,
+    "height": 12160
+  },
+  "saveTime": "",
+  "locationCorners": {
+    "NW": {
+      "lon": 35.64240864470986,
+      "lat": -82.55868647748001
+    },
+    "NE": {
+      "lon": 35.640106795695836,
+      "lat": -82.55868647748001
+    },
+    "SW": {
+      "lon": 35.64240864470986,
+      "lat": -82.5543520277965
+    },
+    "SE": {
+      "lon": 35.640106795695836,
+      "lat": -82.5543520277965
+    }
+  },
+  "imageMaps": [
+    {
+      "name": "Background",
+      "url": "terrain-viewer://D:\\terrain-viewer\\save-tests\\Test\\googlemaps-satellite.png",
+      "isViewable": true,
+      "opacity": 1,
+      "uuid": "BASE-IMAGE",
+      "imageType": "base-image",
+      "properties": {
+        "sharpness": 0,
+        "brightness": 0,
+        "contrast": 0,
+        "saturation": 0
+      }
+    }
+  ]
+}

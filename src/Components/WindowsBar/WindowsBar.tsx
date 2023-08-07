@@ -40,7 +40,7 @@ const WindowsBar = () => {
 
   useEffect(() => {
     setOnline(navigator.onLine);
-    setLocationName("location-name")
+    setLocationName("LandMarked3D")
     window.addEventListener("online", (event) => { setOnline(true) });
     window.addEventListener("offline", (event) => { setOnline(false) });
 
@@ -61,6 +61,7 @@ const WindowsBar = () => {
         {/* <AppName>{isOnline ? "LandMarked3D" : "LandMarked3D - Offline"}</AppName> */}
 
         <MenuDropdown
+          key={"File"}
           name="File"
           options={[
             [
@@ -81,6 +82,7 @@ const WindowsBar = () => {
           ]}
         />
         <MenuDropdown
+          key={"Help"}
           name="Help"
           options={[
             [

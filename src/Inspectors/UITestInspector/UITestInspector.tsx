@@ -40,7 +40,7 @@ const UITestPanel = () => {
     console.log(args)
   })
 
-  window.api.response(fromMainEvents.requestRecentLocations, (args: any) => {
+  window.api.response(fromMainEvents.getRecentLocations, (args: any) => {
     console.log(args)
   })
 

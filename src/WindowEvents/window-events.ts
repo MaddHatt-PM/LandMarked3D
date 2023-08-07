@@ -8,6 +8,7 @@ enum windowEvents {
   SaveLocationToFileSystem = "save-location-to-file-system",
   SetLocationName = "set-location-name",
   ExportProject = "export-project",
+  onPreNavigate = "onPreNavigate",
 }
 
 export default windowEvents;

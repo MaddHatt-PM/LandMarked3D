@@ -12,6 +12,7 @@ import { SetScreenOverlayEventDetail } from "../WindowEvents/set-screen-overlay"
 
 function App() {
   const [screenOverlayNode, setScreenOverlayNode] = useState<ReactNode | null>(null);
+  const [projectPath, setProjectDirPath] = useState("");
 
   useEffect(() => {
     const handleSetEvent = (event: CustomEvent<SetScreenOverlayEventDetail>) => {
@@ -41,15 +42,18 @@ function App() {
         <Viewport>
           <HashRouter>
             <Routes>
-              <Route path="/" element={<LocationViewerPage />} />
-              {/* <Route path="/" element={<StartupPage/>} /> */}
+              {/* <Route path="/" element={<LocationViewerPage />} /> */}
+              <Route path="/" element={<StartupPage />} />
               <Route path="/LocationSearcher" element={<LocationSearchPage />} />
-              <Route path="/LocationViewer" element={<LocationViewerPage />} />
+              <Route path="/location-viewer" element={<LocationViewerPage
+                projectPath={projectPath}
+                setProjectDirPath={setProjectDirPath}
+              />} />
             </Routes>
           </HashRouter>
         </Viewport>
       </Container>
-      
+
       {screenOverlayNode &&
         <ScreenOverlay>
           {screenOverlayNode}

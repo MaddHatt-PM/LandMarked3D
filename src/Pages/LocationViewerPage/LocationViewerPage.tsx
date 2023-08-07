@@ -59,11 +59,12 @@ enum LocationStates {
 
 interface LocationViewerPageProps {
   projectPath: string;
+  setProjectDirPath: (location:string) => void
 }
 
-function LocationViewerPage() {
+function LocationViewerPage(props: LocationViewerPageProps) {
   const [locationName, setLocationName] = useState("");
-  const [projectPath, setProjectDirPath] = useState("D:/terrain-viewer/save-tests/testing-region")
+  const [projectPath, setProjectDirPath] = useState("D:/terrain-viewer/save-tests/testing-region");
   const [locationState, setLocationState] = useState(LocationStates.NotLoaded);
 
   const [isDirty, setIsDirty] = useState(false);
@@ -408,7 +409,6 @@ function LocationViewerPage() {
 
     const data: any = {
       name: locationName,
-      // projectPath: projectPath,
       saveTime: (new Date()).toISOString(),
       pixelSize: window.pixelSize,
 
@@ -444,7 +444,7 @@ function LocationViewerPage() {
   window.api.response(fromMainEvents.loadLocation, (args: any) => {
     const data = args.data as LoadedLocationPayload;
     setLocationName(data.name ?? "error")
-    setProjectDirPath(data.projectPath ?? "error")
+    // setProjectDirPath(data.projectPath ?? "error")
     setAllPointBookmarks(data.bookmarks ?? []);
     setAllPointPolygons(data.polygons ?? []);
     setAllPointPaths(data.paths ?? []);

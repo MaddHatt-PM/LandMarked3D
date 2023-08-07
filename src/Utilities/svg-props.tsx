@@ -5,7 +5,7 @@ interface svgPropProps {
   color?: string;
 }
 
-export const svgProps = (props: svgPropProps) => {
+export const svgColoredProps = (props: svgPropProps) => {
   return css`
     
     height: ${props.height|| "32px"};
@@ -21,5 +21,15 @@ export const svgProps = (props: svgPropProps) => {
     & polygon {
       fill: ${props.color || "white"}
     };
+  `;
+};
+
+interface svgPlainPropProps {
+  height?: number;
+}
+
+export const svgProps = (props: svgPropProps) => {
+  return css`
+    height: ${props.height || "32px"};
   `;
 };

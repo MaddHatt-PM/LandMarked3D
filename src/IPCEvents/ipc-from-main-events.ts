@@ -5,7 +5,7 @@ const fromMainEvents = {
   loadLocationFromFileSystemReport: 'load-location-from-file-system-report',
   checkDirectoryForProjectReport: 'check-directory-for-project-report',
   pickDirectoryReport: 'pick-directory-report',
-  requestRecentLocations: 'request-recent-locations',
+  getRecentLocations: 'request-recent-locations',
   cloneLocationReport: 'clone-location-report',
   pickDirectoryForNewLocation: 'pick-directory-for-new-location',
 }

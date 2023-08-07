@@ -20,7 +20,7 @@ const toMainEvents = {
   pickDirectoryReport: 'pick-directory-report',
   loadLocationFromExplorer: 'load-location-from-explorer',
   checkDirectoryForProject: 'check-directory-for-project',
-  requestRecentLocations: 'request-recent-locations',
+  getRecentLocations: 'request-recent-locations',
   loadTestLocation: 'load-test-location',
   cloneLocation: 'clone-location',
   clearRecentProjects: 'clear-recent-projects',
@@ -30,6 +30,7 @@ const toMainEvents = {
   testGoogleMapsImagery: 'test-google-maps-imagery',
   testGoogleMapsElevation: 'test-google-maps-elevation',
   exportProject: 'export-project',
+  openInBrowser: 'open-in-browser',
 };
 
 export default toMainEvents;

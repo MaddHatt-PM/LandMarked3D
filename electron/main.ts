@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, ipcRenderer, protocol, session } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, ipcRenderer, protocol, session, shell } from 'electron';
 import * as path from 'path';
 import os = require('os');
 import isDev = require('electron-is-dev');
@@ -12,12 +12,12 @@ import { checkDirectoryForProjectFile } from './systems/check-directory-for-proj
 import getPreferencesStore from './stores/get-preferences-store';
 import { requestRecentLocations } from './requestRecentLocations';
 import { fstat, mkdir, writeFile } from 'fs';
-import { clearRecentProjects } from './stores/get-recent-locations-store';
+import { clear } from './stores/get-recent-locations-store';
 import { cloneLocation } from './systems/clone-location';
 import { GoogleMapsAPI } from './api/services/GoogleMapsAPI';
 import exportProject, { DataFileType, ImageFileType, OriginPoints } from './systems/exporting/export-project';
 import { join } from 'path';
-import * as sharp from 'sharp';
+
 require('dotenv').config();
 
 const preferencesPath = {
@@ -96,7 +96,6 @@ function createWindow() {
   });
 
   ipcMain.on(fromRenderer.systems.maximizeWindow, function (event) {
-    console.log('recieved')
     if (window.isMaximized()) {
       window.unmaximize();
     } else {
@@ -116,6 +115,11 @@ function createWindow() {
     console.log('saved info')
     window.close();
   });
+
+  ipcMain.on(fromRenderer.openInBrowser, (_, args) => {
+    console.log(args.url)
+    shell.openExternal(args.url);
+  })
 
   // ------------------------------
   // ----File-System-Events--------
@@ -144,7 +148,7 @@ function createWindow() {
   })
 
   ipcMain.on(fromRenderer.clearRecentProjects, (_) => {
-    clearRecentProjects();
+    clear();
     requestRecentLocations(window);
   })
 
