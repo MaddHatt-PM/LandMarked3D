@@ -1,5 +1,6 @@
 import { BrowserWindow, dialog } from 'electron';
 import { toRendererEvents } from '../events/ipc-to-renderer-events';
+import { push, RecentLocation } from '../stores/get-recent-locations-store';
 import loadLocation from './load-location';
 
 export function loadLocationFromExplorer(window: BrowserWindow) {
@@ -17,6 +18,12 @@ export function loadLocationFromExplorer(window: BrowserWindow) {
 
         loadLocation(selectedFilePath)
           .then((data) => {
+            // console.log(selectedFilePath)
+            // console.log(data)
+            const recentLocationData:RecentLocation = { name: data.name, filepath:selectedFilePath }
+            console.log(recentLocationData)
+            push(recentLocationData)
+
             window.webContents.send(toRendererEvents.loadLocation, {
               data: data
             });

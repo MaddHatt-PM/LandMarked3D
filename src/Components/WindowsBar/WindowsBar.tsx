@@ -16,6 +16,7 @@ import loadLocation from "../../Utilities/file-io/load-location";
 import revertProjectToFile from "../../Utilities/file-io/revert-project-to-file";
 import saveLocation from "../../Utilities/file-io/save-location";
 import showCreateLocationOverlay from "../../Overlays/show-create-location";
+import { useNavigateTo } from "../../Hooks/useNavigateTo";
 
 // TODO: Account for mac os UI
 
@@ -53,6 +54,8 @@ const WindowsBar = () => {
     window.addEventListener(windowEvents.SetLocationName, handleSetLocationName as EventListener);
   }, [])
 
+  // const navigateTo = useNavigateTo();
+
 
   return (
     <Container>
@@ -67,17 +70,18 @@ const WindowsBar = () => {
             [
               { name: "New Location", callback: showCreateLocationOverlay },
               { name: "Open Location", callback: loadLocation },
+              // { name: "Close Location", callback: () => { navigateTo({ page: "initLoad" }) } }
               // { name: "Clone Location", callback: () => { console.log("Pressed") } },
             ],
             [
-              { name: "Save", callback: saveLocation},
-              { name: "Revert", callback: revertProjectToFile},
+              { name: "Save", callback: saveLocation },
+              { name: "Revert", callback: revertProjectToFile },
             ],
             [
               { name: "Export Data", callback: () => { console.log("Export") } },
             ],
             [
-              { name: "Exit", callback: () => {window.api.request(toMainEvents.systems.closeWindow)}},
+              { name: "Exit", callback: () => { window.api.request(toMainEvents.systems.closeWindow) } },
             ]
           ]}
         />

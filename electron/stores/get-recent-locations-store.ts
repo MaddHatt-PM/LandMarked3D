@@ -9,7 +9,7 @@ const getLocationStore = () => {
   });
 };
 
-interface RecentLocation {
+export interface RecentLocation {
   name: string,
   filepath: string
 }
@@ -22,6 +22,8 @@ export const push = (newLocation: RecentLocation) => {
   let recents = store.get(recentLocationsKey) as RecentLocation[];
   recents = recents.filter(o => o.filepath === newLocation.filepath)
   recents = [newLocation, ...recents];
+  console.log(recents)
+
   recents = recents.reduce((unique: any, o: any) => {
     if (!unique.some((obj: RecentLocation) => obj.name === o.name && obj.filepath === o.filepath)) {
       unique.push(o);

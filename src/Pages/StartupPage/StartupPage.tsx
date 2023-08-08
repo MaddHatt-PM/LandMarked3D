@@ -63,7 +63,7 @@ function StartupPage() {
               <SubPanel>
                 <Header style={{ fontSize: '3em' }}><strong>LandMarked3D</strong></Header>
 
-                <div style={{ display: 'flex', height: 36 }}>
+                <div style={{ display: 'inline', height: 36, gap: 2, width: "50%" }}>
 
                   <RecentButton onClick={showCreateLocationOverlay}>
                     {"New Location"}

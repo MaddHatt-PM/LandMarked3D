@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import windowEvents from "../WindowEvents/window-events";
 
 export const PAGES = {
-    initLoad: "/",
+    initLoad: "",
     "location-viewer": "location-viewer",
 } as const;
 
@@ -10,7 +10,7 @@ export type PageTypes = keyof typeof PAGES;
 
 
 interface navigateToProps {
-    page: PageTypes;
+    page: PageTypes | "";
     id?: any;
 }
 

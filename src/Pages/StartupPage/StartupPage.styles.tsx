@@ -21,8 +21,8 @@ export const Box = styled.div`
   background-color: #282b30;
   border: 1px solid black;
   border-radius: 2px 40px 2px 2px;
-  width: 650px;
-  height: 450px;
+  width: 600px;
+  height: 500px;
   padding: 20px;
 
   display: flex;
