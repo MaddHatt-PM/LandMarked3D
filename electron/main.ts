@@ -36,6 +36,8 @@ function createWindow() {
     minWidth: 800,
     minHeight: 400,
     titleBarStyle: "hidden",
+    autoHideMenuBar: true,
+    frame: false,
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -176,7 +178,6 @@ function createWindow() {
       }
     })
 
-    // const points:Point[] = [
     //   { latitude: 32.1111, longitude: -82.1111, uuid: "1111" },
     //   { latitude: 32.2222, longitude: -82.2222, uuid: "2222" },
     //   { latitude: 32.3333, longitude: -82.3333, uuid: "3333" },
