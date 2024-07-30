@@ -1,5 +1,5 @@
 import { useState } from "react"
-import BaseOverlay from "../../Components/BaseOverlay/BaseOverlay";
+import OverlayPrompt from "../../Components/OverlayPrompt/OverlayPrompt";
 import TextField from "../../Components/TextField/TextField";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 import { PointPolygonData } from "../PointPolygonData";
@@ -26,7 +26,7 @@ const CreatePointPolygonOverlay = (props: CreatePointPolygonOverlayProps) => {
   const [group, setGroup] = useState("");
 
   return (
-    <BaseOverlay
+    <OverlayPrompt
       modalName={"Create new Point Polygon"}
       // hideDismissButton={true}
       buttonsProps={[{
@@ -52,7 +52,7 @@ const CreatePointPolygonOverlay = (props: CreatePointPolygonOverlayProps) => {
         onChange={o => setGroup(o)}
       />
 
-    </BaseOverlay>
+    </OverlayPrompt>
   )
 }
 

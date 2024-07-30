@@ -1,5 +1,5 @@
-import { AcceptPrompts, DismissPrompts } from "../../Components/BaseOverlay/BaseOverlay";
-import ConfirmationOverlay from "../../Components/ConfirmationOverlay/ConfirmationOverlay";
+import { AcceptPrompts, DismissPrompts } from "../../Components/OverlayPrompt/OverlayPrompt";
+import OverlayConfirmation from "../../Components/OverlayConfirmation/OverlayConfirmation";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 import { PointPolygonData } from "../PointPolygonData";
 import clearAllPoints from "./ToolInteractions/clear-all-points";
@@ -12,7 +12,7 @@ interface ShowResetPointPolygonOverlayProps {
 
 const showResetPointPolygonOverlay = (props: ShowResetPointPolygonOverlayProps) => {
   const overlay = (
-    <ConfirmationOverlay
+    <OverlayConfirmation
       acceptPrompt={AcceptPrompts.Confirm}
       dismissPrompt={DismissPrompts.Cancel}
       modalName="Clear all points?"

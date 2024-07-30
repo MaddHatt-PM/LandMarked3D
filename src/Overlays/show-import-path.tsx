@@ -1,5 +1,5 @@
 import { useState } from "react"
-import BaseOverlay from "../Components/BaseOverlay/BaseOverlay";
+import OverlayPrompt from "../Components/OverlayPrompt/OverlayPrompt";
 import { HDivider } from "../Components/InspectorComponents/Headers/Headers.styles";
 import InspectorButton from "../Components/InspectorComponents/InspectorButton/InspectorButton";
 import TextField from "../Components/TextField/TextField";
@@ -58,7 +58,7 @@ const CreateImportPathOverlay = () => {
   })
 
   return (
-    <BaseOverlay
+    <OverlayPrompt
       modalName={"Import CSV Path"}
 
       buttonsProps={[{
@@ -86,6 +86,6 @@ const CreateImportPathOverlay = () => {
 
       <p>{locationProps.dirPath}</p>
 
-    </BaseOverlay>
+    </OverlayPrompt>
   )
 }

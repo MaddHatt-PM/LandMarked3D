@@ -1,5 +1,5 @@
 import { useState } from "react";
-import BaseOverlay from "../../Components/BaseOverlay/BaseOverlay";
+import OverlayPrompt from "../../Components/OverlayPrompt/OverlayPrompt";
 import TextField from "../../Components/TextField/TextField";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 
@@ -37,7 +37,7 @@ const RenameOverlay = (props: ShowRenameOverlayProps) => {
   const [newName, setNewName] = useState(props.originalName);
 
   return (
-    <BaseOverlay
+    <OverlayPrompt
       modalName={props.modalName}
       buttonsProps={[{
         text: "Rename",
@@ -54,6 +54,6 @@ const RenameOverlay = (props: ShowRenameOverlayProps) => {
         onChange={o => setNewName(o)}
       />
 
-    </BaseOverlay>
+    </OverlayPrompt>
   );
 }

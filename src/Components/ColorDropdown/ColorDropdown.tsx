@@ -25,8 +25,7 @@ interface ColorOption {
 }
 
 /**
- * Colors sourced from https://mui.com/material-ui/customization/color/
- * Shade 600
+ * Colors sourced from https://mui.com/material-ui/customization/color/ (Shade 600)
  */
 const options: ColorOption[] = [
   { name: "Red", code: "#e53935" },
@@ -46,15 +45,19 @@ const options: ColorOption[] = [
   { name: "Blue Grey", code: "#546e7a" },
 ]
 
+/**
+ * Create a dropdown selector for a predefined set of colors.
+ * On selection of a color option by the user, the OnSelect event
+ * is triggered (provided by `props`).
+ * 
+ * @param props 
+ * @returns A react element.
+ */
 const ColorDropdown = (props: ColorDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const selfRef = useRef<HTMLDivElement>(null);
 
-  const handleOptionClick = (id: string) => {
-    setIsOpen(false);
-    props.onSelect(id);
-  }
-
+  // Handle initialization and destruction of event listeners
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selfRef.current && !selfRef.current.contains(event.target as Node)) {
@@ -67,11 +70,14 @@ const ColorDropdown = (props: ColorDropdownProps) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [selfRef]);
+
+
   return (
     <Container ref={selfRef} className={isOpen ? "is-open" : ""}>
       <Label>{props.label}</Label>
       <div style={{ width: "100%" }} />
 
+      {/* Create a Dropdown button to toggle the visibility of the color options. */}
       <div style={{ width: "60%" }}>
         <DropdownButton
           className={isOpen ? "is-open" : ""}
@@ -92,6 +98,7 @@ const ColorDropdown = (props: ColorDropdownProps) => {
           <ChevronIcon className={isOpen ? "is-open" : ""} />
         </DropdownButton>
 
+        {/* When visibility is toggled, create a vertical list of buttons corresponding to available colors. */}
         {isOpen && (
           <DropdownList
             leadingButtonCount={props.leadingButtons?.length ?? 0}
@@ -99,11 +106,11 @@ const ColorDropdown = (props: ColorDropdownProps) => {
           >
             {options.map((option: ColorOption, id) => (
               <DropdownListItem key={option.code}
-              onClick={()=>{
-                props.onSelect(option.code)
-                setIsOpen(false);
-              }}
-              >
+                onClick={() => {
+                  props.onSelect(option.code)
+                  setIsOpen(false);
+                }}>
+                {/* Create a quick SVG to render each color in a box */}
                 <svg
                   viewBox="0 0 20 18"
                   xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +119,7 @@ const ColorDropdown = (props: ColorDropdownProps) => {
                   style={{
                     padding: "2px 2px"
                   }}
-                  >
+                >
                   <rect
                     width={20} height={18} rx={4}
                   />

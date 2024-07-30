@@ -1,15 +1,21 @@
 import React, { ReactNode, useState } from "react";
 import { QuestionMarkSVG } from "../../Assets/SVGAssets";
-import { Container, Icon, EnabledContentWrapper } from "./ControlsView.styles";
+import { Container, Icon, EnabledContentWrapper } from "./ToggleExpandedView.styles";
 
-interface ControlsViewProps {
+
+interface ToggleExpandedViewProps {
   enabledContent: ReactNode;
   onToggle?: (newState: boolean) => void;
 }
 
-const ControlsView = (props: ControlsViewProps) => {
+/**
+ * @param props {@link ToggleExpandedViewProps}
+ * @returns A react element.
+ */
+const ToggleExpandedView = (props: ToggleExpandedViewProps) => {
   const [enabled, setEnabled] = useState(false);
 
+  // Create a callback function to handle toggling of the control
   const handleToggle = () => {
     const newState = !enabled;
     setEnabled(newState);
@@ -22,16 +28,11 @@ const ControlsView = (props: ControlsViewProps) => {
     <Container className={enabled ? "enabled" : ""} onClick={handleToggle}>
 
       {enabled
-        ? <EnabledContentWrapper className={enabled ? "enabled" : ""}>
-          {props.enabledContent}
-        </EnabledContentWrapper>
+        ? <EnabledContentWrapper className={enabled ? "enabled" : ""}> {props.enabledContent} </EnabledContentWrapper>
         : <QuestionMarkSVG color="#ffffff80" height={14} />
       }
-      
-
 
     </Container>
   );
 };
-
-export default ControlsView;
+export default ToggleExpandedView;

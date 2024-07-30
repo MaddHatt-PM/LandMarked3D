@@ -5,7 +5,7 @@ import StatusBar from "../../Components/StatusBar/StatusBar";
 import Toolbar from "../../Components/Toolbar/Toolbar";
 import { HStack, VStack, Wrapper } from "./LocationViewerPage.styles";
 import { AreaSVG as PointPolygonSVG, CloudDownloadSVG, ExportSVG, GearSVG, GroupSVG, LayersSVG, PathSVG, QuestionMarkSVG, SamplePointsSVG, TreeSVG } from "../../Assets/SVGAssets";
-import ControlsView from "../../Components/ControlsView/ControlsView";
+import ToggleExpandedView from "../../Components/ControlsView/ToggleExpandedView";
 import UITestPanel from "../../Inspectors/UITestInspector/UITestInspector";
 import NotImplementedPanel from "../../Inspectors/NotImplementedPanel/NotImplementedPanel";
 import AreaEditorPanel from "../../Inspectors/PointPolygonInspector/PointPolygonInspector";
@@ -565,7 +565,7 @@ function LocationViewerPage(props: LocationViewerPageProps) {
               setImageMap={setImageMapData}
             />
 
-            <ControlsView enabledContent={
+            <ToggleExpandedView enabledContent={
               <p>testing controls</p>
             } />
           </HStack>

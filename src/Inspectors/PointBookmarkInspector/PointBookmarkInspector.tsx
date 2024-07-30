@@ -6,8 +6,8 @@ import { getPointBookmarkInfo } from "../../Types/PointBookmarks/get-point-bookm
 import showCreatePointBookmarkOverlay from "../../Types/PointBookmarks/show-create-point-bookmark-overlay";
 import showRenameOverlay from "../../Types/PointGenericFunctions/show-rename-overlay";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import { AcceptPrompts, DismissPrompts } from "../../Components/BaseOverlay/BaseOverlay";
-import ConfirmationOverlay from "../../Components/ConfirmationOverlay/ConfirmationOverlay";
+import { AcceptPrompts, DismissPrompts } from "../../Components/OverlayPrompt/OverlayPrompt";
+import OverlayConfirmation from "../../Components/OverlayConfirmation/OverlayConfirmation";
 import Dropdown from "../../Components/InspectorComponents/Dropdown/Dropdown";
 import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
 import HelpBox from "../../Components/InspectorComponents/HelpBox/HelpBox";
@@ -114,7 +114,7 @@ const PointBookMarkInspector = (props: PointBookMarkInspectorProps) => {
                   {
                     icon: (<MinusSVG width={10} height={10} />), text: "Create new area", callback: () => {
                       setScreenOverlayEvent({
-                        overlay: (<ConfirmationOverlay
+                        overlay: (<OverlayConfirmation
                           modalName="Delete Point Bookmark"
                           acceptPrompt={AcceptPrompts.Confirm}
                           dismissPrompt={DismissPrompts.Cancel}

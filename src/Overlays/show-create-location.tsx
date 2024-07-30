@@ -1,5 +1,5 @@
 import { useState } from "react"
-import BaseOverlay from "../Components/BaseOverlay/BaseOverlay";
+import OverlayPrompt from "../Components/OverlayPrompt/OverlayPrompt";
 import { HDivider } from "../Components/InspectorComponents/Headers/Headers.styles";
 import InspectorButton from "../Components/InspectorComponents/InspectorButton/InspectorButton";
 import TextField from "../Components/TextField/TextField";
@@ -59,7 +59,7 @@ const CreateLocationOverlay = () => {
   })
 
   return (
-    <BaseOverlay
+    <OverlayPrompt
       modalName={"Create new location"}
 
       buttonsProps={[{
@@ -100,6 +100,6 @@ const CreateLocationOverlay = () => {
 
       <p>{locationProps.dirPath}</p>
 
-    </BaseOverlay>
+    </OverlayPrompt>
   )
 }

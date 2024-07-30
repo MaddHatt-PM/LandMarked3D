@@ -1,5 +1,5 @@
 import { useState } from "react"
-import BaseOverlay from "../../Components/BaseOverlay/BaseOverlay";
+import OverlayPrompt from "../../Components/OverlayPrompt/OverlayPrompt";
 import { HDivider } from "../../Components/InspectorComponents/Headers/Headers.styles";
 import SegmentedSwitch from "../../Components/SegmentedSwitch/SegmentedSwitch";
 import TextField from "../../Components/TextField/TextField";
@@ -27,7 +27,7 @@ const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
   const [importedCSV, setImportedCSV] = useState<any | undefined>(null);
 
   return (
-    <BaseOverlay
+    <OverlayPrompt
       modalName={"Create new Point Path"}
       // hideDismissButton={true}
       buttonsProps={[{
@@ -51,7 +51,7 @@ const CreatePointPolygonOverlay = (props: CreatePointPathOverlayProps) => {
         onChange={(o) => { setName(o) }}
       />
 
-    </BaseOverlay>
+    </OverlayPrompt>
   )
 }
 

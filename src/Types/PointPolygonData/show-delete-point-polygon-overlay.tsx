@@ -1,5 +1,5 @@
-import { AcceptPrompts, DismissPrompts } from "../../Components/BaseOverlay/BaseOverlay";
-import ConfirmationOverlay from "../../Components/ConfirmationOverlay/ConfirmationOverlay";
+import { AcceptPrompts, DismissPrompts } from "../../Components/OverlayPrompt/OverlayPrompt";
+import OverlayConfirmation from "../../Components/OverlayConfirmation/OverlayConfirmation";
 import { setScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
 import { PointPolygonData } from "../PointPolygonData";
 
@@ -11,7 +11,7 @@ interface ShowDeletePointPolygonOverlayProps {
 
 const showDeletePointPolygonOverlay = (props: ShowDeletePointPolygonOverlayProps) => {
   const overlay = (
-    <ConfirmationOverlay
+    <OverlayConfirmation
       modalName="Delete Point Polygon?"
       acceptPrompt={AcceptPrompts.Confirm}
       dismissPrompt={DismissPrompts.Cancel}

@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { dismissScreenOverlayEvent } from "../../WindowEvents/set-screen-overlay";
-import { CloseButton, Container, HStack, ModalButton, ModalDivider, ModalHeader, VStack, Wrapper } from "./BaseOverlay.styles";
+import { CloseButton, Container, HStack, ModalButton, ModalDivider, ModalHeader, VStack, Wrapper } from "./OverlayPrompt.styles";
+
 
 export enum AcceptPrompts {
   Ok = "Ok",
@@ -9,12 +10,14 @@ export enum AcceptPrompts {
   Accept = "Accept"
 }
 
+
 export enum DismissPrompts {
   Ok = "Ok",
   Cancel = "Cancel",
   No = "No",
   Decline = "Decline"
 }
+
 
 interface ButtonOption {
   text: string,
@@ -23,7 +26,8 @@ interface ButtonOption {
   callback: () => void;
 }
 
-export interface BaseOverlayProps {
+
+export interface OverlayPromptProps {
   modalName: string;
   icon?: ReactNode;
   description?: string;
@@ -33,8 +37,21 @@ export interface BaseOverlayProps {
   hideDismissButton?: boolean;
 }
 
-const BaseOverlay = (props: BaseOverlayProps) => {
 
+/**
+ * Create a prompt that overlays the screen that disables further user input until
+ * the prompt is handled. While the base prompt is limited to an accept/decline,
+ * additionally functionality can be applied through the `ButtonOption` interface.
+ * If further customization is required, additional elements can be appended
+ * through `props.children`.
+ * 
+ * For a confirmation specific overlay, see `OverlayConfirmation` (an extension
+ * of OverlayPrompt).
+ * 
+ * @param props {@link OverlayPromptProps}
+ * @returns A react element.
+ */
+const OverlayPrompt = (props: OverlayPromptProps) => {
   return (
     <Container>
       <Wrapper>
@@ -46,7 +63,6 @@ const BaseOverlay = (props: BaseOverlayProps) => {
         <ModalDivider />
 
         <VStack>
-
           <div style={{ fontSize: "medium", margin: "auto" }}>
             {(!props.icon || !props.description) &&
               <p></p>
@@ -62,7 +78,8 @@ const BaseOverlay = (props: BaseOverlayProps) => {
           }} >
 
             {props.buttonsProps?.map((value, index) => (
-              < ModalButton key={index} onClick={() => {
+              <ModalButton key={index} onClick={() => {
+                // If supplied, restrict execution until validation is upheld
                 if (value.validator !== undefined && value.validator() === false) {
                   console.log("validator failed")
                   if (value.onValidatorFail !== undefined) {
@@ -70,6 +87,7 @@ const BaseOverlay = (props: BaseOverlayProps) => {
                   }
                   return;
                 }
+
                 value.callback();
                 dismissScreenOverlayEvent();
               }}>
@@ -87,8 +105,7 @@ const BaseOverlay = (props: BaseOverlayProps) => {
         </VStack>
 
       </Wrapper>
-    </Container >
+    </Container>
   );
 };
-
-export default BaseOverlay;
+export default OverlayPrompt;
